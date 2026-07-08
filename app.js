@@ -1055,3 +1055,181 @@ loadDashboard = async function(){
     renderContinueReading();
   }, 500);
 }
+
+
+/* ===== v13 Three Module Structure + Faster Article Cache ===== */
+const ISP_KNOWLEDGE_CATEGORIES = [
+  {title:"Current Affairs", label:"CURRENT AFFAIRS", icon:"🗞️", module:"Knowledge Center"},
+  {title:"News Article", label:"NEWS ARTICLE", icon:"📰", module:"Knowledge Center"},
+  {title:"Current Content", label:"CURRENT CONTENT", icon:"⚡", module:"Knowledge Center"},
+  {title:"News Cutting", label:"NEWS CUTTING", icon:"✂️", module:"Knowledge Center"},
+  {title:"General Knowledge (GK)", label:"GENERAL KNOWLEDGE(GK)", icon:"🧠", module:"Knowledge Center"}
+];
+
+const ISP_UPSC_GS_CATEGORIES = [
+  {title:"GS Paper-I", label:"GS PAPER-I", icon:"📘", module:"UPSC"},
+  {title:"GS Paper-II", label:"GS PAPER-II", icon:"📗", module:"UPSC"},
+  {title:"GS Paper-III", label:"GS PAPER-III", icon:"📙", module:"UPSC"},
+  {title:"GS Paper-IV", label:"GS PAPER-IV", icon:"📕", module:"UPSC"},
+  {title:"Essay", label:"ESSAY", icon:"✍️", module:"UPSC"},
+  {title:"Interview", label:"INTERVIEW", icon:"🎙️", module:"UPSC"}
+];
+
+const ISP_OPTIONAL_CATEGORIES = [
+  {title:"Paper-I (Optional)", label:"PAPER-I(OPT.)", icon:"📘", module:"UPSC Optional Subject"},
+  {title:"Paper-II (Optional)", label:"PAPER-II(OPT.)", icon:"📗", module:"UPSC Optional Subject"}
+];
+
+const ISP_UGC_POLITICAL_SCIENCE = [
+  {title:"Indian Political Thought", label:"INDIAN POLITICAL THOUGHT", icon:"🧠", module:"UGC · Political Science"},
+  {title:"Western Political Thought", label:"WESTERN POLITICAL THOUGHT", icon:"📖", module:"UGC · Political Science"},
+  {title:"Indian Govt & Politics", label:"INDIAN GOVT & POLITICS", icon:"🏛️", module:"UGC · Political Science"},
+  {title:"International Relations", label:"INTERNATIONAL RELATIONS", icon:"🤝", module:"UGC · Political Science"},
+  {title:"Public Administration", label:"PUBLIC ADMINISTRATION", icon:"📋", module:"UGC · Political Science"},
+  {title:"Research Methodology", label:"RESEARCH METHODOLOGY", icon:"🔬", module:"UGC · Political Science"},
+  {title:"India's Foreign Policy", label:"INDIA'S FOREIGN POLICY", icon:"🇮🇳", module:"UGC · Political Science"},
+  {title:"Political Theory", label:"POLITICAL THEORY", icon:"⚖️", module:"UGC · Political Science"},
+  {title:"Comparative Politics", label:"COMPARATIVE POLITICS", icon:"🌍", module:"UGC · Political Science"},
+  {title:"International Law", label:"INTERNATIONAL LAW", icon:"🌐", module:"UGC · Political Science"}
+];
+
+const ISP_FEED_CACHE = {};
+const ISP_FEED_CACHE_TIME = {};
+const ISP_CACHE_TTL = 10 * 60 * 1000;
+
+function renderV13Categories(){
+  renderCategoryGridV13('knowledgeGrid', ISP_KNOWLEDGE_CATEGORIES, 'knowledge');
+  renderCategoryGridV13('upscGrid', ISP_UPSC_GS_CATEGORIES, 'upsc');
+  renderCategoryGridV13('optionalGrid', ISP_OPTIONAL_CATEGORIES, 'upsc');
+  renderCategoryGridV13('politicalScienceGrid', ISP_UGC_POLITICAL_SCIENCE, 'ugc');
+}
+
+function renderCategoryGridV13(id, cats, moduleKey){
+  const box = qs(id);
+  if(!box) return;
+  box.innerHTML = cats.map(c => `
+    <div class="private-cat-card" onclick="loadV13Category('${moduleKey}','${escapeAttr(c.label)}','${escapeAttr(c.title)}','${escapeAttr(c.module)}')">
+      <span>${c.icon}</span>
+      <b>${escapeHtml(c.title)}</b>
+      <small>${escapeHtml(c.module)} · Read inside portal</small>
+      ${ISP_FEED_CACHE[c.label] ? '<span class="cache-note">Cached</span>' : ''}
+    </div>
+  `).join('');
+}
+
+function listIdForModule(moduleKey){
+  if(moduleKey === 'knowledge') return 'knowledgePostList';
+  if(moduleKey === 'ugc') return 'ugcPostList';
+  return 'upscPostList';
+}
+
+function titleIdForModule(moduleKey){
+  if(moduleKey === 'knowledge') return 'knowledgePostTitle';
+  if(moduleKey === 'ugc') return 'ugcPostTitle';
+  return 'upscPostTitle';
+}
+
+function showSkeleton(listId){
+  const html = '<div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>';
+  if(qs(listId)) qs(listId).innerHTML = html;
+}
+
+async function getCachedPosts(label, title, moduleName){
+  const now = Date.now();
+  if(ISP_FEED_CACHE[label] && (now - (ISP_FEED_CACHE_TIME[label] || 0)) < ISP_CACHE_TTL){
+    return ISP_FEED_CACHE[label];
+  }
+  const result = await fetchPostsForLabel(label, 35);
+  const posts = result.entries.map(entryToPost).map(p => ({...p, moduleName, categoryTitle:title}));
+  ISP_FEED_CACHE[label] = posts;
+  ISP_FEED_CACHE_TIME[label] = now;
+  return posts;
+}
+
+async function loadV13Category(moduleKey, label, title, moduleName){
+  ISP_CURRENT_CATEGORY = title;
+  ISP_ACTIVE_MODULE = moduleKey;
+
+  const listId = listIdForModule(moduleKey);
+  const titleId = titleIdForModule(moduleKey);
+  if(qs(titleId)) qs(titleId).textContent = title;
+
+  if(ISP_FEED_CACHE[label]){
+    ISP_LOADED_POSTS = ISP_FEED_CACHE[label];
+    renderLearningPosts(ISP_LOADED_POSTS, listId);
+  }else{
+    showSkeleton(listId);
+  }
+
+  try{
+    const posts = await getCachedPosts(label, title, moduleName);
+    ISP_LOADED_POSTS = posts;
+    if(!posts.length){
+      setLearningListHtml(listId, `<p class="muted">No articles found for: <b>${escapeHtml(title)}</b></p>`);
+    }else{
+      renderLearningPosts(posts, listId);
+    }
+    renderV13Categories();
+  }catch(err){
+    setLearningListHtml(listId, `<p class="muted">Unable to load articles.</p><div class="feed-debug">${escapeHtml(err.message)}</div>`);
+  }
+}
+
+function preloadImportantFeeds(){
+  const firstLoad = [
+    ...ISP_KNOWLEDGE_CATEGORIES.slice(0,2),
+    ...ISP_UPSC_GS_CATEGORIES.slice(0,2),
+    ...ISP_UGC_POLITICAL_SCIENCE.slice(0,2)
+  ];
+  firstLoad.forEach((c, i) => {
+    setTimeout(() => {
+      getCachedPosts(c.label, c.title, c.module).catch(()=>{});
+    }, 800 + i * 900);
+  });
+}
+
+/* Override old category grid render */
+renderLearningCategories = renderV13Categories;
+
+/* Override dashboard load for v13 speed */
+loadDashboard = async function(){
+  showLoader('Opening dashboard...','Fast cached portal loading');
+  const u=currentUser();
+  if(!u.email){location.href='index.html';return}
+
+  if(qs('memberName')) qs('memberName').textContent=u.name||'Member';
+  if(qs('memberEmail')) qs('memberEmail').textContent=u.email||'';
+  if(qs('memberStatus')) qs('memberStatus').textContent=u.status||'Active';
+
+  renderV13Categories();
+  loadBookmarks();
+  renderContinueReading?.();
+
+  setTimeout(hideLoader, 650);
+  setTimeout(() => { try{ loadLatestArticles(); }catch(e){} }, 500);
+  setTimeout(() => { try{ preloadImportantFeeds(); }catch(e){} }, 1200);
+
+  Promise.race([
+    api('getProfile',{token:token()}),
+    new Promise(resolve => setTimeout(() => resolve({success:false, timeout:true}), 2500))
+  ]).then(r => {
+    if(r && r.success){
+      if(qs('profileName')) qs('profileName').value=r.profile.name||u.name||'';
+      if(qs('profileMobile')) qs('profileMobile').value=r.profile.mobile||'';
+      if(qs('profileCity')) qs('profileCity').value=r.profile.city||'';
+      if(qs('profileExam')) qs('profileExam').value=r.profile.exam||'';
+    }
+  });
+
+  setTimeout(() => { try{ loadNotes(); }catch(e){} }, 300);
+}
+
+function openDashSection(id,btn){
+  document.querySelectorAll('.dash-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.side-nav button').forEach(b=>b.classList.remove('active'));
+  if(qs(id)) qs(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='library') renderContinueReading?.();
+  if(id==='notes') loadNotes();
+  if(id==='bookmarks') loadBookmarks();
+}

@@ -1,2 +1,2 @@
-// IAS Selection Point API Configuration - v12 Learning Experience
+// IAS Selection Point API Configuration - v13 Modules + Speed Upgrade
 const API_URL = "https://script.google.com/macros/s/AKfycbx1Y4NvVZRoJy_ftslIsT52k6rSSbnJqMGcrbUM91bmcGZKgsPR8C1MmtBnJj055KOw/exec";

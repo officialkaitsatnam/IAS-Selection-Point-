@@ -756,3 +756,42 @@ body{
     padding:10px 14px;
   }
 }
+
+
+/* ===== v13 Module Structure + Speed Upgrade ===== */
+.three-col{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+.module-subtitle{
+  margin:22px 0 12px;
+  color:#10233f;
+  padding-left:10px;
+  border-left:4px solid #0b5ed7;
+}
+.knowledge-card{border-top:5px solid #0b5ed7}
+.upsc-card{border-top:5px solid #159947}
+.ugc-card{border-top:5px solid #6f42c1}
+.skeleton-card{
+  height:82px;
+  border-radius:16px;
+  background:linear-gradient(90deg,#eef3fa,#ffffff,#eef3fa);
+  background-size:200% 100%;
+  animation:skeletonMove 1.1s infinite;
+  border:1px solid #e2eefc;
+}
+@keyframes skeletonMove{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.cache-note{
+  display:inline-block;
+  margin-top:8px;
+  color:#137333;
+  font-size:12px;
+  font-weight:800;
+}
+@media(max-width:1000px){
+  .three-col{grid-template-columns:1fr}
+}
