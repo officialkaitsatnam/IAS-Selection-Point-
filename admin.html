@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | IAS Selection Point</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body onload="loadAdmin()">
+  <header class="topbar">
+    <img src="logo.jpg" class="top-logo" alt="Logo" />
+    <div>
+      <h1>Admin Panel</h1>
+      <p>IAS Selection Point</p>
+    </div>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <main class="dashboard">
+    <section class="panel">
+      <h2>Admin Dashboard</h2>
+      <p>Total Users: <b id="totalUsers">0</b></p>
+      <p>Active Users: <b id="activeUsers">0</b></p>
+    </section>
+    <section class="panel">
+      <h3>Users</h3>
+      <div id="usersList"></div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

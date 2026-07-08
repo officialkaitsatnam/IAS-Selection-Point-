@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IAS Selection Point | Member Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-card">
+      <div class="brand">
+        <img src="logo.jpg" alt="IAS Selection Point Logo" class="logo" />
+        <h1>IAS Selection Point</h1>
+        <p>Professional Study Member Portal</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="showForm('login')">Login</button>
+        <button class="tab" onclick="showForm('signup')">Signup</button>
+      </div>
+
+      <form id="loginForm" class="form active" onsubmit="loginUser(event)">
+        <h2>Member Login</h2>
+        <input id="loginEmail" type="email" placeholder="Email address" required />
+        <input id="loginPassword" type="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <a href="#" onclick="showForm('forgot')">Forgot password?</a>
+      </form>
+
+      <form id="signupForm" class="form" onsubmit="signupUser(event)">
+        <h2>Create Account</h2>
+        <input id="signupName" type="text" placeholder="Full name" required />
+        <input id="signupEmail" type="email" placeholder="Email address" required />
+        <input id="signupMobile" type="tel" placeholder="Mobile number" required />
+        <input id="signupPassword" type="password" placeholder="Password" required />
+        <button type="submit">Signup</button>
+      </form>
+
+      <form id="forgotForm" class="form" onsubmit="sendResetOtp(event)">
+        <h2>Forgot Password</h2>
+        <input id="forgotEmail" type="email" placeholder="Registered email" required />
+        <button type="submit">Send OTP</button>
+        <a href="#" onclick="showForm('login')">Back to login</a>
+      </form>
+
+      <form id="resetForm" class="form" onsubmit="resetPassword(event)">
+        <h2>Reset Password</h2>
+        <input id="resetEmail" type="email" placeholder="Registered email" required />
+        <input id="resetOtp" type="text" placeholder="6 digit OTP" required />
+        <input id="resetPassword" type="password" placeholder="New password" required />
+        <button type="submit">Reset Password</button>
+      </form>
+
+      <p id="msg" class="msg"></p>
+    </section>
+  </main>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | IAS Selection Point</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body onload="loadDashboard()">
+  <header class="topbar">
+    <img src="logo.jpg" class="top-logo" alt="Logo" />
+    <div>
+      <h1>IAS Selection Point</h1>
+      <p>Member Dashboard</p>
+    </div>
+    <button onclick="logout()">Logout</button>
+  </header>
+
+  <main class="dashboard">
+    <section class="panel">
+      <h2>Welcome, <span id="memberName">Member</span> 👋</h2>
+      <p>Email: <span id="memberEmail"></span></p>
+      <p>Status: <span id="memberStatus"></span></p>
+    </section>
+
+    <section class="grid">
+      <div class="tile">📚 Study Material</div>
+      <div class="tile">📝 My Notes</div>
+      <div class="tile">🔖 Bookmarks</div>
+      <div class="tile">🔔 Notifications</div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
