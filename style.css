@@ -834,3 +834,27 @@ body{
   .sidebar-pro{width:100%}
   .big-brand img{width:72px!important;height:72px!important}
 }
+
+
+/* ===== v14.1 Dashboard Click Hotfix ===== */
+.loader-overlay:not(.active){
+  display:none!important;
+  pointer-events:none!important;
+}
+.loader-overlay.active{
+  pointer-events:auto!important;
+}
+.version-badge{
+  pointer-events:none!important;
+}
+.sidebar-pro,
+.portal-main,
+.side-nav button,
+.module-card,
+.private-cat-card,
+.post-item,
+.primary-btn,
+.mini-btn,
+.action-btn{
+  pointer-events:auto!important;
+}
