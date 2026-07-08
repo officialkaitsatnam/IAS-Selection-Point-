@@ -716,3 +716,174 @@ function openDashSection(id,btn){
   if(id==='notes') loadNotes();
   if(id==='bookmarks') loadBookmarks();
 }
+
+
+/* ===== v11 Blogger Feed Fix: exact + fallback + case-insensitive matching ===== */
+
+const ISP_LABEL_ALIASES = {
+  "CURRENT AFFAIRS": ["CURRENT AFFAIRS", "Current Affairs", "current affairs"],
+  "CURRENT CONTENT": ["CURRENT CONTENT", "Current Content", "current content"],
+  "ESSAY": ["ESSAY", "Essay", "essay"],
+  "GENERAL KNOWLEDGE": ["GENERAL KNOWLEDGE", "General Knowledge", "general knowledge"],
+  "GENERAL KNOWLEDGE(GK)": ["GENERAL KNOWLEDGE(GK)", "GENERAL KNOWLEDGE (GK)", "General Knowledge(GK)", "General Knowledge (GK)", "GK", "G K"],
+  "GS PAPER-I": ["GS PAPER-I", "GS PAPER I", "GS PAPER-1", "GS PAPER 1", "Gs Paper-I", "GS Paper-I"],
+  "GS PAPER-II": ["GS PAPER-II", "GS PAPER II", "GS PAPER-2", "GS PAPER 2", "Gs Paper-II", "GS Paper-II"],
+  "GS PAPER-III": ["GS PAPER-III", "GS PAPER III", "GS PAPER-3", "GS PAPER 3", "Gs Paper-III", "GS Paper-III"],
+  "GS PAPER-IV": ["GS PAPER-IV", "GS PAPER IV", "GS PAPER-4", "GS PAPER 4", "Gs Paper-IV", "GS Paper-IV"],
+  "NEWS ARTICLE": ["NEWS ARTICLE", "News Article", "news article"],
+  "NEWS CUTTING": ["NEWS CUTTING", "NEWS CUTING", "News Cutting", "News cuting", "news cutting", "news cuting"],
+  "COMPARATIVE POLITICS": ["COMPARATIVE POLITICS", "Comparative Politics", "Comparative politics"],
+  "POLITICAL SCIENCE": ["POLITICAL SCIENCE", "Political Science", "political science"],
+  "POLITICAL THEORY": ["POLITICAL THEORY", "Political Theory", "political theory"],
+  "INDIAN GOVT & POLITICS": ["INDIAN GOVT & POLITICS", "Indian Govt & Politics", "Indian Govt and Politics", "INDIAN GOVT AND POLITICS", "Indian Government and Politics"],
+  "INDIAN POLITICAL THOUGHT": ["INDIAN POLITICAL THOUGHT", "Indian Political Thought", "Indian political thought"],
+  "INDIA'S FOREIGN POLICY": ["INDIA'S FOREIGN POLICY", "India's Foreign Policy", "INDIAS FOREIGN POLICY", "Indias Foreign Policy"],
+  "INTERNATIONAL RELATIONS": ["INTERNATIONAL RELATIONS", "International Relations", "international relations"],
+  "INTERNATIONAL LAW": ["INTERNATIONAL LAW", "International Law", "international law"],
+  "INTERNATIONAL ORGANISATIONS & GLOBAL ORDER": ["INTERNATIONAL ORGANISATIONS & GLOBAL ORDER", "International Organisations & Global Order", "International Organizations & Global Order", "INTERNATIONAL ORGANISATIONS AND GLOBAL ORDER", "International Organisations and Global Order"],
+  "PUBLIC ADMINISTRATION": ["PUBLIC ADMINISTRATION", "Public Administration", "public administration"],
+  "RESEARCH METHODOLOGY": ["RESEARCH METHODOLOGY", "Research Methodology", "research methodology"],
+  "PAPER-I(OPT.)": ["PAPER-I(OPT.)", "PAPER-I (OPT.)", "PAPER-I(OPTIONAL)", "Paper-I(Opt.)", "Paper-I (Optional)", "PAPER-I"],
+  "PAPER-II(OPT.)": ["PAPER-II(OPT.)", "PAPER-II (OPT.)", "PAPER-II(OPTIONAL)", "Paper-II(Opt.)", "Paper-II (Optional)", "PAPER-II"]
+};
+
+function normalizeLabelValue(v){
+  return String(v || "")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/\(opt\.\)/g, "optional")
+    .replace(/\(opt\)/g, "optional")
+    .replace(/\./g, "")
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function aliasesFor(label){
+  const arr = ISP_LABEL_ALIASES[label] || [label];
+  return [...new Set([...arr, label])];
+}
+
+function entryLabels(entry){
+  return (entry.category || []).map(c => c.term || "").filter(Boolean);
+}
+
+function entryMatchesLabel(entry, targetLabel){
+  const labels = entryLabels(entry);
+  const normalizedEntryLabels = labels.map(normalizeLabelValue);
+  const aliasList = aliasesFor(targetLabel).map(normalizeLabelValue);
+
+  return aliasList.some(alias => normalizedEntryLabels.includes(alias));
+}
+
+function bloggerAllPostsJsonp(max=200){
+  return new Promise((resolve, reject) => {
+    const cb = "ispAllFeed_" + Date.now() + "_" + Math.floor(Math.random()*9999);
+    const script = document.createElement("script");
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("All posts feed timeout. Try again."));
+    }, 12000);
+
+    window[cb] = function(data){
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
+
+    function cleanup(){
+      try{ delete window[cb]; }catch(e){ window[cb] = undefined; }
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    script.onerror = function(){
+      clearTimeout(timer);
+      cleanup();
+      reject(new Error("All posts feed not loaded."));
+    };
+
+    script.src = `${ISP_BLOG}/feeds/posts/default?alt=json-in-script&max-results=${max}&callback=${cb}`;
+    document.body.appendChild(script);
+  });
+}
+
+function allFeedLabels(entries){
+  const set = new Set();
+  entries.forEach(e => entryLabels(e).forEach(l => set.add(l)));
+  return Array.from(set).sort();
+}
+
+async function fetchPostsForLabel(label, max=35){
+  // First try exact label feed, then fallback to all-posts filtering.
+  let exactEntries = [];
+  try{
+    const exact = await bloggerFeedJsonp(label, max);
+    exactEntries = exact.feed?.entry || [];
+    if(exactEntries.length){
+      return {entries: exactEntries, source: "exact", allLabels: []};
+    }
+  }catch(e){}
+
+  // Try aliases as exact feeds
+  for(const alias of aliasesFor(label)){
+    if(alias === label) continue;
+    try{
+      const data = await bloggerFeedJsonp(alias, max);
+      const entries = data.feed?.entry || [];
+      if(entries.length){
+        return {entries, source: "alias: " + alias, allLabels: []};
+      }
+    }catch(e){}
+  }
+
+  // Fallback: load all posts and filter by category labels case-insensitively
+  const all = await bloggerAllPostsJsonp(200);
+  const allEntries = all.feed?.entry || [];
+  const filtered = allEntries.filter(e => entryMatchesLabel(e, label)).slice(0, max);
+  return {entries: filtered, source: "all-filter", allLabels: allFeedLabels(allEntries)};
+}
+
+/* Override v10 category loader with robust v11 loader */
+loadLearningCategory = async function(moduleKey, label, title, moduleName){
+  ISP_CURRENT_CATEGORY = title;
+  ISP_ACTIVE_MODULE = moduleKey;
+  showLoader("Loading articles...", title);
+
+  const titleId = moduleKey === 'upsc' ? 'upscPostTitle' : 'psirPostTitle';
+  if(qs(titleId)) qs(titleId).textContent = title;
+
+  const listId = moduleKey === 'upsc' ? 'upscPostList' : 'psirPostList';
+  setLearningListHtml(listId, "<p class='muted'>Articles loading...</p>");
+
+  try{
+    const result = await fetchPostsForLabel(label, 35);
+    ISP_LOADED_POSTS = result.entries.map(entryToPost).map(p => ({...p, moduleName, categoryTitle:title}));
+
+    if(!ISP_LOADED_POSTS.length){
+      const labelPreview = result.allLabels && result.allLabels.length
+        ? `<div class="feed-debug"><b>No exact posts found.</b><br>Available labels found on website:<br>${result.allLabels.slice(0,60).map(escapeHtml).join(", ")}</div>`
+        : "";
+      setLearningListHtml(listId, `<p class="muted">No articles found for: <b>${escapeHtml(title)}</b></p>${labelPreview}`);
+    }else{
+      renderLearningPosts(ISP_LOADED_POSTS, listId);
+    }
+  }catch(err){
+    setLearningListHtml(listId, `<p class="muted">Unable to load articles.</p><div class="feed-debug">${escapeHtml(err.message)}</div>`);
+  }
+
+  hideLoader();
+};
+
+/* Override v10 post render to show feed source safe */
+renderLearningPosts = function(posts, listId){
+  const html = posts.map((p, i) => `
+    <div class="post-item" onclick="openPostReader(${i})">
+      <span class="module-tag">${escapeHtml(p.moduleName || '')}</span>
+      <h4>${escapeHtml(p.title)}</h4>
+      <p>${escapeHtml(p.plain)}...</p>
+      <span class="post-meta">${escapeHtml(p.categoryTitle || ISP_CURRENT_CATEGORY)} ${p.published ? "· " + escapeHtml(p.published) : ""} · Read Article</span>
+    </div>
+  `).join('');
+  setLearningListHtml(listId, html);
+};

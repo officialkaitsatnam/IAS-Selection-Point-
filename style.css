@@ -640,3 +640,18 @@ body{
 .private-cat-card:hover{transform:translateY(-2px);border-color:#0b5ed7;box-shadow:0 13px 30px rgba(16,35,63,.11)}
 .private-cat-card span{font-size:25px}.private-cat-card b{display:block;margin-top:10px;color:#10233f}.private-cat-card small{display:block;margin-top:5px;color:#5a6b82}
 @media(max-width:850px){.reader-controls button:nth-child(4){display:none}.private-cat-grid{grid-template-columns:1fr}}
+
+
+/* ===== v11 Feed Fix ===== */
+.feed-debug{
+  margin-top:12px;
+  padding:12px;
+  border-radius:12px;
+  background:#fff8e1;
+  color:#795548;
+  border:1px solid #ffe0a3;
+  font-size:13px;
+}
+.feed-debug b{
+  color:#10233f;
+}
