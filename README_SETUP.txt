@@ -38,3 +38,12 @@ Password: Admin@123
 
 Important:
 Login once, then change password using forgot password OTP.
+
+
+FIXED v2:
+config.js me Apps Script Web App URL set kar diya gaya hai:
+
+https://script.google.com/macros/s/AKfycbx1Y4NvVZRoJy_ftslIsT52k6rSSbnJqMGcrbUM91bmcGZKgsPR8C1MmtBnJj055KOw/exec
+
+GitHub me sabse pehle config.js replace karo.
+Agar ab bhi login na ho to Code.gs bhi Apps Script me replace karke Deploy > Manage deployments > Edit > New version > Deploy karo.
