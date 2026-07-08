@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v6 Dashboard Ready</div>
+  <div class="version-badge">v7 Pro Member UI</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -16,95 +16,109 @@
     </div>
   </div>
 
-  <header class="topbar">
-    <img src="logo.jpg" class="top-logo" alt="Logo" />
-    <div>
-      <h1>IAS Selection Point</h1>
-      <p>Member Dashboard</p>
-    </div>
-    <button onclick="logout()">Logout</button>
-  </header>
-
-  <main class="dashboard">
-    <section class="panel hero-panel">
-      <h2>Welcome, <span id="memberName">Member</span> 👋</h2>
-      <p>Email: <span id="memberEmail"></span></p>
-      <p>Status: <span id="memberStatus"></span></p>
-    </section>
-
-    <section class="dash-menu">
-      <button class="dash-btn active" onclick="openDashSection('overview', this)">🏠 Overview</button>
-      <button class="dash-btn" onclick="openDashSection('profile', this)">👤 Profile</button>
-      <button class="dash-btn" onclick="openDashSection('notes', this)">📝 Notes</button>
-      <button class="dash-btn" onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
-      <button class="dash-btn" onclick="openDashSection('security', this)">🔐 Security</button>
-    </section>
-
-    <section id="overview" class="dash-section active">
-      <div class="grid">
-        <div class="tile" onclick="openDashSection('notes')">📝 My Notes<br><small>Create study notes</small></div>
-        <div class="tile" onclick="openDashSection('bookmarks')">🔖 Bookmarks<br><small>Save important links</small></div>
-        <div class="tile">🔔 Notifications<br><small id="noticeText">No new notification</small></div>
-        <div class="tile">📚 Study Material<br><small>Quick access below</small></div>
-      </div>
-
-      <div class="panel">
-        <h3>📚 Quick Study Links</h3>
-        <div class="link-grid">
-          <a href="https://iasselectionpoint.blogspot.com/search/label/Current%20Affairs" target="_blank">Current Affairs</a>
-          <a href="https://iasselectionpoint.blogspot.com/search/label/GK" target="_blank">GK</a>
-          <a href="https://iasselectionpoint.blogspot.com/search/label/Political%20Science" target="_blank">Political Science</a>
-          <a href="https://iasselectionpoint.blogspot.com/" target="_blank">Main Website</a>
+  <div class="portal-shell">
+    <aside class="sidebar-pro">
+      <div class="side-brand">
+        <img src="logo.jpg" alt="Logo" />
+        <div>
+          <h2>IAS Selection</h2>
+          <p>Member Portal</p>
         </div>
       </div>
-    </section>
 
-    <section id="profile" class="dash-section">
-      <div class="panel">
-        <h3>👤 My Profile</h3>
-        <div class="form-grid">
-          <input id="profileName" placeholder="Full name" />
-          <input id="profileMobile" placeholder="Mobile number" />
-          <input id="profileCity" placeholder="City" />
-          <input id="profileExam" placeholder="Preparing for exam" />
+      <nav class="side-nav">
+        <button class="active" onclick="openDashSection('overview', this)">🏠 Overview</button>
+        <button onclick="openDashSection('profile', this)">👤 Profile</button>
+        <button onclick="openDashSection('notes', this)">📝 Notes</button>
+        <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
+        <button onclick="openDashSection('security', this)">🔐 Security</button>
+      </nav>
+
+      <button class="side-logout" onclick="logout()">Logout</button>
+    </aside>
+
+    <main class="portal-main">
+      <header class="portal-header">
+        <div>
+          <h1>Welcome, <span id="memberName">Member</span> 👋</h1>
+          <p><span id="memberEmail"></span> · <span id="memberStatus"></span></p>
         </div>
-        <button class="primary-btn" onclick="saveProfile()">Save Profile</button>
-        <p id="profileMsg" class="small-msg"></p>
-      </div>
-    </section>
+        <div class="admin-chip">Study Member</div>
+      </header>
 
-    <section id="notes" class="dash-section">
-      <div class="panel">
-        <h3>📝 My Notes</h3>
-        <input id="noteTitle" placeholder="Note title" />
-        <textarea id="noteBody" placeholder="Write your study note..."></textarea>
-        <button class="primary-btn" onclick="addNote()">Add Note</button>
-        <div id="notesList" class="list-box"></div>
-      </div>
-    </section>
+      <section id="overview" class="dash-section active">
+        <div class="stats-grid-pro">
+          <div class="stat-card blue"><span>📝</span><h3 id="notesCount">0</h3><p>Notes</p></div>
+          <div class="stat-card green"><span>🔖</span><h3 id="bookmarkCount">0</h3><p>Bookmarks</p></div>
+          <div class="stat-card purple"><span>📚</span><h3>4</h3><p>Study Links</p></div>
+          <div class="stat-card orange"><span>🔔</span><h3>0</h3><p>Notifications</p></div>
+        </div>
 
-    <section id="bookmarks" class="dash-section">
-      <div class="panel">
-        <h3>🔖 My Bookmarks</h3>
-        <input id="bookmarkTitle" placeholder="Bookmark title" />
-        <input id="bookmarkUrl" placeholder="Post URL" />
-        <button class="primary-btn" onclick="addBookmark()">Save Bookmark</button>
-        <div id="bookmarksList" class="list-box"></div>
-      </div>
-    </section>
+        <div class="two-col">
+          <div class="pro-panel">
+            <h3>📚 Quick Study Links</h3>
+            <div class="link-grid">
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Current%20Affairs" target="_blank">Current Affairs</a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/GK" target="_blank">GK</a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Political%20Science" target="_blank">Political Science</a>
+              <a href="https://iasselectionpoint.blogspot.com/" target="_blank">Main Website</a>
+            </div>
+          </div>
 
-    <section id="security" class="dash-section">
-      <div class="panel">
-        <h3>🔐 Change Password</h3>
-        <input id="oldPassword" type="password" placeholder="Old password" />
-        <input id="newPassword" type="password" placeholder="New password" />
-        <button class="primary-btn" onclick="changePassword()">Change Password</button>
-        <p id="securityMsg" class="small-msg"></p>
-      </div>
-    </section>
-  </main>
+          <div class="pro-panel">
+            <h3>🔔 Latest Notice</h3>
+            <div id="memberNotice">No notice available.</div>
+          </div>
+        </div>
+      </section>
 
-  <script src="config.js?v=6"></script>
-  <script src="app.js?v=6"></script>
+      <section id="profile" class="dash-section">
+        <div class="pro-panel">
+          <h3>👤 My Profile</h3>
+          <div class="form-grid">
+            <input id="profileName" placeholder="Full name" />
+            <input id="profileMobile" placeholder="Mobile number" />
+            <input id="profileCity" placeholder="City" />
+            <input id="profileExam" placeholder="Preparing for exam" />
+          </div>
+          <button class="primary-btn" onclick="saveProfile()">Save Profile</button>
+          <p id="profileMsg" class="small-msg"></p>
+        </div>
+      </section>
+
+      <section id="notes" class="dash-section">
+        <div class="pro-panel">
+          <h3>📝 My Notes</h3>
+          <input id="noteTitle" placeholder="Note title" />
+          <textarea id="noteBody" placeholder="Write your study note..."></textarea>
+          <button class="primary-btn" onclick="addNote()">Add Note</button>
+          <div id="notesList" class="list-box"></div>
+        </div>
+      </section>
+
+      <section id="bookmarks" class="dash-section">
+        <div class="pro-panel">
+          <h3>🔖 My Bookmarks</h3>
+          <input id="bookmarkTitle" placeholder="Bookmark title" />
+          <input id="bookmarkUrl" placeholder="Post URL" />
+          <button class="primary-btn" onclick="addBookmark()">Save Bookmark</button>
+          <div id="bookmarksList" class="list-box"></div>
+        </div>
+      </section>
+
+      <section id="security" class="dash-section">
+        <div class="pro-panel">
+          <h3>🔐 Change Password</h3>
+          <input id="oldPassword" type="password" placeholder="Old password" />
+          <input id="newPassword" type="password" placeholder="New password" />
+          <button class="primary-btn" onclick="changePassword()">Change Password</button>
+          <p id="securityMsg" class="small-msg"></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="config.js?v=7"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

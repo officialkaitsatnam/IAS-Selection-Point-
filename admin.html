@@ -4,33 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v6 Dashboard Ready</div>
-  <div id="loaderOverlay" class="loader-overlay"><div class="loader-box"><div class="spinner"></div><h3 id="loaderTitle">Loading...</h3><p id="loaderText">Please wait</p></div></div>
-  <header class="topbar">
-    <img src="logo.jpg" class="top-logo" alt="Logo" />
-    <div>
-      <h1>Admin Panel</h1>
-      <p>IAS Selection Point</p>
+  <div class="version-badge">v7 Pro Admin UI</div>
+  <div id="loaderOverlay" class="loader-overlay">
+    <div class="loader-box">
+      <div class="spinner"></div>
+      <h3 id="loaderTitle">Loading...</h3>
+      <p id="loaderText">Please wait</p>
     </div>
-    <button onclick="logout()">Logout</button>
-  </header>
+  </div>
 
-  <main class="dashboard">
-    <section class="panel">
-      <h2>Admin Dashboard</h2>
-      <p>Total Users: <b id="totalUsers">0</b></p>
-      <p>Active Users: <b id="activeUsers">0</b></p>
-    </section>
-    <section class="panel">
-      <h3>Users</h3>
-      <div id="usersList"></div>
-    </section>
-  </main>
+  <div class="portal-shell">
+    <aside class="sidebar-pro">
+      <div class="side-brand">
+        <img src="logo.jpg" alt="Logo" />
+        <div>
+          <h2>IAS Selection</h2>
+          <p>Admin Portal</p>
+        </div>
+      </div>
 
-  <script src="config.js?v=6"></script>
-  <script src="app.js?v=6"></script>
+      <nav class="side-nav">
+        <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
+        <button onclick="openAdminSection('adminUsers', this)">👥 Users</button>
+        <button onclick="openAdminSection('adminLogs', this)">📜 Login Logs</button>
+        <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
+        <button onclick="location.href='dashboard.html'">👤 Member View</button>
+      </nav>
+
+      <button class="side-logout" onclick="logout()">Logout</button>
+    </aside>
+
+    <main class="portal-main">
+      <header class="portal-header">
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p>Manage IAS Selection Point members</p>
+        </div>
+        <div class="admin-chip">Admin: <b id="adminEmail">Loading...</b></div>
+      </header>
+
+      <section id="adminOverview" class="admin-section active">
+        <div class="stats-grid-pro">
+          <div class="stat-card blue"><span>👥</span><h3 id="totalUsers">0</h3><p>Total Users</p></div>
+          <div class="stat-card green"><span>✅</span><h3 id="activeUsers">0</h3><p>Active Users</p></div>
+          <div class="stat-card purple"><span>🛡️</span><h3 id="adminCount">1</h3><p>Admins</p></div>
+          <div class="stat-card orange"><span>🕒</span><h3 id="todayLogins">0</h3><p>Today Logins</p></div>
+        </div>
+
+        <div class="two-col">
+          <div class="pro-panel">
+            <h3>🚀 Quick Actions</h3>
+            <div class="quick-actions">
+              <button onclick="openAdminSection('adminUsers')">Search Users</button>
+              <button onclick="openAdminSection('adminNotice')">Create Notice</button>
+              <button onclick="downloadUsersCSV()">Download Users CSV</button>
+              <button onclick="location.href='https://iasselectionpoint.blogspot.com/'">Open Website</button>
+            </div>
+          </div>
+
+          <div class="pro-panel">
+            <h3>🆕 Recent Members</h3>
+            <div id="recentUsers">Loading...</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="adminUsers" class="admin-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <h3>👥 User Management</h3>
+            <input id="userSearch" oninput="filterUsers()" placeholder="Search by name or email..." />
+          </div>
+          <div class="table-wrap">
+            <table class="pro-table">
+              <thead>
+                <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr>
+              </thead>
+              <tbody id="usersTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="adminLogs" class="admin-section">
+        <div class="pro-panel">
+          <h3>📜 Login Logs</h3>
+          <p class="muted">Login logs Google Sheet me save ho rahe hain. Next update me yahan live logs table add karenge.</p>
+        </div>
+      </section>
+
+      <section id="adminNotice" class="admin-section">
+        <div class="pro-panel">
+          <h3>🔔 Notice / Announcement</h3>
+          <input id="noticeTitle" placeholder="Notice title" />
+          <textarea id="noticeBody" placeholder="Write announcement for members..."></textarea>
+          <button class="primary-btn" onclick="saveLocalNotice()">Save Notice</button>
+          <p id="noticeMsg" class="small-msg"></p>
+          <div id="noticePreview" class="notice-preview"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="config.js?v=7"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

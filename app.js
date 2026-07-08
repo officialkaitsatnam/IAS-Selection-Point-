@@ -192,3 +192,142 @@ async function loadAdmin(){
 function logout(){showLoader('Logging out...','Please wait');localStorage.removeItem('isp_session');localStorage.removeItem('isp_user');setTimeout(()=>location.href='index.html',300)}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function escapeAttr(s){return String(s||'').replace(/"/g,'%22').replace(/javascript:/gi,'')}
+
+
+/* ===== v7 Pro Admin/Member UI Helpers ===== */
+let ISP_ADMIN_USERS = [];
+
+function openAdminSection(id, btn){
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.side-nav button').forEach(b=>b.classList.remove('active'));
+  if(qs(id)) qs(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+async function loadAdmin(){
+  showLoader('Opening admin panel...','Loading users and stats');
+  const u=currentUser();
+  if(!u.email||u.role!=='Admin'){location.href='index.html';return}
+  if(qs('adminEmail')) qs('adminEmail').textContent=u.email;
+
+  const r=await api('adminStats',{token:token()});
+  hideLoader();
+  if(r.success){
+    ISP_ADMIN_USERS = r.users || [];
+    if(qs('totalUsers')) qs('totalUsers').textContent=r.totalUsers;
+    if(qs('activeUsers')) qs('activeUsers').textContent=r.activeUsers;
+    if(qs('adminCount')) qs('adminCount').textContent=ISP_ADMIN_USERS.filter(x=>x.role==='Admin').length || 1;
+    if(qs('todayLogins')) qs('todayLogins').textContent=r.todayLogins || 0;
+    renderUsersTable(ISP_ADMIN_USERS);
+    renderRecentUsers(ISP_ADMIN_USERS);
+  }else alert(r.message);
+}
+
+function renderUsersTable(users){
+  const tbody = qs('usersTable');
+  if(!tbody) return;
+  tbody.innerHTML = users.map(x=>`
+    <tr>
+      <td><b>${escapeHtml(x.name)}</b></td>
+      <td>${escapeHtml(x.email)}</td>
+      <td><span class="role-pill">${escapeHtml(x.role)}</span></td>
+      <td><span class="status-pill">${escapeHtml(x.status)}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderRecentUsers(users){
+  const box = qs('recentUsers');
+  if(!box) return;
+  const list = users.slice(-5).reverse();
+  box.innerHTML = list.map(x=>`
+    <div class="user-row">
+      <b>${escapeHtml(x.name)}</b><br>
+      ${escapeHtml(x.email)} · ${escapeHtml(x.role)} · ${escapeHtml(x.status)}
+    </div>
+  `).join('');
+}
+
+function filterUsers(){
+  const q = (qs('userSearch')?.value || '').toLowerCase();
+  const filtered = ISP_ADMIN_USERS.filter(x =>
+    String(x.name).toLowerCase().includes(q) || String(x.email).toLowerCase().includes(q)
+  );
+  renderUsersTable(filtered);
+}
+
+function downloadUsersCSV(){
+  if(!ISP_ADMIN_USERS.length){alert('No users found');return}
+  const rows = [['Name','Email','Role','Status'], ...ISP_ADMIN_USERS.map(u=>[u.name,u.email,u.role,u.status])];
+  const csv = rows.map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ias-selection-point-users.csv';
+  a.click();
+}
+
+function saveLocalNotice(){
+  const title = qs('noticeTitle')?.value.trim();
+  const body = qs('noticeBody')?.value.trim();
+  if(!title || !body){showSmall('noticeMsg','Title aur notice body likho',false);return}
+  const notice = {title, body, date:new Date().toLocaleString()};
+  localStorage.setItem('isp_latest_notice', JSON.stringify(notice));
+  showSmall('noticeMsg','Notice saved successfully',true);
+  renderNoticePreview();
+}
+
+function renderNoticePreview(){
+  const box = qs('noticePreview');
+  if(!box) return;
+  const n = JSON.parse(localStorage.getItem('isp_latest_notice') || 'null');
+  if(!n){box.innerHTML='<p class="muted">No notice saved.</p>';return}
+  box.innerHTML = `<h4>${escapeHtml(n.title)}</h4><p>${escapeHtml(n.body)}</p><small>${escapeHtml(n.date)}</small>`;
+}
+
+function loadMemberNotice(){
+  const box = qs('memberNotice');
+  if(!box) return;
+  const n = JSON.parse(localStorage.getItem('isp_latest_notice') || 'null');
+  if(!n){box.innerHTML='No notice available.';return}
+  box.innerHTML = `<b>${escapeHtml(n.title)}</b><p>${escapeHtml(n.body)}</p><small>${escapeHtml(n.date)}</small>`;
+}
+
+/* enhance existing dashboard loaders */
+const ISP_OLD_LOAD_DASHBOARD = typeof loadDashboard === 'function' ? loadDashboard : null;
+loadDashboard = async function(){
+  showLoader('Opening dashboard...','Loading member details');
+  const u=currentUser();
+  if(!u.email){location.href='index.html';return}
+  if(qs('memberName')) qs('memberName').textContent=u.name||'Member';
+  if(qs('memberEmail')) qs('memberEmail').textContent=u.email||'';
+  if(qs('memberStatus')) qs('memberStatus').textContent=u.status||'Active';
+
+  const r=await api('getProfile',{token:token()});
+  if(r.success){
+    if(qs('profileName')) qs('profileName').value=r.profile.name||u.name||'';
+    if(qs('profileMobile')) qs('profileMobile').value=r.profile.mobile||'';
+    if(qs('profileCity')) qs('profileCity').value=r.profile.city||'';
+    if(qs('profileExam')) qs('profileExam').value=r.profile.exam||'';
+  }
+  await loadNotes();
+  loadBookmarks();
+  loadMemberNotice();
+  const notesBox = qs('notesList');
+  if(qs('bookmarkCount')){
+    const arr=JSON.parse(localStorage.getItem('isp_bookmarks_'+u.email)||'[]');
+    qs('bookmarkCount').textContent=arr.length;
+  }
+  setTimeout(hideLoader,350);
+}
+
+const ISP_OLD_LOAD_BOOKMARKS = typeof loadBookmarks === 'function' ? loadBookmarks : null;
+loadBookmarks = function(){
+  const box=qs('bookmarksList');
+  const u=currentUser().email;
+  const arr=JSON.parse(localStorage.getItem('isp_bookmarks_'+u)||'[]');
+  if(qs('bookmarkCount')) qs('bookmarkCount').textContent=arr.length;
+  if(!box)return;
+  if(!arr.length){box.innerHTML='<p>No bookmarks yet.</p>';return}
+  box.innerHTML=arr.map(b=>`<div class="bookmark-card"><h4>${escapeHtml(b.title)}</h4><p>${escapeHtml(b.url)}</p><a class="mini-btn" target="_blank" href="${escapeAttr(b.url)}">Open</a> <button class="mini-btn danger-btn" onclick="deleteBookmark(${b.id})">Delete</button></div>`).join('');
+}
