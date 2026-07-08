@@ -1,2 +1,2 @@
-// Paste Apps Script Web App URL after deployment
-const API_URL = "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE";
+// IAS Selection Point API Configuration
+const API_URL = "https://script.google.com/macros/s/AKfycbx1Y4NvVZRoJy_ftslIsT52k6rSSbnJqMGcrbUM91bmcGZKgsPR8C1MmtBnJj055KOw/exec";
