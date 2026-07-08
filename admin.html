@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=13" />
+  <link rel="stylesheet" href="style.css?v=14" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v13 Modules + Speed</div>
+  <div class="version-badge">v14 Enterprise Upgrade</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -18,7 +18,7 @@
 
   <div class="portal-shell">
     <aside class="sidebar-pro">
-      <div class="side-brand">
+      <div class="side-brand big-brand">
         <img src="logo.jpg" alt="Logo" />
         <div>
           <h2>IAS Selection Point</h2>
@@ -28,8 +28,8 @@
 
       <nav class="side-nav">
         <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
-        <button onclick="openAdminSection('adminUsers', this)">👥 Users</button>
-        <button onclick="openAdminSection('adminLogs', this)">📜 Login Logs</button>
+        <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
+        <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
         <button onclick="location.href='dashboard.html'">👤 Member View</button>
       </nav>
@@ -41,7 +41,7 @@
       <header class="portal-header">
         <div>
           <h1>Admin Dashboard</h1>
-          <p>Manage IAS Selection Point members</p>
+          <p>Manage users, access, announcements and portal controls</p>
         </div>
         <div class="admin-chip">Admin: <b id="adminEmail">Loading...</b></div>
       </header>
@@ -50,21 +50,20 @@
         <div class="stats-grid-pro">
           <div class="stat-card blue"><span>👥</span><h3 id="totalUsers">0</h3><p>Total Users</p></div>
           <div class="stat-card green"><span>✅</span><h3 id="activeUsers">0</h3><p>Active Users</p></div>
+          <div class="stat-card orange"><span>⛔</span><h3 id="blockedUsers">0</h3><p>Blocked Users</p></div>
           <div class="stat-card purple"><span>🛡️</span><h3 id="adminCount">1</h3><p>Admins</p></div>
-          <div class="stat-card orange"><span>🕒</span><h3 id="todayLogins">0</h3><p>Today Logins</p></div>
         </div>
 
         <div class="two-col">
           <div class="pro-panel">
-            <h3>🚀 Quick Actions</h3>
+            <h3>⚡ Quick Actions</h3>
             <div class="quick-actions">
-              <button onclick="openAdminSection('adminUsers')">Search Users</button>
-              <button onclick="openAdminSection('adminNotice')">Create Notice</button>
+              <button onclick="openAdminSection('adminUsers')">Manage Users</button>
               <button onclick="downloadUsersCSV()">Download Users CSV</button>
+              <button onclick="loadAdmin()">Refresh Data</button>
               <button onclick="location.href='https://iasselectionpoint.blogspot.com/'">Open Website</button>
             </div>
           </div>
-
           <div class="pro-panel">
             <h3>🆕 Recent Members</h3>
             <div id="recentUsers">Loading...</div>
@@ -75,13 +74,18 @@
       <section id="adminUsers" class="admin-section">
         <div class="pro-panel">
           <div class="panel-head">
-            <h3>👥 User Management</h3>
-            <input id="userSearch" oninput="filterUsers()" placeholder="Search by name or email..." />
+            <div>
+              <h3>👥 User Control</h3>
+              <p class="muted">Activate, block or delete member accounts.</p>
+            </div>
+            <input id="userSearch" oninput="filterUsers()" placeholder="Search by name, email or status..." />
           </div>
           <div class="table-wrap">
             <table class="pro-table">
               <thead>
-                <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr>
+                <tr>
+                  <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
+                </tr>
               </thead>
               <tbody id="usersTable"></tbody>
             </table>
@@ -91,8 +95,8 @@
 
       <section id="adminLogs" class="admin-section">
         <div class="pro-panel">
-          <h3>📜 Login Logs</h3>
-          <p class="muted">Login logs Google Sheet me save ho rahe hain. Next update me yahan live logs table add karenge.</p>
+          <h3>📜 Admin Logs</h3>
+          <div id="adminLogsList" class="post-list"><p class="muted">Recent admin actions will appear here after actions are performed.</p></div>
         </div>
       </section>
 
@@ -109,7 +113,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=13"></script>
-  <script src="app.js?v=13"></script>
+  <script src="config.js?v=14"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>

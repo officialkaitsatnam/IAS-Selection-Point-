@@ -795,3 +795,42 @@ body{
 @media(max-width:1000px){
   .three-col{grid-template-columns:1fr}
 }
+
+
+/* ===== v14 Admin + Enterprise UI Upgrade ===== */
+.big-brand img{
+  width:86px!important;
+  height:86px!important;
+  border-radius:22px!important;
+}
+.big-brand h2{
+  font-size:18px!important;
+  line-height:1.15!important;
+}
+.sidebar-pro{
+  width:300px;
+}
+.action-btns{display:flex;gap:8px;flex-wrap:wrap}
+.action-btn{border:0;padding:8px 10px;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer}
+.activate-btn{background:#e8fff0;color:#137333}
+.block-btn{background:#fff4e5;color:#a15c00}
+.delete-btn{background:#ffe5e5;color:#b00020}
+.disabled-btn,.action-btn:disabled{background:#edf2f7;color:#64748b;cursor:not-allowed}
+.status-pill.blocked{background:#ffe5e5;color:#b00020}
+.status-pill.deleted{background:#f1f5f9;color:#64748b}
+.status-pill.pending{background:#fff4e5;color:#a15c00}
+.role-pill.admin{background:#fff0d6;color:#805b00}
+.role-pill.member{background:#eef6ff;color:#0b5ed7}
+.goal-card{
+  background:linear-gradient(135deg,#0b5ed7,#092a55);
+  color:#fff;
+}
+.goal-card p,.goal-card h3{color:#fff}
+.premium-logo-note{
+  font-size:12px;
+  opacity:.85;
+}
+@media(max-width:850px){
+  .sidebar-pro{width:100%}
+  .big-brand img{width:72px!important;height:72px!important}
+}

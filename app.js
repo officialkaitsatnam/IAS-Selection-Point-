@@ -1233,3 +1233,143 @@ function openDashSection(id,btn){
   if(id==='notes') loadNotes();
   if(id==='bookmarks') loadBookmarks();
 }
+
+
+/* ===== v14 Admin User Control + Enterprise Features ===== */
+let ISP_ADMIN_USERS = [];
+
+async function loadAdmin(){
+  showLoader('Opening admin panel...','Loading users and controls');
+  const u=currentUser();
+  if(!u.email||u.role!=='Admin'){location.href='index.html';return}
+  if(qs('adminEmail')) qs('adminEmail').textContent=u.email;
+
+  const r=await api('adminStats',{token:token()});
+  hideLoader();
+
+  if(r.success){
+    ISP_ADMIN_USERS = r.users || [];
+    if(qs('totalUsers')) qs('totalUsers').textContent=r.totalUsers || 0;
+    if(qs('activeUsers')) qs('activeUsers').textContent=r.activeUsers || 0;
+    if(qs('blockedUsers')) qs('blockedUsers').textContent=ISP_ADMIN_USERS.filter(x => String(x.status).toLowerCase()==='blocked').length;
+    if(qs('adminCount')) qs('adminCount').textContent=ISP_ADMIN_USERS.filter(x => x.role==='Admin').length || 1;
+    renderUsersTable(ISP_ADMIN_USERS);
+    renderRecentUsersV14(ISP_ADMIN_USERS);
+    renderAdminLogsLocal();
+  }else alert(r.message);
+}
+
+function renderUsersTable(users){
+  const tbody = qs('usersTable');
+  if(!tbody) return;
+  tbody.innerHTML = users.map(x=>{
+    const isAdmin = String(x.role).toLowerCase() === 'admin';
+    const status = String(x.status || 'Active');
+    const sc = status.toLowerCase()==='blocked' ? 'blocked' : status.toLowerCase()==='deleted' ? 'deleted' : status.toLowerCase()==='pending' ? 'pending' : '';
+    const rc = isAdmin ? 'admin' : 'member';
+    return `
+      <tr>
+        <td><b>${escapeHtml(x.name || '')}</b></td>
+        <td>${escapeHtml(x.email || '')}</td>
+        <td><span class="role-pill ${rc}">${escapeHtml(x.role || '')}</span></td>
+        <td><span class="status-pill ${sc}">${escapeHtml(status)}</span></td>
+        <td>${escapeHtml(x.lastLogin || '')}</td>
+        <td>
+          <div class="action-btns">
+            <button class="action-btn activate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Active')" ${isAdmin?'disabled':''}>Activate</button>
+            <button class="action-btn block-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Blocked')" ${isAdmin?'disabled':''}>Block</button>
+            <button class="action-btn delete-btn" onclick="adminDeleteUser('${escapeAttr(x.email)}')" ${isAdmin?'disabled':''}>Delete</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function renderRecentUsersV14(users){
+  const box=qs('recentUsers'); if(!box)return;
+  box.innerHTML = users.slice(-5).reverse().map(x=>`<div class="user-row"><b>${escapeHtml(x.name)}</b><br>${escapeHtml(x.email)} · ${escapeHtml(x.role)} · ${escapeHtml(x.status)}</div>`).join('');
+}
+
+function filterUsers(){
+  const q=(qs('userSearch')?.value||'').toLowerCase();
+  renderUsersTable(ISP_ADMIN_USERS.filter(x =>
+    String(x.name||'').toLowerCase().includes(q) ||
+    String(x.email||'').toLowerCase().includes(q) ||
+    String(x.status||'').toLowerCase().includes(q)
+  ));
+}
+
+async function adminUpdateUser(email,status){
+  if(!confirm(`Set ${email} as ${status}?`)) return;
+  showLoader('Updating user...','Please wait');
+  const r=await api('adminUpdateUserStatus',{token:token(),email,status});
+  hideLoader();
+  if(r.success){
+    saveAdminLogLocal(`User ${email} set as ${status}`);
+    toast ? toast(r.message) : alert(r.message);
+    await loadAdmin();
+  }else alert(r.message);
+}
+
+async function adminDeleteUser(email){
+  if(!confirm(`Delete ${email}? This will mark the account as Deleted.`)) return;
+  showLoader('Deleting user...','Please wait');
+  const r=await api('adminDeleteUser',{token:token(),email});
+  hideLoader();
+  if(r.success){
+    saveAdminLogLocal(`User ${email} deleted`);
+    toast ? toast(r.message) : alert(r.message);
+    await loadAdmin();
+  }else alert(r.message);
+}
+
+function saveAdminLogLocal(text){
+  const key='isp_admin_logs';
+  const arr=JSON.parse(localStorage.getItem(key)||'[]');
+  arr.unshift({text,date:new Date().toLocaleString()});
+  localStorage.setItem(key,JSON.stringify(arr.slice(0,20)));
+}
+
+function renderAdminLogsLocal(){
+  const box=qs('adminLogsList'); if(!box)return;
+  const arr=JSON.parse(localStorage.getItem('isp_admin_logs')||'[]');
+  if(!arr.length){box.innerHTML='<p class="muted">No admin action yet.</p>';return}
+  box.innerHTML=arr.map(x=>`<div class="post-item"><h4>${escapeHtml(x.text)}</h4><span class="post-meta">${escapeHtml(x.date)}</span></div>`).join('');
+}
+
+function downloadUsersCSV(){
+  if(!ISP_ADMIN_USERS.length){alert('No users found');return}
+  const rows=[['Name','Email','Role','Status','Last Login'],...ISP_ADMIN_USERS.map(u=>[u.name,u.email,u.role,u.status,u.lastLogin||''])];
+  const csv=rows.map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ias-selection-point-users.csv';
+  a.click();
+}
+
+function openAdminSection(id,btn){
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.side-nav button').forEach(b=>b.classList.remove('active'));
+  if(qs(id)) qs(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='adminLogs') renderAdminLogsLocal();
+}
+
+function setStudyGoal(){
+  const current = localStorage.getItem('isp_study_goal') || 'Read 2 articles today and revise your notes.';
+  const goal = prompt('Set your study goal:', current);
+  if(goal){
+    localStorage.setItem('isp_study_goal', goal);
+    if(qs('studyGoalBox')) qs('studyGoalBox').textContent = goal;
+    toast ? toast('Study goal saved') : alert('Study goal saved');
+  }
+}
+
+const ISP_V14_OLD_LOAD_DASHBOARD = typeof loadDashboard === 'function' ? loadDashboard : null;
+if(ISP_V14_OLD_LOAD_DASHBOARD){
+  loadDashboard = async function(){
+    await ISP_V14_OLD_LOAD_DASHBOARD();
+    if(qs('studyGoalBox')) qs('studyGoalBox').textContent = localStorage.getItem('isp_study_goal') || 'Read 2 articles today and revise your notes.';
+  }
+}
