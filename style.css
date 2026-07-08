@@ -475,3 +475,145 @@ body{
     grid-template-columns:1fr;
   }
 }
+
+
+/* ===== v9 Private Category Reader ===== */
+.private-cat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
+.private-cat-card{
+  border:1px solid #e2eefc;
+  background:linear-gradient(135deg,#ffffff,#eef6ff);
+  border-radius:18px;
+  padding:17px;
+  cursor:pointer;
+  box-shadow:0 9px 24px rgba(16,35,63,.06);
+  transition:.2s ease;
+}
+.private-cat-card:hover{
+  transform:translateY(-2px);
+  border-color:#0b5ed7;
+  box-shadow:0 13px 30px rgba(16,35,63,.11);
+}
+.private-cat-card span{
+  font-size:25px;
+}
+.private-cat-card b{
+  display:block;
+  margin-top:10px;
+  color:#10233f;
+}
+.private-cat-card small{
+  display:block;
+  margin-top:5px;
+  color:#5a6b82;
+}
+.post-panel{
+  min-height:240px;
+}
+.post-list{
+  display:grid;
+  gap:12px;
+}
+.post-item{
+  border:1px solid #e2eefc;
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(16,35,63,.05);
+}
+.post-item:hover{
+  border-color:#0b5ed7;
+}
+.post-item h4{
+  margin:0 0 8px;
+  color:#10233f;
+}
+.post-item p{
+  margin:0;
+  color:#5a6b82;
+}
+.post-meta{
+  display:block;
+  margin-top:9px;
+  color:#0b5ed7;
+  font-weight:800;
+  font-size:12px;
+}
+.reader-modal{
+  position:fixed;
+  inset:0;
+  background:#f8fbff;
+  z-index:10000;
+  display:none;
+  flex-direction:column;
+}
+.reader-modal.active{
+  display:flex;
+}
+.reader-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  border-bottom:1px solid #e2eefc;
+  padding:12px 16px;
+  box-shadow:0 8px 24px rgba(16,35,63,.08);
+}
+.reader-top h3{
+  flex:1;
+  margin:0;
+  font-size:17px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.reader-top button{
+  border:0;
+  background:#0b5ed7;
+  color:#fff;
+  padding:10px 12px;
+  border-radius:11px;
+  font-weight:900;
+  cursor:pointer;
+}
+.reader-body{
+  max-width:900px;
+  width:100%;
+  margin:0 auto;
+  padding:24px;
+  overflow:auto;
+  line-height:1.75;
+  color:#10233f;
+  background:#fff;
+  flex:1;
+}
+.reader-body img{
+  max-width:100%;
+  height:auto;
+  border-radius:12px;
+}
+.reader-body a{
+  color:#0b5ed7;
+}
+.reader-body h1,.reader-body h2,.reader-body h3{
+  color:#10233f;
+}
+@media(max-width:850px){
+  .private-cat-grid{
+    grid-template-columns:1fr;
+  }
+  .reader-body{
+    padding:16px;
+  }
+  .reader-top h3{
+    font-size:14px;
+  }
+  .reader-top button{
+    padding:9px 10px;
+    font-size:12px;
+  }
+}

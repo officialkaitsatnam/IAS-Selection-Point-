@@ -4,16 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=9" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v8 All Categories</div>
+  <div class="version-badge">v9 Private Reader</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
       <h3 id="loaderTitle">Loading...</h3>
-      <p id="loaderText">Please wait</p>
+      <p id="loaderText">Opening dashboard</p>
     </div>
+  </div>
+
+  <div class="reader-modal" id="readerModal">
+    <div class="reader-top">
+      <button onclick="closeReader()">← Back</button>
+      <h3 id="readerTitle">Post</h3>
+      <button onclick="readerFullScreen()">Full Screen</button>
+    </div>
+    <article id="readerBody" class="reader-body"></article>
   </div>
 
   <div class="portal-shell">
@@ -28,6 +37,7 @@
 
       <nav class="side-nav">
         <button class="active" onclick="openDashSection('overview', this)">🏠 Overview</button>
+        <button onclick="openDashSection('categoryReader', this)">📚 Categories</button>
         <button onclick="openDashSection('profile', this)">👤 Profile</button>
         <button onclick="openDashSection('notes', this)">📝 Notes</button>
         <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
@@ -48,61 +58,43 @@
 
       <section id="overview" class="dash-section active">
         <div class="stats-grid-pro">
-          <div class="stat-card blue"><span>📝</span><h3 id="notesCount">0</h3><p>Notes</p></div>
-          <div class="stat-card green"><span>🔖</span><h3 id="bookmarkCount">0</h3><p>Bookmarks</p></div>
-          <div class="stat-card purple"><span>📚</span><h3>4</h3><p>Study Links</p></div>
-          <div class="stat-card orange"><span>🔔</span><h3>0</h3><p>Notifications</p></div>
+          <div class="stat-card blue"><span>📚</span><h3>13</h3><p>Private Categories</p></div>
+          <div class="stat-card green"><span>📝</span><h3 id="notesCount">0</h3><p>Notes</p></div>
+          <div class="stat-card purple"><span>🔖</span><h3 id="bookmarkCount">0</h3><p>Bookmarks</p></div>
+          <div class="stat-card orange"><span>⚡</span><h3>Fast</h3><p>Dashboard Load</p></div>
         </div>
 
-        <div class="two-col">
-          <div class="pro-panel category-panel">
-            <h3>📚 All Website Categories</h3>
-            <p class="muted">IAS Selection Point ke important sections yahan se direct open kar sakte ho.</p>
+        <div class="pro-panel">
+          <h3>📚 Study Categories</h3>
+          <p class="muted">Category par click karo. Post list dashboard ke andar open hogi, aur post full-screen reader me read hogi.</p>
+          <div id="categoryGrid" class="private-cat-grid"></div>
+        </div>
 
-            <h4 class="cat-heading">Main Sections</h4>
-            <div class="category-grid">
-              <a href="https://iasselectionpoint.blogspot.com/" target="_blank"><span>🏠</span><b>Main Website</b><small>Home page</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Education" target="_blank"><span>🎓</span><b>Education</b><small>Study posts</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Blog" target="_blank"><span>📰</span><b>Blog</b><small>Latest articles</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Meditation" target="_blank"><span>🧘</span><b>Meditation</b><small>Mind & focus</small></a>
-            </div>
-
-            <h4 class="cat-heading">Political Science / PSIR</h4>
-            <div class="category-grid">
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Indian%20Govt%20and%20Politics" target="_blank"><span>🏛️</span><b>Indian Govt and Politics</b><small>Polity topics</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Public%20Administration" target="_blank"><span>📋</span><b>Public Administration</b><small>Administration</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/International%20Relations" target="_blank"><span>🌐</span><b>International Relations</b><small>IR notes</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/International%20Law" target="_blank"><span>⚖️</span><b>International Law</b><small>Law topics</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/India%27s%20Foreign%20Policy" target="_blank"><span>🇮🇳</span><b>India's Foreign Policy</b><small>Foreign policy</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Research%20Methodology" target="_blank"><span>🔬</span><b>Research Methodology</b><small>Research notes</small></a>
-            </div>
-
-            <h4 class="cat-heading">Current Affairs / GK / Exam</h4>
-            <div class="category-grid">
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Current%20Affairs" target="_blank"><span>🗞️</span><b>Current Affairs</b><small>Daily updates</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/GK" target="_blank"><span>🧠</span><b>GK</b><small>General Knowledge</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/UPSC%20Syllabus" target="_blank"><span>📘</span><b>UPSC Syllabus</b><small>UPSC preparation</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/SSC%20Syllabus" target="_blank"><span>📗</span><b>SSC Syllabus</b><small>SSC preparation</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/HPSC%20Syllabus" target="_blank"><span>📙</span><b>HPSC Syllabus</b><small>Haryana exams</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Railway%20Syllabus" target="_blank"><span>🚆</span><b>Railway Syllabus</b><small>Railway exams</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Banking%20Syllabus" target="_blank"><span>🏦</span><b>Banking Syllabus</b><small>Banking exams</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Defence%20Syllabus" target="_blank"><span>🪖</span><b>Defence Syllabus</b><small>Defence exams</small></a>
-            </div>
-
-            <h4 class="cat-heading">Jobs / Useful Pages</h4>
-            <div class="category-grid">
-              <a href="https://iasselectionpoint.blogspot.com/search/label/School%20teachers%20TGT" target="_blank"><span>👨‍🏫</span><b>School Teachers TGT</b><small>Teaching jobs</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Engineering%20Jobs" target="_blank"><span>🛠️</span><b>Engineering Jobs</b><small>Technical jobs</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Degree%20Holder%20Jobs" target="_blank"><span>🎓</span><b>Degree Holder Jobs</b><small>Graduate jobs</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/p/sitemap.html" target="_blank"><span>🗺️</span><b>Sitemap</b><small>All posts</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/p/contact-us.html" target="_blank"><span>📞</span><b>Contact Us</b><small>Contact page</small></a>
-              <a href="https://iasselectionpoint.blogspot.com/p/about-us.html" target="_blank"><span>ℹ️</span><b>About Us</b><small>About website</small></a>
-            </div>
+        <div class="pro-panel post-panel" id="postListPanel">
+          <div class="panel-head">
+            <h3 id="postListTitle">Select a category</h3>
+            <button class="mini-btn" onclick="openDashSection('categoryReader')">Open Reader</button>
           </div>
+          <div id="postList" class="post-list">
+            <p class="muted">Category select karne ke baad posts yahan dikhengi.</p>
+          </div>
+        </div>
+      </section>
 
-          <div class="pro-panel">
-            <h3>🔔 Latest Notice</h3>
-            <div id="memberNotice">No notice available.</div>
+      <section id="categoryReader" class="dash-section">
+        <div class="pro-panel">
+          <h3>📚 Private Category Reader</h3>
+          <p class="muted">Ye categories dashboard ke andar hi read hongi. Main website par open nahi hongi.</p>
+          <div id="categoryGrid2" class="private-cat-grid"></div>
+        </div>
+
+        <div class="pro-panel">
+          <div class="panel-head">
+            <h3 id="readerPostListTitle">Select a category</h3>
+            <input id="postSearch" oninput="filterLoadedPosts()" placeholder="Search posts..." />
+          </div>
+          <div id="readerPostList" class="post-list">
+            <p class="muted">Category select karo.</p>
           </div>
         </div>
       </section>
@@ -153,7 +145,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=8"></script>
-  <script src="app.js?v=8"></script>
+  <script src="config.js?v=9"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>

@@ -331,3 +331,198 @@ loadBookmarks = function(){
   if(!arr.length){box.innerHTML='<p>No bookmarks yet.</p>';return}
   box.innerHTML=arr.map(b=>`<div class="bookmark-card"><h4>${escapeHtml(b.title)}</h4><p>${escapeHtml(b.url)}</p><a class="mini-btn" target="_blank" href="${escapeAttr(b.url)}">Open</a> <button class="mini-btn danger-btn" onclick="deleteBookmark(${b.id})">Delete</button></div>`).join('');
 }
+
+
+/* ===== v9 Private Category Reader ===== */
+const ISP_BLOG = "https://iasselectionpoint.blogspot.com";
+const ISP_CATEGORIES = [
+  {title:"Comparative Politics", label:"Comparative politics", icon:"🌍"},
+  {title:"Indian Govt & Politics", label:"Indian Govt and Politics", icon:"🏛️"},
+  {title:"India's Foreign Policy", label:"India's Foreign Policy", icon:"🇮🇳"},
+  {title:"International Relations", label:"International Relations", icon:"🌐"},
+  {title:"Indian Political Thought", label:"Indian political thought", icon:"🧠"},
+  {title:"International Law", label:"International Law", icon:"⚖️"},
+  {title:"International Organisations", label:"International organisations", icon:"🏢"},
+  {title:"News Article", label:"news article", icon:"📰"},
+  {title:"News Cutting", label:"News cuting", icon:"✂️"},
+  {title:"Current Affairs", label:"Current Affairs", icon:"🗞️"},
+  {title:"Paper-1", label:"Paper-1", icon:"📘"},
+  {title:"Paper-2", label:"Paper-2", icon:"📗"},
+  {title:"GS Paper-1,2,3,4", label:"Gs paper-1, 2,3,4", icon:"📚"}
+];
+
+let ISP_LOADED_POSTS = [];
+let ISP_CURRENT_CATEGORY = "";
+
+function initCategories(){
+  const html = ISP_CATEGORIES.map(c => `
+    <div class="private-cat-card" onclick="loadCategoryPosts('${escapeAttr(c.label)}','${escapeAttr(c.title)}')">
+      <span>${c.icon}</span>
+      <b>${escapeHtml(c.title)}</b>
+      <small>Dashboard ke andar read karein</small>
+    </div>
+  `).join('');
+  if(qs('categoryGrid')) qs('categoryGrid').innerHTML = html;
+  if(qs('categoryGrid2')) qs('categoryGrid2').innerHTML = html;
+}
+
+function bloggerFeedJsonp(label, max=25){
+  return new Promise((resolve, reject) => {
+    const cb = "ispFeed_" + Date.now() + "_" + Math.floor(Math.random()*9999);
+    const script = document.createElement("script");
+    const cleanLabel = encodeURIComponent(label);
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("Posts load hone me time lag raha hai. Category label check karo."));
+    }, 9000);
+
+    window[cb] = function(data){
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
+
+    function cleanup(){
+      try{ delete window[cb]; }catch(e){ window[cb] = undefined; }
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    script.onerror = function(){
+      clearTimeout(timer);
+      cleanup();
+      reject(new Error("Blogger feed load nahi hua."));
+    };
+
+    script.src = `${ISP_BLOG}/feeds/posts/default/-/${cleanLabel}?alt=json-in-script&max-results=${max}&callback=${cb}`;
+    document.body.appendChild(script);
+  });
+}
+
+function entryToPost(entry){
+  const title = entry.title?.$t || "Untitled Post";
+  const content = entry.content?.$t || entry.summary?.$t || "";
+  const published = entry.published?.$t ? new Date(entry.published.$t).toLocaleDateString() : "";
+  let link = "";
+  if(entry.link){
+    const alt = entry.link.find(l => l.rel === "alternate");
+    if(alt) link = alt.href;
+  }
+  const plain = stripHtml(content).slice(0, 180);
+  return {title, content, published, link, plain};
+}
+
+async function loadCategoryPosts(label, title){
+  ISP_CURRENT_CATEGORY = title;
+  showLoader("Loading posts...", title);
+  if(qs('postListTitle')) qs('postListTitle').textContent = title;
+  if(qs('readerPostListTitle')) qs('readerPostListTitle').textContent = title;
+  setPostListHtml("<p class='muted'>Posts loading...</p>");
+
+  try{
+    const data = await bloggerFeedJsonp(label, 30);
+    const entries = data.feed?.entry || [];
+    ISP_LOADED_POSTS = entries.map(entryToPost);
+
+    if(!ISP_LOADED_POSTS.length){
+      setPostListHtml(`<p class="muted">Is category me abhi post nahi mili. Blogger label spelling check karna: <b>${escapeHtml(label)}</b></p>`);
+    }else{
+      renderLoadedPosts(ISP_LOADED_POSTS);
+    }
+  }catch(err){
+    setPostListHtml(`<p class="muted">${escapeHtml(err.message)}</p>`);
+  }
+  hideLoader();
+}
+
+function setPostListHtml(html){
+  if(qs('postList')) qs('postList').innerHTML = html;
+  if(qs('readerPostList')) qs('readerPostList').innerHTML = html;
+}
+
+function renderLoadedPosts(posts){
+  const html = posts.map((p, i) => `
+    <div class="post-item" onclick="openPostReader(${i})">
+      <h4>${escapeHtml(p.title)}</h4>
+      <p>${escapeHtml(p.plain)}...</p>
+      <span class="post-meta">${escapeHtml(p.published)} · Click to read full post</span>
+    </div>
+  `).join('');
+  setPostListHtml(html);
+}
+
+function filterLoadedPosts(){
+  const q = (qs('postSearch')?.value || '').toLowerCase();
+  const filtered = ISP_LOADED_POSTS.filter(p => p.title.toLowerCase().includes(q) || p.plain.toLowerCase().includes(q));
+  renderLoadedPosts(filtered);
+}
+
+function openPostReader(index){
+  const p = ISP_LOADED_POSTS[index];
+  if(!p) return;
+  qs('readerTitle').textContent = p.title;
+  qs('readerBody').innerHTML = `
+    <h1>${escapeHtml(p.title)}</h1>
+    <p class="muted">${escapeHtml(ISP_CURRENT_CATEGORY)} ${p.published ? " · " + escapeHtml(p.published) : ""}</p>
+    <hr>
+    ${sanitizePostHtml(p.content)}
+  `;
+  qs('readerModal').classList.add('active');
+}
+
+function closeReader(){
+  qs('readerModal').classList.remove('active');
+}
+
+function readerFullScreen(){
+  const modal = qs('readerModal');
+  if(modal.requestFullscreen) modal.requestFullscreen();
+}
+
+function stripHtml(html){
+  const d = document.createElement('div');
+  d.innerHTML = html || "";
+  return (d.textContent || d.innerText || "").replace(/\s+/g,' ').trim();
+}
+
+function sanitizePostHtml(html){
+  const d = document.createElement('div');
+  d.innerHTML = html || "";
+  d.querySelectorAll('script, iframe, object, embed').forEach(x => x.remove());
+  d.querySelectorAll('a').forEach(a => {
+    a.setAttribute('target','_blank');
+    a.setAttribute('rel','noopener');
+  });
+  return d.innerHTML;
+}
+
+/* v9 fast dashboard loader override */
+loadDashboard = async function(){
+  showLoader('Opening dashboard...','Fast loading enabled');
+  const u=currentUser();
+  if(!u.email){location.href='index.html';return}
+
+  if(qs('memberName')) qs('memberName').textContent=u.name||'Member';
+  if(qs('memberEmail')) qs('memberEmail').textContent=u.email||'';
+  if(qs('memberStatus')) qs('memberStatus').textContent=u.status||'Active';
+
+  initCategories();
+  loadBookmarks();
+  loadMemberNotice?.();
+
+  // Dashboard ko fast open karne ke liye API data background me load hoga.
+  setTimeout(hideLoader, 900);
+
+  Promise.race([
+    api('getProfile',{token:token()}),
+    new Promise(resolve => setTimeout(() => resolve({success:false, timeout:true}), 3000))
+  ]).then(r => {
+    if(r && r.success){
+      if(qs('profileName')) qs('profileName').value=r.profile.name||u.name||'';
+      if(qs('profileMobile')) qs('profileMobile').value=r.profile.mobile||'';
+      if(qs('profileCity')) qs('profileCity').value=r.profile.city||'';
+      if(qs('profileExam')) qs('profileExam').value=r.profile.exam||'';
+    }
+  });
+
+  setTimeout(() => { try{ loadNotes(); }catch(e){} }, 300);
+}
