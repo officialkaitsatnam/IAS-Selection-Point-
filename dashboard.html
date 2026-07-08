@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="style.css?v=8" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v7 Pro Member UI</div>
+  <div class="version-badge">v8 All Categories</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -55,13 +55,48 @@
         </div>
 
         <div class="two-col">
-          <div class="pro-panel">
-            <h3>📚 Quick Study Links</h3>
-            <div class="link-grid">
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Current%20Affairs" target="_blank">Current Affairs</a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/GK" target="_blank">GK</a>
-              <a href="https://iasselectionpoint.blogspot.com/search/label/Political%20Science" target="_blank">Political Science</a>
-              <a href="https://iasselectionpoint.blogspot.com/" target="_blank">Main Website</a>
+          <div class="pro-panel category-panel">
+            <h3>📚 All Website Categories</h3>
+            <p class="muted">IAS Selection Point ke important sections yahan se direct open kar sakte ho.</p>
+
+            <h4 class="cat-heading">Main Sections</h4>
+            <div class="category-grid">
+              <a href="https://iasselectionpoint.blogspot.com/" target="_blank"><span>🏠</span><b>Main Website</b><small>Home page</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Education" target="_blank"><span>🎓</span><b>Education</b><small>Study posts</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Blog" target="_blank"><span>📰</span><b>Blog</b><small>Latest articles</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Meditation" target="_blank"><span>🧘</span><b>Meditation</b><small>Mind & focus</small></a>
+            </div>
+
+            <h4 class="cat-heading">Political Science / PSIR</h4>
+            <div class="category-grid">
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Indian%20Govt%20and%20Politics" target="_blank"><span>🏛️</span><b>Indian Govt and Politics</b><small>Polity topics</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Public%20Administration" target="_blank"><span>📋</span><b>Public Administration</b><small>Administration</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/International%20Relations" target="_blank"><span>🌐</span><b>International Relations</b><small>IR notes</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/International%20Law" target="_blank"><span>⚖️</span><b>International Law</b><small>Law topics</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/India%27s%20Foreign%20Policy" target="_blank"><span>🇮🇳</span><b>India's Foreign Policy</b><small>Foreign policy</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Research%20Methodology" target="_blank"><span>🔬</span><b>Research Methodology</b><small>Research notes</small></a>
+            </div>
+
+            <h4 class="cat-heading">Current Affairs / GK / Exam</h4>
+            <div class="category-grid">
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Current%20Affairs" target="_blank"><span>🗞️</span><b>Current Affairs</b><small>Daily updates</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/GK" target="_blank"><span>🧠</span><b>GK</b><small>General Knowledge</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/UPSC%20Syllabus" target="_blank"><span>📘</span><b>UPSC Syllabus</b><small>UPSC preparation</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/SSC%20Syllabus" target="_blank"><span>📗</span><b>SSC Syllabus</b><small>SSC preparation</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/HPSC%20Syllabus" target="_blank"><span>📙</span><b>HPSC Syllabus</b><small>Haryana exams</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Railway%20Syllabus" target="_blank"><span>🚆</span><b>Railway Syllabus</b><small>Railway exams</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Banking%20Syllabus" target="_blank"><span>🏦</span><b>Banking Syllabus</b><small>Banking exams</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Defence%20Syllabus" target="_blank"><span>🪖</span><b>Defence Syllabus</b><small>Defence exams</small></a>
+            </div>
+
+            <h4 class="cat-heading">Jobs / Useful Pages</h4>
+            <div class="category-grid">
+              <a href="https://iasselectionpoint.blogspot.com/search/label/School%20teachers%20TGT" target="_blank"><span>👨‍🏫</span><b>School Teachers TGT</b><small>Teaching jobs</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Engineering%20Jobs" target="_blank"><span>🛠️</span><b>Engineering Jobs</b><small>Technical jobs</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/search/label/Degree%20Holder%20Jobs" target="_blank"><span>🎓</span><b>Degree Holder Jobs</b><small>Graduate jobs</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/p/sitemap.html" target="_blank"><span>🗺️</span><b>Sitemap</b><small>All posts</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/p/contact-us.html" target="_blank"><span>📞</span><b>Contact Us</b><small>Contact page</small></a>
+              <a href="https://iasselectionpoint.blogspot.com/p/about-us.html" target="_blank"><span>ℹ️</span><b>About Us</b><small>About website</small></a>
             </div>
           </div>
 
@@ -118,7 +153,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=7"></script>
-  <script src="app.js?v=7"></script>
+  <script src="config.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
