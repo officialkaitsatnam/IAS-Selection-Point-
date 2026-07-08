@@ -526,3 +526,193 @@ loadDashboard = async function(){
 
   setTimeout(() => { try{ loadNotes(); }catch(e){} }, 300);
 }
+
+
+/* ===== v10 Professional Learning Portal Logic ===== */
+const ISP_UPSC_CATEGORIES = [
+  {title:"Current Affairs", label:"CURRENT AFFAIRS", icon:"🗞️", module:"UPSC General Studies"},
+  {title:"Current Content", label:"CURRENT CONTENT", icon:"⚡", module:"UPSC General Studies"},
+  {title:"Essay", label:"ESSAY", icon:"✍️", module:"UPSC General Studies"},
+  {title:"General Knowledge", label:"GENERAL KNOWLEDGE", icon:"🧠", module:"UPSC General Studies"},
+  {title:"General Knowledge (GK)", label:"GENERAL KNOWLEDGE(GK)", icon:"📚", module:"UPSC General Studies"},
+  {title:"GS Paper-I", label:"GS PAPER-I", icon:"📘", module:"UPSC General Studies"},
+  {title:"GS Paper-II", label:"GS PAPER-II", icon:"📗", module:"UPSC General Studies"},
+  {title:"GS Paper-III", label:"GS PAPER-III", icon:"📙", module:"UPSC General Studies"},
+  {title:"GS Paper-IV", label:"GS PAPER-IV", icon:"📕", module:"UPSC General Studies"},
+  {title:"News Article", label:"NEWS ARTICLE", icon:"📰", module:"UPSC General Studies"},
+  {title:"News Cutting", label:"NEWS CUTTING", icon:"✂️", module:"UPSC General Studies"}
+];
+
+const ISP_PSIR_CATEGORIES = [
+  {title:"Comparative Politics", label:"COMPARATIVE POLITICS", icon:"🌍", module:"Political Science"},
+  {title:"Political Science", label:"POLITICAL SCIENCE", icon:"🏛️", module:"Political Science"},
+  {title:"Political Theory", label:"POLITICAL THEORY", icon:"📖", module:"Political Science"},
+  {title:"Indian Govt & Politics", label:"INDIAN GOVT & POLITICS", icon:"🇮🇳", module:"Political Science"},
+  {title:"Indian Political Thought", label:"INDIAN POLITICAL THOUGHT", icon:"🧠", module:"Political Science"},
+  {title:"India's Foreign Policy", label:"INDIA'S FOREIGN POLICY", icon:"🌐", module:"Political Science"},
+  {title:"International Relations", label:"INTERNATIONAL RELATIONS", icon:"🤝", module:"Political Science"},
+  {title:"International Law", label:"INTERNATIONAL LAW", icon:"⚖️", module:"Political Science"},
+  {title:"International Organisations & Global Order", label:"INTERNATIONAL ORGANISATIONS & GLOBAL ORDER", icon:"🏢", module:"Political Science"},
+  {title:"Public Administration", label:"PUBLIC ADMINISTRATION", icon:"📋", module:"Political Science"},
+  {title:"Research Methodology", label:"RESEARCH METHODOLOGY", icon:"🔬", module:"Political Science"},
+  {title:"Paper-I (Optional)", label:"PAPER-I(OPT.)", icon:"📘", module:"Political Science"},
+  {title:"Paper-II (Optional)", label:"PAPER-II(OPT.)", icon:"📗", module:"Political Science"}
+];
+
+let ISP_ACTIVE_MODULE = "";
+let ISP_READER_FONT = 18;
+
+function renderLearningCategories(){
+  renderCategoryGrid('upscGrid', ISP_UPSC_CATEGORIES, 'upsc');
+  renderCategoryGrid('psirGrid', ISP_PSIR_CATEGORIES, 'psir');
+}
+
+function renderCategoryGrid(id, cats, moduleKey){
+  const box = qs(id);
+  if(!box) return;
+  box.innerHTML = cats.map(c => `
+    <div class="private-cat-card" onclick="loadLearningCategory('${moduleKey}','${escapeAttr(c.label)}','${escapeAttr(c.title)}','${escapeAttr(c.module)}')">
+      <span>${c.icon}</span>
+      <b>${escapeHtml(c.title)}</b>
+      <small>${escapeHtml(c.module)} · Read inside portal</small>
+    </div>
+  `).join('');
+}
+
+async function loadLearningCategory(moduleKey, label, title, moduleName){
+  ISP_CURRENT_CATEGORY = title;
+  ISP_ACTIVE_MODULE = moduleKey;
+  showLoader("Loading articles...", title);
+  const titleId = moduleKey === 'upsc' ? 'upscPostTitle' : 'psirPostTitle';
+  if(qs(titleId)) qs(titleId).textContent = title;
+  const listId = moduleKey === 'upsc' ? 'upscPostList' : 'psirPostList';
+  setLearningListHtml(listId, "<p class='muted'>Articles loading...</p>");
+
+  try{
+    const data = await bloggerFeedJsonp(label, 35);
+    const entries = data.feed?.entry || [];
+    ISP_LOADED_POSTS = entries.map(entryToPost).map(p => ({...p, moduleName, categoryTitle:title}));
+    if(!ISP_LOADED_POSTS.length){
+      setLearningListHtml(listId, `<p class="muted">No articles found for this exact Blogger label: <b>${escapeHtml(label)}</b></p>`);
+    }else{
+      renderLearningPosts(ISP_LOADED_POSTS, listId);
+    }
+  }catch(err){
+    setLearningListHtml(listId, `<p class="muted">${escapeHtml(err.message)}</p>`);
+  }
+  hideLoader();
+}
+
+function setLearningListHtml(listId, html){ if(qs(listId)) qs(listId).innerHTML = html; }
+
+function renderLearningPosts(posts, listId){
+  const html = posts.map((p, i) => `
+    <div class="post-item" onclick="openPostReader(${i})">
+      <span class="module-tag">${escapeHtml(p.moduleName || '')}</span>
+      <h4>${escapeHtml(p.title)}</h4>
+      <p>${escapeHtml(p.plain)}...</p>
+      <span class="post-meta">${escapeHtml(p.categoryTitle || ISP_CURRENT_CATEGORY)} ${p.published ? "· " + escapeHtml(p.published) : ""} · Read Article</span>
+    </div>
+  `).join('');
+  setLearningListHtml(listId, html);
+}
+
+function filterLoadedPosts(){
+  const q1 = qs('upscSearch')?.value || '';
+  const q2 = qs('psirSearch')?.value || '';
+  const q = (q1 || q2).toLowerCase();
+  const filtered = ISP_LOADED_POSTS.filter(p => p.title.toLowerCase().includes(q) || p.plain.toLowerCase().includes(q));
+  const listId = ISP_ACTIVE_MODULE === 'psir' ? 'psirPostList' : 'upscPostList';
+  renderLearningPosts(filtered, listId);
+}
+
+function openPostReader(index){
+  const p = ISP_LOADED_POSTS[index];
+  if(!p) return;
+  qs('readerTitle').textContent = p.title;
+  qs('readerBody').style.fontSize = ISP_READER_FONT + "px";
+  qs('readerBody').innerHTML = `
+    <h1>${escapeHtml(p.title)}</h1>
+    <p class="muted">${escapeHtml(p.moduleName || '')} · ${escapeHtml(p.categoryTitle || ISP_CURRENT_CATEGORY)} ${p.published ? " · " + escapeHtml(p.published) : ""}</p>
+    <p class="muted">Estimated reading time: ${estimateReadTime(p.content)} min</p>
+    <hr>
+    ${sanitizePostHtml(p.content)}
+  `;
+  qs('readerModal').classList.add('active');
+  saveReadingHistory(p);
+  renderContinueReading();
+  setTimeout(updateReadingProgress, 200);
+}
+
+function changeReaderFont(delta){
+  ISP_READER_FONT = Math.max(14, Math.min(24, ISP_READER_FONT + delta));
+  if(qs('readerBody')) qs('readerBody').style.fontSize = ISP_READER_FONT + "px";
+}
+function toggleReaderDark(){ qs('readerModal').classList.toggle('dark-reader'); }
+function estimateReadTime(html){ const words = stripHtml(html).split(/\s+/).filter(Boolean).length; return Math.max(1, Math.ceil(words / 180)); }
+function updateReadingProgress(){
+  const body = qs('readerBody'), bar = qs('readingProgress');
+  if(!body || !bar) return;
+  const total = body.scrollHeight - body.clientHeight;
+  const pct = total <= 0 ? 100 : Math.min(100, Math.round((body.scrollTop / total) * 100));
+  bar.style.width = pct + "%";
+}
+document.addEventListener('scroll', updateReadingProgress, true);
+
+function saveReadingHistory(post){
+  const u = currentUser().email || "guest";
+  const key = "isp_reading_history_" + u;
+  let arr = JSON.parse(localStorage.getItem(key) || "[]");
+  arr = arr.filter(x => x.link !== post.link);
+  arr.unshift({title: post.title, categoryTitle: post.categoryTitle || ISP_CURRENT_CATEGORY, moduleName: post.moduleName || '', date: new Date().toLocaleString(), link: post.link, plain: post.plain});
+  arr = arr.slice(0, 20);
+  localStorage.setItem(key, JSON.stringify(arr));
+}
+
+function renderContinueReading(){
+  const u = currentUser().email || "guest";
+  const arr = JSON.parse(localStorage.getItem("isp_reading_history_" + u) || "[]");
+  const box = qs('continueReading');
+  if(box){
+    if(!arr.length) box.innerHTML = "No article opened yet.";
+    else box.innerHTML = `<b>${escapeHtml(arr[0].title)}</b><br><small>${escapeHtml(arr[0].moduleName)} · ${escapeHtml(arr[0].categoryTitle)} · ${escapeHtml(arr[0].date)}</small>`;
+  }
+  const hist = qs('readingHistory');
+  if(hist){
+    if(!arr.length) hist.innerHTML = "<p class='muted'>No reading history yet.</p>";
+    else hist.innerHTML = arr.map(x => `<div class="post-item"><span class="module-tag">${escapeHtml(x.moduleName)}</span><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.plain || '')}...</p><span class="post-meta">${escapeHtml(x.categoryTitle)} · ${escapeHtml(x.date)}</span></div>`).join('');
+  }
+}
+
+/* v10 fast dashboard loader */
+loadDashboard = async function(){
+  showLoader('Opening dashboard...','Fast loading enabled');
+  const u=currentUser();
+  if(!u.email){location.href='index.html';return}
+  if(qs('memberName')) qs('memberName').textContent=u.name||'Member';
+  if(qs('memberEmail')) qs('memberEmail').textContent=u.email||'';
+  if(qs('memberStatus')) qs('memberStatus').textContent=u.status||'Active';
+  renderLearningCategories();
+  loadBookmarks();
+  renderContinueReading();
+  setTimeout(hideLoader, 750);
+  Promise.race([api('getProfile',{token:token()}), new Promise(resolve => setTimeout(() => resolve({success:false, timeout:true}), 3000))]).then(r => {
+    if(r && r.success){
+      if(qs('profileName')) qs('profileName').value=r.profile.name||u.name||'';
+      if(qs('profileMobile')) qs('profileMobile').value=r.profile.mobile||'';
+      if(qs('profileCity')) qs('profileCity').value=r.profile.city||'';
+      if(qs('profileExam')) qs('profileExam').value=r.profile.exam||'';
+    }
+  });
+  setTimeout(() => { try{ loadNotes(); }catch(e){} }, 300);
+}
+
+function openDashSection(id,btn){
+  document.querySelectorAll('.dash-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.side-nav button').forEach(b=>b.classList.remove('active'));
+  if(qs(id)) qs(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='library') renderContinueReading();
+  if(id==='notes') loadNotes();
+  if(id==='bookmarks') loadBookmarks();
+}

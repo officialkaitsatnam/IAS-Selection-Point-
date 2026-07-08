@@ -617,3 +617,26 @@ body{
     font-size:12px;
   }
 }
+
+
+/* ===== v10 Professional Learning Portal ===== */
+.learning-header{background:linear-gradient(135deg,#ffffff,#eef6ff)}
+.module-card{cursor:pointer;transition:.2s ease}
+.module-card:hover{transform:translateY(-3px);box-shadow:0 18px 45px rgba(16,35,63,.12)}
+.continue-box{padding:16px;border-radius:16px;background:#f8fbff;border:1px solid #e2eefc;color:#5a6b82}
+.reader-controls{display:flex;gap:8px;flex-wrap:wrap}
+.reading-progress{height:4px;background:#e5efff}
+.reading-progress span{display:block;width:0%;height:100%;background:#0b5ed7;transition:.15s linear}
+.reader-body{font-size:18px}
+.reader-modal.dark-reader{background:#0f172a}
+.reader-modal.dark-reader .reader-top{background:#111827;color:#fff;border-color:#243247}
+.reader-modal.dark-reader .reader-body{background:#0f172a;color:#e5e7eb}
+.reader-modal.dark-reader .reader-body h1,.reader-modal.dark-reader .reader-body h2,.reader-modal.dark-reader .reader-body h3{color:#fff}
+.reader-modal.dark-reader .muted{color:#cbd5e1}
+.post-item .module-tag{display:inline-block;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#0b5ed7;font-size:12px;font-weight:900}
+.version-badge{background:#0f172a!important}
+.private-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.private-cat-card{border:1px solid #e2eefc;background:linear-gradient(135deg,#fff,#eef6ff);border-radius:18px;padding:17px;cursor:pointer;box-shadow:0 9px 24px rgba(16,35,63,.06);transition:.2s ease}
+.private-cat-card:hover{transform:translateY(-2px);border-color:#0b5ed7;box-shadow:0 13px 30px rgba(16,35,63,.11)}
+.private-cat-card span{font-size:25px}.private-cat-card b{display:block;margin-top:10px;color:#10233f}.private-cat-card small{display:block;margin-top:5px;color:#5a6b82}
+@media(max-width:850px){.reader-controls button:nth-child(4){display:none}.private-cat-grid{grid-template-columns:1fr}}

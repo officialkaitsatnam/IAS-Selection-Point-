@@ -3,44 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=9" />
+  <title>Learning Portal | IAS Selection Point</title>
+  <link rel="stylesheet" href="style.css?v=10" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v9 Private Reader</div>
+  <div class="version-badge">v10 Learning Portal</div>
+
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
       <h3 id="loaderTitle">Loading...</h3>
-      <p id="loaderText">Opening dashboard</p>
+      <p id="loaderText">Opening your learning portal</p>
     </div>
   </div>
 
   <div class="reader-modal" id="readerModal">
     <div class="reader-top">
       <button onclick="closeReader()">← Back</button>
-      <h3 id="readerTitle">Post</h3>
-      <button onclick="readerFullScreen()">Full Screen</button>
+      <h3 id="readerTitle">Article</h3>
+      <div class="reader-controls">
+        <button onclick="changeReaderFont(-1)">A-</button>
+        <button onclick="changeReaderFont(1)">A+</button>
+        <button onclick="toggleReaderDark()">Dark</button>
+        <button onclick="readerFullScreen()">Full Screen</button>
+      </div>
     </div>
+    <div class="reading-progress"><span id="readingProgress"></span></div>
     <article id="readerBody" class="reader-body"></article>
   </div>
 
   <div class="portal-shell">
     <aside class="sidebar-pro">
       <div class="side-brand">
-        <img src="logo.jpg" alt="Logo" />
+        <img src="logo.jpg" alt="IAS Selection Point Logo" />
         <div>
           <h2>IAS Selection</h2>
-          <p>Member Portal</p>
+          <p>Learning Portal</p>
         </div>
       </div>
 
       <nav class="side-nav">
-        <button class="active" onclick="openDashSection('overview', this)">🏠 Overview</button>
-        <button onclick="openDashSection('categoryReader', this)">📚 Categories</button>
-        <button onclick="openDashSection('profile', this)">👤 Profile</button>
-        <button onclick="openDashSection('notes', this)">📝 Notes</button>
+        <button class="active" onclick="openDashSection('overview', this)">🏠 Dashboard</button>
+        <button onclick="openDashSection('upscModule', this)">🎓 UPSC General Studies</button>
+        <button onclick="openDashSection('psirModule', this)">🏛️ Political Science</button>
+        <button onclick="openDashSection('library', this)">📖 My Library</button>
         <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
+        <button onclick="openDashSection('notes', this)">📝 Notes</button>
+        <button onclick="openDashSection('profile', this)">👤 Profile</button>
         <button onclick="openDashSection('security', this)">🔐 Security</button>
       </nav>
 
@@ -48,54 +57,76 @@
     </aside>
 
     <main class="portal-main">
-      <header class="portal-header">
+      <header class="portal-header learning-header">
         <div>
           <h1>Welcome, <span id="memberName">Member</span> 👋</h1>
           <p><span id="memberEmail"></span> · <span id="memberStatus"></span></p>
         </div>
-        <div class="admin-chip">Study Member</div>
+        <div class="admin-chip">Professional Study Member</div>
       </header>
 
       <section id="overview" class="dash-section active">
         <div class="stats-grid-pro">
-          <div class="stat-card blue"><span>📚</span><h3>13</h3><p>Private Categories</p></div>
-          <div class="stat-card green"><span>📝</span><h3 id="notesCount">0</h3><p>Notes</p></div>
-          <div class="stat-card purple"><span>🔖</span><h3 id="bookmarkCount">0</h3><p>Bookmarks</p></div>
-          <div class="stat-card orange"><span>⚡</span><h3>Fast</h3><p>Dashboard Load</p></div>
+          <div class="stat-card blue"><span>🎓</span><h3>11</h3><p>UPSC Categories</p></div>
+          <div class="stat-card green"><span>🏛️</span><h3>13</h3><p>PSIR Categories</p></div>
+          <div class="stat-card purple"><span>📝</span><h3 id="notesCount">0</h3><p>Notes</p></div>
+          <div class="stat-card orange"><span>🔖</span><h3 id="bookmarkCount">0</h3><p>Bookmarks</p></div>
+        </div>
+
+        <div class="two-col">
+          <div class="pro-panel module-card" onclick="openDashSection('upscModule')">
+            <h3>🎓 UPSC General Studies</h3>
+            <p>Current Affairs, Essay, GK, GS Papers and News sections.</p>
+            <button class="primary-btn">Open Module</button>
+          </div>
+          <div class="pro-panel module-card" onclick="openDashSection('psirModule')">
+            <h3>🏛️ Political Science (PSIR)</h3>
+            <p>Political Theory, Comparative Politics, Indian Government, IR and Optional Papers.</p>
+            <button class="primary-btn">Open Module</button>
+          </div>
         </div>
 
         <div class="pro-panel">
-          <h3>📚 Study Categories</h3>
-          <p class="muted">Category par click karo. Post list dashboard ke andar open hogi, aur post full-screen reader me read hogi.</p>
-          <div id="categoryGrid" class="private-cat-grid"></div>
-        </div>
-
-        <div class="pro-panel post-panel" id="postListPanel">
-          <div class="panel-head">
-            <h3 id="postListTitle">Select a category</h3>
-            <button class="mini-btn" onclick="openDashSection('categoryReader')">Open Reader</button>
-          </div>
-          <div id="postList" class="post-list">
-            <p class="muted">Category select karne ke baad posts yahan dikhengi.</p>
-          </div>
+          <h3>📌 Continue Reading</h3>
+          <div id="continueReading" class="continue-box">No article opened yet.</div>
         </div>
       </section>
 
-      <section id="categoryReader" class="dash-section">
+      <section id="upscModule" class="dash-section">
         <div class="pro-panel">
-          <h3>📚 Private Category Reader</h3>
-          <p class="muted">Ye categories dashboard ke andar hi read hongi. Main website par open nahi hongi.</p>
-          <div id="categoryGrid2" class="private-cat-grid"></div>
+          <h3>🎓 UPSC General Studies</h3>
+          <p class="muted">Choose a category. Articles will open inside the dashboard.</p>
+          <div id="upscGrid" class="private-cat-grid"></div>
         </div>
-
         <div class="pro-panel">
           <div class="panel-head">
-            <h3 id="readerPostListTitle">Select a category</h3>
-            <input id="postSearch" oninput="filterLoadedPosts()" placeholder="Search posts..." />
+            <h3 id="upscPostTitle">Select a category</h3>
+            <input id="upscSearch" oninput="filterLoadedPosts()" placeholder="Search articles..." />
           </div>
-          <div id="readerPostList" class="post-list">
-            <p class="muted">Category select karo.</p>
+          <div id="upscPostList" class="post-list"><p class="muted">Select a UPSC category.</p></div>
+        </div>
+      </section>
+
+      <section id="psirModule" class="dash-section">
+        <div class="pro-panel">
+          <h3>🏛️ Political Science (PSIR)</h3>
+          <p class="muted">Choose a category. Articles will open inside the dashboard.</p>
+          <div id="psirGrid" class="private-cat-grid"></div>
+        </div>
+        <div class="pro-panel">
+          <div class="panel-head">
+            <h3 id="psirPostTitle">Select a category</h3>
+            <input id="psirSearch" oninput="filterLoadedPosts()" placeholder="Search articles..." />
           </div>
+          <div id="psirPostList" class="post-list"><p class="muted">Select a PSIR category.</p></div>
+        </div>
+      </section>
+
+      <section id="library" class="dash-section">
+        <div class="pro-panel">
+          <h3>📖 My Library</h3>
+          <p class="muted">Recently opened articles will appear here.</p>
+          <div id="readingHistory" class="post-list"></div>
         </div>
       </section>
 
@@ -127,7 +158,7 @@
         <div class="pro-panel">
           <h3>🔖 My Bookmarks</h3>
           <input id="bookmarkTitle" placeholder="Bookmark title" />
-          <input id="bookmarkUrl" placeholder="Post URL" />
+          <input id="bookmarkUrl" placeholder="Article URL or note" />
           <button class="primary-btn" onclick="addBookmark()">Save Bookmark</button>
           <div id="bookmarksList" class="list-box"></div>
         </div>
@@ -145,7 +176,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=9"></script>
-  <script src="app.js?v=9"></script>
+  <script src="config.js?v=10"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
