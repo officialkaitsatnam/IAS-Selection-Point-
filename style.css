@@ -858,3 +858,65 @@ body{
 .action-btn{
   pointer-events:auto!important;
 }
+
+
+/* ===== v14.2 Bigger Real Logo + Deactivate UI ===== */
+.sidebar-pro{
+  width:320px!important;
+}
+.side-brand.big-brand,
+.side-brand{
+  align-items:center!important;
+  gap:16px!important;
+}
+.side-brand img,
+.big-brand img{
+  width:112px!important;
+  height:112px!important;
+  min-width:112px!important;
+  min-height:112px!important;
+  object-fit:contain!important;
+  border-radius:24px!important;
+  padding:6px!important;
+  background:#ffffff!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.18)!important;
+}
+.side-brand h2,
+.big-brand h2{
+  font-size:21px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+}
+.side-brand p,
+.big-brand p{
+  font-size:14px!important;
+  opacity:.92!important;
+}
+.deactivate-btn{
+  background:#eef2ff;
+  color:#4338ca;
+}
+.status-pill.deactivated{
+  background:#eef2ff;
+  color:#4338ca;
+}
+@media(max-width:850px){
+  .sidebar-pro{width:100%!important}
+  .side-brand img,.big-brand img{
+    width:88px!important;
+    height:88px!important;
+    min-width:88px!important;
+    min-height:88px!important;
+  }
+}
+
+
+/* ===== v14.3 Email Notification Note ===== */
+.email-note{
+  display:inline-block;
+  margin-top:6px;
+  color:#137333;
+  font-size:12px;
+  font-weight:800;
+}

@@ -1,10 +1,12 @@
-IAS Selection Point v14.1 - Dashboard Click Hotfix
+IAS Selection Point v14.3 - Admin Email Notifications
 
-Fix:
-- Dashboard clicks not working in v14
-- JS duplicate override conflict fixed
-- Loader overlay no longer blocks clicks
-- Module buttons, sidebar, categories and article reader stable
+New:
+- When admin activates a user, user receives email.
+- When admin deactivates a user, user receives email.
+- When admin blocks a user, user receives email.
+- When admin deletes a user, user receives email.
+- Email logs continue saving in EMAIL_LOGS sheet.
+- Professional IAS Selection Point email template.
 
 GitHub replace:
 index.html
@@ -15,9 +17,11 @@ app.js
 config.js
 logo.jpg
 
-Apps Script:
-If you already deployed v14 Code.gs, no change required.
-If admin block/delete actions are not working, replace Code.gs from v14 ZIP and redeploy.
+Apps Script required:
+1. Replace Code.gs
+2. Save
+3. Run initializeSystem once
+4. Deploy > Manage deployments > Edit > New version > Deploy
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=141
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=143

@@ -435,3 +435,67 @@ async function loadDashboard(){
   Promise.race([api('getProfile',{token:token()}),new Promise(resolve=>setTimeout(()=>resolve({success:false,timeout:true}),2500))]).then(r=>{if(r&&r.success){if(qs('profileName'))qs('profileName').value=r.profile.name||u.name||'';if(qs('profileMobile'))qs('profileMobile').value=r.profile.mobile||'';if(qs('profileCity'))qs('profileCity').value=r.profile.city||'';if(qs('profileExam'))qs('profileExam').value=r.profile.exam||''}});
   setTimeout(()=>{try{loadNotes()}catch(e){}},300);
 }
+
+
+/* ===== v14.2 Deactivate User Control Override ===== */
+renderUsersTable = function(users){
+  const tbody=qs('usersTable'); 
+  if(!tbody)return;
+  tbody.innerHTML=users.map(x=>{
+    const isAdmin=String(x.role).toLowerCase()==='admin';
+    const status=String(x.status||'Active');
+    const sl=status.toLowerCase();
+    const sc=sl==='blocked'?'blocked':sl==='deleted'?'deleted':sl==='pending'?'pending':sl==='deactivated'?'deactivated':'';
+    const rc=isAdmin?'admin':'member';
+    return `<tr>
+      <td><b>${escapeHtml(x.name||'')}</b></td>
+      <td>${escapeHtml(x.email||'')}</td>
+      <td><span class="role-pill ${rc}">${escapeHtml(x.role||'')}</span></td>
+      <td><span class="status-pill ${sc}">${escapeHtml(status)}</span></td>
+      <td>${escapeHtml(x.lastLogin||'')}</td>
+      <td>
+        <div class="action-btns">
+          <button class="action-btn activate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Active')" ${isAdmin?'disabled':''}>Activate</button>
+          <button class="action-btn deactivate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Deactivated')" ${isAdmin?'disabled':''}>Deactivate</button>
+          <button class="action-btn block-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Blocked')" ${isAdmin?'disabled':''}>Block</button>
+          <button class="action-btn delete-btn" onclick="adminDeleteUser('${escapeAttr(x.email)}')" ${isAdmin?'disabled':''}>Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+const ISP_OLD_LOAD_ADMIN_142 = typeof loadAdmin === 'function' ? loadAdmin : null;
+loadAdmin = async function(){
+  showLoader('Opening admin panel...','Loading users and controls');
+  const u=currentUser(); 
+  if(!u.email||u.role!=='Admin'){location.href='index.html';return}
+  if(qs('adminEmail'))qs('adminEmail').textContent=u.email;
+  const r=await api('adminStats',{token:token()}); 
+  hideLoader();
+  if(r.success){
+    ISP_ADMIN_USERS=r.users||[]; 
+    if(qs('totalUsers'))qs('totalUsers').textContent=r.totalUsers||0; 
+    if(qs('activeUsers'))qs('activeUsers').textContent=r.activeUsers||0; 
+    if(qs('blockedUsers'))qs('blockedUsers').textContent=ISP_ADMIN_USERS.filter(x=>['blocked','deactivated'].includes(String(x.status).toLowerCase())).length; 
+    if(qs('adminCount'))qs('adminCount').textContent=ISP_ADMIN_USERS.filter(x=>x.role==='Admin').length||1; 
+    renderUsersTable(ISP_ADMIN_USERS); 
+    renderRecentUsersV14(ISP_ADMIN_USERS); 
+    renderAdminLogsLocal();
+  }else alert(r.message);
+};
+
+
+/* ===== v14.3 Admin Email Notification UI Note ===== */
+const ISP_OLD_RENDER_USERS_143 = renderUsersTable;
+renderUsersTable = function(users){
+  ISP_OLD_RENDER_USERS_143(users);
+  document.querySelectorAll('#usersTable tr td:last-child').forEach(td => {
+    if(!td.querySelector('.email-note')){
+      const note=document.createElement('div');
+      note.className='email-note';
+      note.textContent='Email will be sent to user';
+      td.appendChild(note);
+    }
+  });
+};
