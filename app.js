@@ -887,3 +887,171 @@ renderLearningPosts = function(posts, listId){
   `).join('');
   setLearningListHtml(listId, html);
 };
+
+
+/* ===== v12 Learning Experience Upgrade ===== */
+let ISP_CURRENT_READER_POST = null;
+let ISP_LATEST_POSTS = [];
+
+function toast(message){
+  let el = document.getElementById('ispToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'ispToast';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = message;
+  el.classList.add('active');
+  setTimeout(()=>el.classList.remove('active'), 1800);
+}
+
+function ensureFullBrand(){
+  document.querySelectorAll('.side-brand h2').forEach(el => {
+    el.textContent = 'IAS Selection Point';
+  });
+}
+
+async function loadLatestArticles(){
+  const box = qs('latestArticles');
+  if(!box) return;
+  box.innerHTML = "<p class='muted'>Loading latest articles...</p>";
+  try{
+    const data = await bloggerAllPostsJsonp(20);
+    const entries = data.feed?.entry || [];
+    ISP_LATEST_POSTS = entries.map(entryToPost).map(p => ({...p, moduleName:'Latest Articles', categoryTitle:'Latest'}));
+    if(!ISP_LATEST_POSTS.length){
+      box.innerHTML = "<p class='muted'>No latest articles found.</p>";
+      return;
+    }
+    box.innerHTML = ISP_LATEST_POSTS.slice(0,8).map((p,i)=>`
+      <div class="post-item" onclick="openLatestReader(${i})">
+        <span class="latest-badge">Latest</span>
+        <h4>${escapeHtml(p.title)}</h4>
+        <p>${escapeHtml(p.plain)}...</p>
+        <span class="post-meta">${escapeHtml(p.published || '')} · Read Article</span>
+        <div class="article-actions" onclick="event.stopPropagation()">
+          <button onclick="quickSavePost('latest', ${i})">🔖 Save</button>
+          <button onclick="quickSharePost('latest', ${i})">📤 Share</button>
+        </div>
+      </div>
+    `).join('');
+  }catch(err){
+    box.innerHTML = `<p class="muted">Latest articles could not be loaded.</p><div class="feed-debug">${escapeHtml(err.message)}</div>`;
+  }
+}
+
+function openLatestReader(index){
+  ISP_LOADED_POSTS = ISP_LATEST_POSTS;
+  openPostReader(index);
+}
+
+const ISP_ORIGINAL_OPEN_POST_READER_V12 = openPostReader;
+openPostReader = function(index){
+  const p = ISP_LOADED_POSTS[index];
+  ISP_CURRENT_READER_POST = p || null;
+  ISP_ORIGINAL_OPEN_POST_READER_V12(index);
+}
+
+function saveCurrentArticle(){
+  if(!ISP_CURRENT_READER_POST){toast('No article selected');return}
+  saveArticleToBookmarks(ISP_CURRENT_READER_POST);
+}
+
+function saveArticleToBookmarks(post){
+  const u=currentUser().email || 'guest';
+  const key='isp_bookmarks_'+u;
+  const arr=JSON.parse(localStorage.getItem(key)||'[]');
+  const exists = arr.some(x => x.url === post.link || x.title === post.title);
+  if(!exists){
+    arr.unshift({id:Date.now(), title:post.title, url:post.link || post.title});
+    localStorage.setItem(key,JSON.stringify(arr));
+  }
+  loadBookmarks();
+  toast('Saved to bookmarks');
+}
+
+function quickSavePost(source, index){
+  const post = source === 'latest' ? ISP_LATEST_POSTS[index] : ISP_LOADED_POSTS[index];
+  if(post) saveArticleToBookmarks(post);
+}
+
+async function shareCurrentArticle(){
+  if(!ISP_CURRENT_READER_POST){toast('No article selected');return}
+  await sharePost(ISP_CURRENT_READER_POST);
+}
+
+async function quickSharePost(source, index){
+  const post = source === 'latest' ? ISP_LATEST_POSTS[index] : ISP_LOADED_POSTS[index];
+  if(post) await sharePost(post);
+}
+
+async function sharePost(post){
+  const data = {title:post.title, text:post.plain || post.title, url:post.link || location.href};
+  if(navigator.share){
+    try{ await navigator.share(data); }catch(e){}
+  }else{
+    await navigator.clipboard.writeText(`${post.title}\n${post.link || location.href}`);
+    toast('Article link copied');
+  }
+}
+
+async function copyCurrentArticleLink(){
+  if(!ISP_CURRENT_READER_POST){toast('No article selected');return}
+  await navigator.clipboard.writeText(ISP_CURRENT_READER_POST.link || location.href);
+  toast('Article link copied');
+}
+
+function runGlobalSearch(){
+  const q = (qs('globalSearch')?.value || '').trim().toLowerCase();
+  const panel = qs('searchResultsPanel');
+  const box = qs('globalSearchResults');
+  if(!panel || !box) return;
+  if(q.length < 2){
+    panel.style.display='none';
+    return;
+  }
+  panel.style.display='block';
+  const pool = [...ISP_LATEST_POSTS, ...ISP_LOADED_POSTS];
+  const seen = new Set();
+  const results = pool.filter(p => {
+    const key = p.link || p.title;
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return p.title.toLowerCase().includes(q) || p.plain.toLowerCase().includes(q);
+  }).slice(0,12);
+  if(!results.length){
+    box.innerHTML = "<p class='muted'>No matching article loaded yet. Open a module/category or refresh latest articles.</p>";
+    return;
+  }
+  box.innerHTML = results.map((p,i)=>`
+    <div class="post-item" onclick="openSearchReader(${i})">
+      <span class="module-tag">${escapeHtml(p.moduleName || 'Article')}</span>
+      <h4>${escapeHtml(p.title)}</h4>
+      <p>${escapeHtml(p.plain)}...</p>
+      <span class="post-meta">${escapeHtml(p.categoryTitle || '')} · Read Article</span>
+    </div>
+  `).join('');
+  window.ISP_SEARCH_RESULTS = results;
+}
+
+function openSearchReader(index){
+  ISP_LOADED_POSTS = window.ISP_SEARCH_RESULTS || [];
+  openPostReader(index);
+}
+
+function clearGlobalSearch(){
+  if(qs('globalSearch')) qs('globalSearch').value='';
+  if(qs('searchResultsPanel')) qs('searchResultsPanel').style.display='none';
+}
+
+const ISP_OLD_LOAD_DASHBOARD_V12 = loadDashboard;
+loadDashboard = async function(){
+  ensureFullBrand();
+  await ISP_OLD_LOAD_DASHBOARD_V12();
+  setTimeout(()=> {
+    ensureFullBrand();
+    loadLatestArticles();
+    renderContinueReading();
+  }, 500);
+}

@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=11" />
+  <link rel="stylesheet" href="style.css?v=12" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v11 Feed Fixed</div>
+  <div class="version-badge">v12 Learning Experience</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -29,6 +29,11 @@
       </div>
     </div>
     <div class="reading-progress"><span id="readingProgress"></span></div>
+    <div class="reader-actionbar">
+      <button onclick="saveCurrentArticle()">🔖 Save</button>
+      <button onclick="shareCurrentArticle()">📤 Share</button>
+      <button onclick="copyCurrentArticleLink()">🔗 Copy Link</button>
+    </div>
     <article id="readerBody" class="reader-body"></article>
   </div>
 
@@ -37,7 +42,7 @@
       <div class="side-brand">
         <img src="logo.jpg" alt="IAS Selection Point Logo" />
         <div>
-          <h2>IAS Selection</h2>
+          <h2>IAS Selection Point</h2>
           <p>Learning Portal</p>
         </div>
       </div>
@@ -62,7 +67,10 @@
           <h1>Welcome, <span id="memberName">Member</span> 👋</h1>
           <p><span id="memberEmail"></span> · <span id="memberStatus"></span></p>
         </div>
-        <div class="admin-chip">Professional Study Member</div>
+        <div class="header-actions">
+          <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
+          <div class="admin-chip">Professional Study Member</div>
+        </div>
       </header>
 
       <section id="overview" class="dash-section active">
@@ -71,6 +79,24 @@
           <div class="stat-card green"><span>🏛️</span><h3>13</h3><p>PSIR Categories</p></div>
           <div class="stat-card purple"><span>📝</span><h3 id="notesCount">0</h3><p>Notes</p></div>
           <div class="stat-card orange"><span>🔖</span><h3 id="bookmarkCount">0</h3><p>Bookmarks</p></div>
+        </div>
+
+        <div class="pro-panel search-results-panel" id="searchResultsPanel" style="display:none;">
+          <div class="panel-head">
+            <h3>🔍 Search Results</h3>
+            <button class="mini-btn" onclick="clearGlobalSearch()">Clear</button>
+          </div>
+          <div id="globalSearchResults" class="post-list"></div>
+        </div>
+
+        <div class="pro-panel">
+          <div class="panel-head">
+            <h3>🔥 Latest Articles</h3>
+            <button class="mini-btn" onclick="loadLatestArticles()">Refresh</button>
+          </div>
+          <div id="latestArticles" class="post-list">
+            <p class="muted">Latest articles will load automatically.</p>
+          </div>
         </div>
 
         <div class="two-col">
@@ -176,7 +202,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=11"></script>
-  <script src="app.js?v=11"></script>
+  <script src="config.js?v=12"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>
