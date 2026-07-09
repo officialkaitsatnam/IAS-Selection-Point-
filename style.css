@@ -1690,84 +1690,119 @@ body.portal-dark .header-bell-btn{
 }
 
 
-/* ===== v20 Enterprise Safe Logo Patch ===== */
-/* This patch intentionally does NOT modify portal-shell, sidebar layout, or mobile layout structure. */
-.isp-brand-safe{
-  display:block!important;
-  width:100%!important;
-  padding:8px 6px 12px!important;
-  margin:0 auto 8px!important;
-  text-align:center!important;
-}
-.brand-home-btn{
-  display:block!important;
-  width:100%!important;
-  border:0!important;
-  background:transparent!important;
-  padding:0!important;
-  margin:0!important;
-  cursor:pointer!important;
-  text-align:center!important;
-}
-.brand-logo-wrap{
+/* ===== v20.1 STABLE REPAIR: CSS-only logo fix ===== */
+/* Built from v19 working base. No HTML layout replacement. */
+
+.portal-shell{
   display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
   width:100%!important;
-  max-width:205px!important;
-  height:86px!important;
-  margin:0 auto!important;
-  padding:9px 12px!important;
-  border-radius:22px!important;
-  background:#ffffff!important;
-  box-shadow:0 10px 26px rgba(0,0,0,.15)!important;
-  overflow:hidden!important;
 }
-.brand-logo-wrap img{
+
+.sidebar-pro{
+  flex:0 0 230px!important;
+  width:230px!important;
+  min-width:230px!important;
+  max-width:230px!important;
+}
+
+.portal-main{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+
+/* Make existing v19 logo look like website header */
+.side-brand.full-logo-brand{
   display:block!important;
-  width:100%!important;
-  height:100%!important;
-  max-width:185px!important;
-  max-height:68px!important;
+  text-align:center!important;
+  padding:8px 8px 12px!important;
+  margin:0 auto 8px!important;
+}
+
+.side-brand.full-logo-brand img{
+  display:block!important;
+  width:190px!important;
+  max-width:100%!important;
+  height:82px!important;
+  max-height:82px!important;
   object-fit:contain!important;
-  border:0!important;
-  outline:0!important;
-  padding:0!important;
-  margin:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  border-radius:0!important;
+  background:#ffffff!important;
+  border-radius:22px!important;
+  padding:8px 10px!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.14)!important;
+  margin:0 auto!important;
 }
-.brand-tagline{
+
+/* Slogan full visible */
+.side-brand.full-logo-brand .brand-slogan,
+.full-logo-brand .brand-slogan{
   display:block!important;
+  width:100%!important;
+  max-width:210px!important;
   margin:8px auto 0!important;
-  max-width:220px!important;
   color:#ffffff!important;
   font-size:11.5px!important;
-  line-height:1.25!important;
+  line-height:1.22!important;
   font-weight:900!important;
   text-align:center!important;
   white-space:normal!important;
   overflow:visible!important;
   text-overflow:clip!important;
 }
+
 .side-nav button{
-  font-weight:900!important;
+  font-weight:950!important;
 }
+
+/* Admin/dashboard content must remain visible */
+.admin-section.active,
+.dash-section.active{
+  display:block!important;
+}
+
+/* Mobile safe layout */
 @media(max-width:900px){
-  .isp-brand-safe{
-    padding:8px 6px 10px!important;
+  .portal-shell{
+    display:block!important;
   }
-  .brand-logo-wrap{
-    max-width:215px!important;
-    height:88px!important;
+  .sidebar-pro{
+    width:100%!important;
+    min-width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
   }
-  .brand-logo-wrap img{
-    max-width:195px!important;
-    max-height:70px!important;
+  .portal-main{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    overflow:visible!important;
   }
-  .brand-tagline{
-    font-size:11.5px!important;
+  .side-brand.full-logo-brand img{
+    width:210px!important;
+    height:90px!important;
+    max-height:90px!important;
+  }
+  .side-brand.full-logo-brand .brand-slogan,
+  .full-logo-brand .brand-slogan{
+    font-size:12px!important;
     max-width:240px!important;
+  }
+  .side-nav{
+    display:grid!important;
+    grid-template-columns:repeat(2,1fr)!important;
+    gap:8px!important;
+  }
+  .stats-grid-pro{
+    grid-template-columns:repeat(2,1fr)!important;
+  }
+}
+
+@media(max-width:480px){
+  .side-nav{
+    grid-template-columns:1fr!important;
+  }
+  .stats-grid-pro{
+    grid-template-columns:1fr!important;
   }
 }

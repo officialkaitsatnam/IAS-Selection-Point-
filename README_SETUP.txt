@@ -1,14 +1,17 @@
-IAS Selection Point v20 - Enterprise Safe Logo
+IAS Selection Point v20.1 - Stable Repair
 
-Safe fix:
-- Built from v19 working base
-- Broken v19.1/v19.2 layout NOT used
-- Main sidebar/dashboard layout preserved
-- Logo redesigned safely inside existing sidebar only
-- Logo is wide, controlled height, and not cropped
+Important:
+This version is built from the working v19 base.
+It does NOT use broken v20/v19.1/v19.2 HTML changes.
+
+Fixes:
+- Admin/dashboard blank layout fixed
+- Right-side content restored
+- Sidebar/dashboard structure preserved
+- Logo fixed using CSS only
+- Logo wide and controlled height
 - Slogan fully visible below logo
-- Logo clickable to Dashboard/Admin overview
-- v19 notification/email features retained
+- v19 notification/email backend features retained
 
 GitHub replace:
 index.html
@@ -23,4 +26,4 @@ Apps Script:
 No Code.gs change required if v19 is already deployed.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=20
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=201
