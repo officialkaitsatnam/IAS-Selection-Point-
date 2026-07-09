@@ -512,3 +512,61 @@ async function sendBulkEmail(){
   showSmall('bulkEmailMsg', r.message, r.success);
   if(r.success){ qs('bulkEmailSubject').value=''; qs('bulkEmailBody').value=''; }
 }
+
+
+/* ===== v16: show 5 posts per page with Next / Previous ===== */
+let ISP_POST_PAGE = 1;
+const ISP_POSTS_PER_PAGE = 5;
+let ISP_CURRENT_LIST_ID = "";
+
+function paginatePosts(posts, page){
+  const start = (page - 1) * ISP_POSTS_PER_PAGE;
+  return posts.slice(start, start + ISP_POSTS_PER_PAGE);
+}
+
+function renderLearningPosts(posts, listId){
+  ISP_CURRENT_LIST_ID = listId;
+  const total = posts.length;
+  const totalPages = Math.max(1, Math.ceil(total / ISP_POSTS_PER_PAGE));
+  if(ISP_POST_PAGE > totalPages) ISP_POST_PAGE = totalPages;
+  if(ISP_POST_PAGE < 1) ISP_POST_PAGE = 1;
+
+  const pagePosts = paginatePosts(posts, ISP_POST_PAGE);
+  const html = pagePosts.map((p, localIndex) => {
+    const realIndex = ((ISP_POST_PAGE - 1) * ISP_POSTS_PER_PAGE) + localIndex;
+    return `<div class="post-item" onclick="openPostReader(${realIndex})">
+      <span class="module-tag">${escapeHtml(p.moduleName || '')}</span>
+      <h4>${escapeHtml(p.title)}</h4>
+      <p>${escapeHtml(p.plain)}...</p>
+      <span class="post-meta">${escapeHtml(p.categoryTitle || ISP_CURRENT_CATEGORY)} ${p.published ? '· ' + escapeHtml(p.published) : ''} · Read Article</span>
+      <div class="article-actions" onclick="event.stopPropagation()">
+        <button onclick="quickSavePost('loaded',${realIndex})">🔖 Save</button>
+        <button onclick="quickSharePost('loaded',${realIndex})">📤 Share</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const pagination = total > ISP_POSTS_PER_PAGE ? `
+    <div class="pagination-bar">
+      <button onclick="changePostPage(-1)" ${ISP_POST_PAGE <= 1 ? 'disabled' : ''}>← Previous</button>
+      <span class="pagination-info">Showing ${((ISP_POST_PAGE-1)*ISP_POSTS_PER_PAGE)+1}-${Math.min(ISP_POST_PAGE*ISP_POSTS_PER_PAGE,total)} of ${total} posts · Page ${ISP_POST_PAGE} of ${totalPages}</span>
+      <button onclick="changePostPage(1)" ${ISP_POST_PAGE >= totalPages ? 'disabled' : ''}>Next →</button>
+    </div>` : '';
+
+  setLearningListHtml(listId, html + pagination);
+}
+
+function changePostPage(direction){
+  ISP_POST_PAGE += direction;
+  renderLearningPosts(ISP_LOADED_POSTS, ISP_CURRENT_LIST_ID || listIdForModule(ISP_ACTIVE_MODULE || 'knowledge'));
+  const el = qs(ISP_CURRENT_LIST_ID || '');
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+if(typeof loadV13Category === 'function'){
+  const ISP_OLD_LOAD_V13_CATEGORY_V16 = loadV13Category;
+  loadV13Category = async function(moduleKey,label,title,moduleName){
+    ISP_POST_PAGE = 1;
+    await ISP_OLD_LOAD_V13_CATEGORY_V16(moduleKey,label,title,moduleName);
+  }
+}
