@@ -1,12 +1,13 @@
-IAS Selection Point v14.3 - Admin Email Notifications
+IAS Selection Point v16.1 - Compact UI Fix
 
-New:
-- When admin activates a user, user receives email.
-- When admin deactivates a user, user receives email.
-- When admin blocks a user, user receives email.
-- When admin deletes a user, user receives email.
-- Email logs continue saving in EMAIL_LOGS sheet.
-- Professional IAS Selection Point email template.
+Fixes:
+- Dashboard now looks less zoomed and more compact
+- More content fits on one screen
+- Sidebar is scrollable so Logout is easy to access
+- Category post list shows title only
+- Post preview/matter is hidden from list
+- 5 posts per page + Next/Previous retained
+- Footer retained with only selected 6 links
 
 GitHub replace:
 index.html
@@ -17,11 +18,8 @@ app.js
 config.js
 logo.jpg
 
-Apps Script required:
-1. Replace Code.gs
-2. Save
-3. Run initializeSystem once
-4. Deploy > Manage deployments > Edit > New version > Deploy
+Apps Script:
+No Code.gs change required if v15/v16 is working.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=143
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=161
