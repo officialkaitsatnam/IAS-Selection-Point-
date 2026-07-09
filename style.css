@@ -1690,40 +1690,74 @@ body.portal-dark .header-bell-btn{
 }
 
 
-/* ===== v19.1 Logo Header Fix: website-style branding ===== */
+/* ===== v19.2 SAFE LAYOUT + LOGO FIX ===== */
+
+/* Reset any broken mobile squeeze */
+html, body{
+  width:100%!important;
+  min-width:0!important;
+}
+body{
+  zoom:1!important;
+  overflow:auto!important;
+}
+.portal-shell{
+  width:100%!important;
+  min-width:0!important;
+  display:flex!important;
+  align-items:stretch!important;
+  overflow:visible!important;
+}
+
+/* Desktop layout */
 .sidebar-pro{
   width:245px!important;
   min-width:245px!important;
+  max-width:245px!important;
+  height:100vh!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
   padding:10px!important;
 }
+.portal-main{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+  height:100vh!important;
+  overflow-y:auto!important;
+  padding:14px!important;
+}
+
+/* Website-like logo: wide, not tall, not cropped */
 .full-logo-brand{
   display:block!important;
-  text-align:center!important;
   width:100%!important;
+  text-align:center!important;
   padding:8px 0 12px!important;
   margin:0 auto 8px!important;
 }
 .brand-logo-box{
-  width:100%!important;
-  max-width:210px!important;
-  height:96px!important;
+  width:205px!important;
+  max-width:100%!important;
+  height:88px!important;
   margin:0 auto!important;
-  background:linear-gradient(135deg,#eaf5ff,#ffffff)!important;
-  border-radius:22px!important;
+  background:#ffffff!important;
+  border-radius:20px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
-  padding:10px 12px!important;
-  box-shadow:0 10px 26px rgba(0,0,0,.15)!important;
-  overflow:visible!important;
+  padding:8px 10px!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.14)!important;
+  overflow:hidden!important;
 }
-.full-logo-brand img,
-.brand-logo-box img{
+.brand-logo-box img,
+.full-logo-brand img{
   width:100%!important;
-  height:auto!important;
-  max-height:78px!important;
+  height:100%!important;
+  max-height:72px!important;
   object-fit:contain!important;
   display:block!important;
+  border:0!important;
   border-radius:0!important;
   padding:0!important;
   margin:0!important;
@@ -1732,35 +1766,99 @@ body.portal-dark .header-bell-btn{
 }
 .brand-slogan{
   display:block!important;
-  width:100%!important;
-  max-width:230px!important;
   margin:8px auto 0!important;
   color:#ffffff!important;
-  font-size:12px!important;
-  line-height:1.25!important;
+  font-size:11.5px!important;
+  line-height:1.2!important;
   font-weight:900!important;
   text-align:center!important;
+  max-width:220px!important;
   white-space:normal!important;
   overflow:visible!important;
-  text-overflow:clip!important;
 }
+
+/* Sidebar stronger buttons */
 .side-nav button{
   font-weight:950!important;
+  letter-spacing:.1px!important;
 }
+
+/* Keep normal desktop cards */
+.stats-grid-pro{
+  grid-template-columns:repeat(4,minmax(150px,1fr))!important;
+}
+
+/* Mobile/tablet: stack, never squeeze to left strip */
 @media(max-width:900px){
+  body{
+    overflow:auto!important;
+  }
+  .portal-shell{
+    display:block!important;
+    height:auto!important;
+    min-height:100vh!important;
+    overflow:visible!important;
+  }
   .sidebar-pro{
     width:100%!important;
     min-width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:12px!important;
+  }
+  .portal-main{
+    width:100%!important;
+    height:auto!important;
+    overflow:visible!important;
+    padding:12px!important;
+  }
+  .full-logo-brand{
+    padding:6px 0 10px!important;
   }
   .brand-logo-box{
-    max-width:230px!important;
-    height:100px!important;
+    width:230px!important;
+    height:96px!important;
   }
-  .full-logo-brand img,
-  .brand-logo-box img{
-    max-height:82px!important;
+  .brand-logo-box img,
+  .full-logo-brand img{
+    max-height:78px!important;
   }
   .brand-slogan{
     font-size:12px!important;
+    max-width:260px!important;
+  }
+  .side-nav{
+    display:grid!important;
+    grid-template-columns:repeat(2,1fr)!important;
+    gap:8px!important;
+  }
+  .side-logout{
+    position:static!important;
+    width:100%!important;
+    margin-top:10px!important;
+  }
+  .stats-grid-pro{
+    grid-template-columns:repeat(2,1fr)!important;
+  }
+  .three-col,
+  .two-col,
+  .compact-two{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* Very small phones */
+@media(max-width:480px){
+  .side-nav{
+    grid-template-columns:1fr!important;
+  }
+  .stats-grid-pro{
+    grid-template-columns:1fr!important;
+  }
+  .brand-logo-box{
+    width:220px!important;
+    height:92px!important;
   }
 }
