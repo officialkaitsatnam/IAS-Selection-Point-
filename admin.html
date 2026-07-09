@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=162" />
+  <link rel="stylesheet" href="style.css?v=163" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v16.2 Footer Reader</div>
+  <div class="version-badge">v16.3 Footer Modal</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -16,14 +16,14 @@
     </div>
   </div>
 
-  
   <div class="footer-page-modal" id="footerPageModal">
-    <div class="footer-page-header">
-      <button onclick="closeFooterPage()">← Back</button>
-      <h3 id="footerPageTitle">Page</h3>
-      <button onclick="openFooterExternal()">Open Website</button>
+    <div class="footer-page-card">
+      <div class="footer-page-header">
+        <button onclick="closeFooterPage()">← Back</button>
+        <h3 id="footerPageTitle">Page</h3>
+      </div>
+      <div id="footerPageContent" class="footer-page-content"></div>
     </div>
-    <iframe id="footerPageFrame" class="footer-page-frame" src=""></iframe>
   </div>
 
   <div class="portal-shell">
@@ -138,17 +138,17 @@
           </div>
         </div>
         <div class="footer-links footer-pipe-links">
-          <button onclick="openFooterPage('About Us','https://iasselectionpoint.blogspot.com/p/about-us.html')">About Us</button>
+          <button onclick="openFooterPage('about')">About Us</button>
           <span>|</span>
-          <button onclick="openFooterPage('Contact Us','https://iasselectionpoint.blogspot.com/p/contact-us.html')">Contact Us</button>
+          <button onclick="openFooterPage('contact')">Contact Us</button>
           <span>|</span>
-          <button onclick="openFooterPage('Cookies Policy','https://iasselectionpoint.blogspot.com/p/cookies-policy.html')">Cookies Policy</button>
+          <button onclick="openFooterPage('cookies')">Cookies Policy</button>
           <span>|</span>
-          <button onclick="openFooterPage('Privacy Policy','https://iasselectionpoint.blogspot.com/p/privacy-policy.html')">Privacy Policy</button>
+          <button onclick="openFooterPage('privacy')">Privacy Policy</button>
           <span>|</span>
-          <button onclick="openFooterPage('Terms & Conditions','https://iasselectionpoint.blogspot.com/p/terms-conditions.html')">Terms & Conditions</button>
+          <button onclick="openFooterPage('terms')">Terms & Conditions</button>
           <span>|</span>
-          <button onclick="openFooterPage('Disclaimer','https://iasselectionpoint.blogspot.com/p/disclaimer.html')">Disclaimer</button>
+          <button onclick="openFooterPage('disclaimer')">Disclaimer</button>
         </div>
         <div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
       </footer>
@@ -156,7 +156,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=162"></script>
-  <script src="app.js?v=162"></script>
+  <script src="config.js?v=163"></script>
+  <script src="app.js?v=163"></script>
 </body>
 </html>

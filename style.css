@@ -1378,3 +1378,113 @@ body{
     margin-top:8px!important;
   }
 }
+
+
+/* ===== v16.3 Clean Footer Modal + Website-like Logo Fix ===== */
+.sidebar-pro{
+  width:250px!important;
+}
+.full-logo-brand{
+  padding:5px 5px 10px!important;
+}
+.full-logo-brand img{
+  width:138px!important;
+  max-height:74px!important;
+  height:auto!important;
+  object-fit:contain!important;
+  border-radius:12px!important;
+  padding:5px!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.12)!important;
+}
+.brand-slogan{
+  font-size:11px!important;
+  margin-top:5px!important;
+  line-height:1.2!important;
+}
+.side-nav button{
+  padding:8px 10px!important;
+  font-size:12px!important;
+}
+.footer-page-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.52);
+  z-index:20000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  backdrop-filter:blur(5px);
+}
+.footer-page-modal.active{
+  display:flex;
+}
+.footer-page-card{
+  width:min(880px,96vw);
+  max-height:88vh;
+  background:#ffffff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.26);
+  display:flex;
+  flex-direction:column;
+}
+.footer-page-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 16px;
+  background:linear-gradient(135deg,#0b5ed7,#092a55);
+  color:#fff;
+}
+.footer-page-header h3{
+  flex:1;
+  margin:0;
+  color:#fff;
+}
+.footer-page-header button{
+  border:0;
+  background:#fff;
+  color:#0b5ed7;
+  padding:9px 12px;
+  border-radius:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+.footer-page-content{
+  padding:24px;
+  overflow:auto;
+  line-height:1.75;
+  color:#24364f;
+}
+.footer-page-content h2{
+  margin-top:0;
+  color:#10233f;
+}
+.footer-page-content .info-box{
+  background:#f8fbff;
+  border:1px solid #e2eefc;
+  border-radius:16px;
+  padding:14px;
+  margin:14px 0;
+}
+.footer-page-content a{
+  color:#0b5ed7;
+  font-weight:800;
+  text-decoration:none;
+}
+.footer-page-frame{
+  display:none!important;
+}
+@media(max-width:850px){
+  .full-logo-brand img{
+    width:125px!important;
+    max-height:68px!important;
+  }
+  .footer-page-modal{
+    padding:10px;
+  }
+  .footer-page-content{
+    padding:16px;
+  }
+}

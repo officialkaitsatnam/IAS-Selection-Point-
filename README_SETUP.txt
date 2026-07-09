@@ -1,13 +1,11 @@
-IAS Selection Point v16.1 - Compact UI Fix
+IAS Selection Point v16.3 - Clean Footer Modal + Logo Fix
 
 Fixes:
-- Dashboard now looks less zoomed and more compact
-- More content fits on one screen
-- Sidebar is scrollable so Logout is easy to access
-- Category post list shows title only
-- Post preview/matter is hidden from list
-- 5 posts per page + Next/Previous retained
-- Footer retained with only selected 6 links
+- Footer links no longer load full Blogger website layout.
+- Footer pages open in clean dashboard modal content.
+- Logo height reduced to look closer to website header logo.
+- Sidebar compact polish.
+- Existing post pagination and title-only list retained.
 
 GitHub replace:
 index.html
@@ -19,7 +17,7 @@ config.js
 logo.jpg
 
 Apps Script:
-No Code.gs change required if v15/v16 is working.
+No Code.gs change required if v15 is working.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=161
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=163

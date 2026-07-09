@@ -664,3 +664,83 @@ function renderLearningPosts(posts, listId){
 
   setLearningListHtml(listId, html + pagination);
 }
+
+
+/* ===== v16.3 Clean Footer Content Modal ===== */
+const ISP_FOOTER_PAGES = {
+  about: {
+    title: 'About Us',
+    html: `<h2>About IAS Selection Point</h2>
+      <p><b>IAS Selection Point</b> is a professional learning portal created for students and aspirants who want organized study content in one place.</p>
+      <div class="info-box">
+        <b>Our purpose:</b> To provide study resources, current affairs, political science content, general knowledge, and exam-related material through a clean member dashboard.
+      </div>
+      <p>The portal is designed to help learners read articles, save bookmarks, create notes, and continue their preparation with a focused interface.</p>`
+  },
+  contact: {
+    title: 'Contact Us',
+    html: `<h2>Contact Us</h2>
+      <p>You can contact IAS Selection Point for support, account-related help, content queries, or portal access issues.</p>
+      <div class="info-box">
+        <p><b>Email:</b> <a href="mailto:kaitsatnam@gmail.com">kaitsatnam@gmail.com</a></p>
+        <p><b>Website:</b> <a href="https://iasselectionpoint.blogspot.com/" target="_blank">IAS Selection Point</a></p>
+      </div>
+      <p>For account activation, deactivation, blocking, or password-related issues, please contact the admin.</p>`
+  },
+  cookies: {
+    title: 'Cookies Policy',
+    html: `<h2>Cookies Policy</h2>
+      <p>IAS Selection Point may use browser storage and cookies to improve user experience and keep the portal working properly.</p>
+      <div class="info-box">
+        <b>Examples:</b> Login session, bookmarks, reading history, dashboard settings, and local preferences.
+      </div>
+      <p>By using this portal, you agree that essential cookies or local storage may be used for functionality and security.</p>`
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    html: `<h2>Privacy Policy</h2>
+      <p>IAS Selection Point respects user privacy. The portal may store basic account details such as name, email, mobile number, account status, login records, notes, and profile details.</p>
+      <div class="info-box">
+        <b>Use of data:</b> Account management, login access, password reset, admin controls, email notifications, and learning portal features.
+      </div>
+      <p>Your information is not intended to be sold or misused. Account-related emails may be sent for security and portal communication.</p>`
+  },
+  terms: {
+    title: 'Terms & Conditions',
+    html: `<h2>Terms & Conditions</h2>
+      <p>By using IAS Selection Point Learning Portal, users agree to use the platform for educational and lawful purposes only.</p>
+      <div class="info-box">
+        <b>User responsibility:</b> Keep login details secure, do not misuse the portal, and respect the content and access rules.
+      </div>
+      <p>Admin may activate, deactivate, block, or delete accounts when required for portal management, security, or misuse prevention.</p>`
+  },
+  disclaimer: {
+    title: 'Disclaimer',
+    html: `<h2>Disclaimer</h2>
+      <p>The information provided on IAS Selection Point is for educational and general information purposes only.</p>
+      <div class="info-box">
+        <b>Accuracy:</b> We try to provide useful and accurate study material, but users should verify important information from official sources when needed.
+      </div>
+      <p>IAS Selection Point will not be responsible for any loss or issue caused by relying solely on the information published on the website or portal.</p>`
+  }
+};
+
+function openFooterPage(key){
+  const data = ISP_FOOTER_PAGES[key];
+  if(!data) return;
+  const modal = qs('footerPageModal');
+  const heading = qs('footerPageTitle');
+  const content = qs('footerPageContent');
+  if(heading) heading.textContent = data.title;
+  if(content) content.innerHTML = data.html;
+  if(modal) modal.classList.add('active');
+}
+
+function closeFooterPage(){
+  const modal = qs('footerPageModal');
+  if(modal) modal.classList.remove('active');
+}
+
+function openFooterExternal(){
+  // Kept for compatibility, but footer pages now open inside dashboard.
+}
