@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=18" />
+  <link rel="stylesheet" href="style.css?v=19" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v18 Performance + Tools</div>
+  <div class="version-badge">v19 Notification + Email</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -123,10 +123,15 @@
       <section id="adminNotify" class="admin-section">
         <div class="pro-panel">
           <h3>📢 Portal Notification</h3>
-          <p class="muted">Create a dashboard notification for members. It will be saved locally in this portal version.</p>
+          <p class="muted">Send a notification to all users or a single user. Email and dashboard notification both will be sent.</p>
+          <select id="notifyTarget" onchange="toggleNotifyEmailBox()">
+            <option value="all">All Active Users</option>
+            <option value="single">Single User</option>
+          </select>
+          <input id="notifyEmail" placeholder="User email for single notification" style="display:none;" />
           <input id="notifyTitle" placeholder="Notification title" />
           <textarea id="notifyBody" placeholder="Notification message..."></textarea>
-          <button class="primary-btn" onclick="savePortalNotification()">Publish Notification</button>
+          <button class="primary-btn" onclick="sendPortalNotification()">Send Notification</button>
           <p id="notifyMsg" class="small-msg"></p>
         </div>
       </section>
@@ -168,7 +173,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=18"></script>
-  <script src="app.js?v=18"></script>
+  <script src="config.js?v=19"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>

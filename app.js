@@ -1169,3 +1169,94 @@ if(typeof openDashSection === 'function'){
     if(id === 'library') updateReadingMiniStats();
   };
 }
+
+
+/* ===== v19 Backend Notifications + Daily Goal Email ===== */
+function toggleNotifyEmailBox(){
+  const target = qs('notifyTarget')?.value || 'all';
+  if(qs('notifyEmail')) qs('notifyEmail').style.display = target === 'single' ? 'block' : 'none';
+}
+
+async function sendPortalNotification(){
+  const target = qs('notifyTarget')?.value || 'all';
+  const email = qs('notifyEmail')?.value.trim() || '';
+  const title = qs('notifyTitle')?.value.trim() || '';
+  const body = qs('notifyBody')?.value.trim() || '';
+  if(!title || !body){ showSmall('notifyMsg','Title and message required.',false); return; }
+  if(target === 'single' && !email){ showSmall('notifyMsg','User email required.',false); return; }
+  showLoader('Sending notification...','Email and dashboard notification');
+  const r = await api('adminSendPortalNotification',{token:token(),target,email,title,body});
+  hideLoader();
+  showSmall('notifyMsg', r.message, r.success);
+  if(r.success){
+    if(qs('notifyEmail')) qs('notifyEmail').value='';
+    if(qs('notifyTitle')) qs('notifyTitle').value='';
+    if(qs('notifyBody')) qs('notifyBody').value='';
+  }
+}
+
+async function fetchBackendNotifications(){
+  const r = await api('getNotifications',{token:token()});
+  if(r && r.success){
+    const key = 'isp_notifications_' + (currentUser().email || 'guest');
+    const local = JSON.parse(localStorage.getItem(key) || '[]');
+    const byId = new Map(local.map(n => [String(n.id), n]));
+    (r.notifications || []).forEach(n => {
+      if(!byId.has(String(n.id))) byId.set(String(n.id), {...n, read:false});
+    });
+    const merged = Array.from(byId.values()).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    localStorage.setItem(key, JSON.stringify(merged.slice(0,80)));
+  }
+  renderNotifications();
+}
+
+function updateNotificationBadge(){
+  const arr = getNotifications ? getNotifications() : [];
+  const count = arr.filter(n => !n.read).length;
+  if(qs('notificationBadge')) qs('notificationBadge').textContent = count;
+  if(qs('notificationBadge')) qs('notificationBadge').style.display = count ? 'inline-block' : 'none';
+}
+
+if(typeof renderNotifications === 'function'){
+  const ISP_OLD_RENDER_NOTIFICATIONS_V19 = renderNotifications;
+  renderNotifications = function(){
+    ISP_OLD_RENDER_NOTIFICATIONS_V19();
+    updateNotificationBadge();
+  };
+}
+
+async function sendDailyGoalEmailIfNeeded(count){
+  const u = currentUser();
+  if(!u.email || count < 5) return;
+  const key = 'isp_goal_email_sent_' + u.email + '_' + todayKey();
+  if(localStorage.getItem(key)) return;
+  localStorage.setItem(key, '1');
+  try{
+    await api('sendDailyGoalCongrats',{token:token(),count});
+  }catch(e){}
+}
+
+if(typeof setDailyReadCount === 'function'){
+  const ISP_OLD_SET_DAILY_READ_COUNT_V19 = setDailyReadCount;
+  setDailyReadCount = function(n){
+    ISP_OLD_SET_DAILY_READ_COUNT_V19(n);
+    sendDailyGoalEmailIfNeeded(n);
+  };
+}
+
+if(typeof loadDashboard === 'function'){
+  const ISP_OLD_LOAD_DASHBOARD_V19 = loadDashboard;
+  loadDashboard = async function(){
+    await ISP_OLD_LOAD_DASHBOARD_V19();
+    setTimeout(fetchBackendNotifications, 700);
+    setInterval(fetchBackendNotifications, 60000);
+  };
+}
+
+if(typeof markAllNotificationsRead === 'function'){
+  const ISP_OLD_MARK_ALL_READ_V19 = markAllNotificationsRead;
+  markAllNotificationsRead = function(){
+    ISP_OLD_MARK_ALL_READ_V19();
+    updateNotificationBadge();
+  };
+}

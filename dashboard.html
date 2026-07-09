@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=18" />
+  <link rel="stylesheet" href="style.css?v=19" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v18 Performance + Tools</div>
+  <div class="version-badge">v19 Notification + Email</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -79,6 +79,7 @@
         </div>
         <div class="header-actions">
           <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
+          <button class="header-bell-btn" id="headerBellBtn" onclick="openDashSection('notificationsModule')">🔔<span id="notificationBadge">0</span></button>
           <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
           <div class="admin-chip">Professional Study Member</div>
         </div>
@@ -334,7 +335,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=18"></script>
-  <script src="app.js?v=18"></script>
+  <script src="config.js?v=19"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>

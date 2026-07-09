@@ -1618,3 +1618,73 @@ body.portal-dark .admin-chip,body.portal-dark .header-actions input{background:#
   .stats-grid-pro{grid-template-columns:repeat(2,1fr)!important}
   .compact-two{grid-template-columns:1fr!important}
 }
+
+
+/* ===== v19 Logo + Bell + Notification Email Upgrade ===== */
+.full-logo-brand img{
+  width:170px!important;
+  height:48px!important;
+  max-height:48px!important;
+  object-fit:contain!important;
+  padding:3px 9px!important;
+  border-radius:12px!important;
+}
+.brand-slogan{
+  white-space:nowrap!important;
+  font-size:9.6px!important;
+  line-height:1!important;
+  max-width:210px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.side-nav button{
+  font-weight:950!important;
+  letter-spacing:.1px!important;
+}
+.header-bell-btn{
+  position:relative;
+  border:0;
+  background:#eef6ff;
+  color:#0b5ed7;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(16,35,63,.08);
+}
+.header-bell-btn span{
+  position:absolute;
+  top:-5px;
+  right:-5px;
+  min-width:20px;
+  height:20px;
+  padding:0 5px;
+  border-radius:999px;
+  background:#ef4444;
+  color:#fff;
+  font-size:11px;
+  line-height:20px;
+  font-weight:900;
+}
+#notifyTarget{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #dbeafe;
+  margin-bottom:10px;
+  font-weight:800;
+}
+body.portal-dark .header-bell-btn{
+  background:#1f2937;
+  color:#fff;
+}
+@media(max-width:900px){
+  .full-logo-brand img{
+    width:155px!important;
+    height:44px!important;
+  }
+  .brand-slogan{
+    font-size:9px!important;
+  }
+}

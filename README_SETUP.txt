@@ -1,19 +1,16 @@
-IAS Selection Point v18 - Performance + Study Tools
+IAS Selection Point v19 - Notification + Email Upgrade
 
 New:
-- Portal speed improved with local feed cache and smart background prefetch
-- Logo smaller and low-height
-- Sidebar and dashboard scroll fixed
-- Dark/Light theme toggle
-- Pomodoro Study Timer
-- Daily Study Progress
-- Notification Center
-- Recently Read mini panel
-- Reading statistics: Today / Saved / Favourites
-- Favourite button added to article list
-- Title-only article list retained
-- 5 posts per page + Next/Previous retained
-- Footer modal retained
+- Logo height reduced more; wider website-like look
+- Slogan forced into single line
+- Sidebar buttons made bolder
+- Header bell notification icon with badge
+- Admin can send notification to:
+  1. All Active Users
+  2. Single User by email
+- Notification is sent by email and shown in user's dashboard notification center
+- Daily Study Progress: when user completes 5 articles, professional congratulations email is sent
+- Existing speed, dark mode, timer, footer modal, pagination retained
 
 GitHub replace:
 index.html
@@ -24,8 +21,11 @@ app.js
 config.js
 logo.jpg
 
-Apps Script:
-No Code.gs change required if v15 is working.
+Apps Script required for email + backend notifications:
+1. Replace Code.gs
+2. Save
+3. Run initializeSystem once
+4. Deploy > Manage deployments > Edit > New version > Deploy
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=18
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=19
