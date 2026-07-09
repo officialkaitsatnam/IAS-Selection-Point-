@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=19" />
+  <link rel="stylesheet" href="style.css?v=20" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v19 Notification + Email</div>
+  <div class="version-badge">v20 Enterprise Safe Logo</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -28,40 +28,14 @@
 
   <div class="portal-shell">
     <aside class="sidebar-pro">
-      <div class="side-brand full-logo-brand">
-        <img src="logo.jpg" alt="IAS Selection Point Logo" />
-        <p class="brand-slogan">Let's make your imagination true.</p>
+      <div class="side-brand isp-brand-safe">
+        <button class="brand-home-btn" onclick="openAdminSection ? openAdminSection('adminOverview') : location.href='admin.html'">
+          <span class="brand-logo-wrap">
+            <img src="logo.jpg" alt="IAS Selection Point Logo" />
+          </span>
+          <span class="brand-tagline">Let's make your imagination true.</span>
+        </button>
       </div>
-
-      <nav class="side-nav">
-        <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
-        <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
-        <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
-        <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
-        <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
-        <button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
-        <button onclick="location.href='dashboard.html'">👤 Member View</button>
-      </nav>
-
-      <button class="side-logout" onclick="logout()">Logout</button>
-    </aside>
-
-    <main class="portal-main">
-      <header class="portal-header">
-        <div>
-          <h1>Admin Dashboard</h1>
-          <p>Manage users, access, announcements and portal controls</p>
-        </div>
-        <div class="admin-chip">Admin: <b id="adminEmail">Loading...</b></div>
-      </header>
-
-      <section id="adminOverview" class="admin-section active">
-        <div class="stats-grid-pro">
-          <div class="stat-card blue"><span>👥</span><h3 id="totalUsers">0</h3><p>Total Users</p></div>
-          <div class="stat-card green"><span>✅</span><h3 id="activeUsers">0</h3><p>Active Users</p></div>
-          <div class="stat-card orange"><span>⛔</span><h3 id="blockedUsers">0</h3><p>Blocked Users</p></div>
-          <div class="stat-card purple"><span>🛡️</span><h3 id="adminCount">1</h3><p>Admins</p></div>
-        </div>
 
         <div class="two-col">
           <div class="pro-panel">
@@ -173,7 +147,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=19"></script>
-  <script src="app.js?v=19"></script>
+  <script src="config.js?v=20"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>

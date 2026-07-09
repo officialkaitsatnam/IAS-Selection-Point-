@@ -1688,3 +1688,86 @@ body.portal-dark .header-bell-btn{
     font-size:9px!important;
   }
 }
+
+
+/* ===== v20 Enterprise Safe Logo Patch ===== */
+/* This patch intentionally does NOT modify portal-shell, sidebar layout, or mobile layout structure. */
+.isp-brand-safe{
+  display:block!important;
+  width:100%!important;
+  padding:8px 6px 12px!important;
+  margin:0 auto 8px!important;
+  text-align:center!important;
+}
+.brand-home-btn{
+  display:block!important;
+  width:100%!important;
+  border:0!important;
+  background:transparent!important;
+  padding:0!important;
+  margin:0!important;
+  cursor:pointer!important;
+  text-align:center!important;
+}
+.brand-logo-wrap{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  max-width:205px!important;
+  height:86px!important;
+  margin:0 auto!important;
+  padding:9px 12px!important;
+  border-radius:22px!important;
+  background:#ffffff!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.15)!important;
+  overflow:hidden!important;
+}
+.brand-logo-wrap img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:185px!important;
+  max-height:68px!important;
+  object-fit:contain!important;
+  border:0!important;
+  outline:0!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.brand-tagline{
+  display:block!important;
+  margin:8px auto 0!important;
+  max-width:220px!important;
+  color:#ffffff!important;
+  font-size:11.5px!important;
+  line-height:1.25!important;
+  font-weight:900!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+.side-nav button{
+  font-weight:900!important;
+}
+@media(max-width:900px){
+  .isp-brand-safe{
+    padding:8px 6px 10px!important;
+  }
+  .brand-logo-wrap{
+    max-width:215px!important;
+    height:88px!important;
+  }
+  .brand-logo-wrap img{
+    max-width:195px!important;
+    max-height:70px!important;
+  }
+  .brand-tagline{
+    font-size:11.5px!important;
+    max-width:240px!important;
+  }
+}

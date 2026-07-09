@@ -1,16 +1,14 @@
-IAS Selection Point v19 - Notification + Email Upgrade
+IAS Selection Point v20 - Enterprise Safe Logo
 
-New:
-- Logo height reduced more; wider website-like look
-- Slogan forced into single line
-- Sidebar buttons made bolder
-- Header bell notification icon with badge
-- Admin can send notification to:
-  1. All Active Users
-  2. Single User by email
-- Notification is sent by email and shown in user's dashboard notification center
-- Daily Study Progress: when user completes 5 articles, professional congratulations email is sent
-- Existing speed, dark mode, timer, footer modal, pagination retained
+Safe fix:
+- Built from v19 working base
+- Broken v19.1/v19.2 layout NOT used
+- Main sidebar/dashboard layout preserved
+- Logo redesigned safely inside existing sidebar only
+- Logo is wide, controlled height, and not cropped
+- Slogan fully visible below logo
+- Logo clickable to Dashboard/Admin overview
+- v19 notification/email features retained
 
 GitHub replace:
 index.html
@@ -21,11 +19,8 @@ app.js
 config.js
 logo.jpg
 
-Apps Script required for email + backend notifications:
-1. Replace Code.gs
-2. Save
-3. Run initializeSystem once
-4. Deploy > Manage deployments > Edit > New version > Deploy
+Apps Script:
+No Code.gs change required if v19 is already deployed.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=19
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=20
