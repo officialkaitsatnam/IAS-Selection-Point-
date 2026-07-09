@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=192" />
+  <link rel="stylesheet" href="style.css?v=19" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v19.2 Safe Layout Fix</div>
+  <div class="version-badge">v19 Notification + Email</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -50,11 +50,39 @@
   <div class="portal-shell">
     <aside class="sidebar-pro">
       <div class="side-brand full-logo-brand">
-        <div class="brand-logo-box">
-          <img src="logo.jpg" alt="IAS Selection Point Logo" />
-        </div>
-        <div class="brand-slogan">Let's make your imagination true.</div>
+        <img src="logo.jpg" alt="IAS Selection Point Logo" />
+        <p class="brand-slogan">Let's make your imagination true.</p>
       </div>
+
+      <nav class="side-nav">
+        <button class="active" onclick="openDashSection('overview', this)">🏠 Dashboard</button>
+        <button onclick="openDashSection('knowledgeModule', this)">📚 Knowledge Center</button>
+        <button onclick="openDashSection('upscModule', this)">🎯 UPSC</button>
+        <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
+        <button onclick="openDashSection('library', this)">📖 My Library</button>
+        <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
+        <button onclick="openDashSection('notes', this)">📝 Notes</button>
+        <button onclick="openDashSection('notificationsModule', this)">🔔 Notifications</button>
+        <button onclick="openDashSection('profile', this)">👤 Profile</button>
+        <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
+        <button onclick="openDashSection('security', this)">🔐 Security</button>
+      </nav>
+
+      <button class="side-logout" onclick="logout()">Logout</button>
+    </aside>
+
+    <main class="portal-main">
+      <header class="portal-header learning-header">
+        <div>
+          <h1>Welcome, <span id="memberName">Member</span> 👋</h1>
+          <p><span id="memberEmail"></span> · <span id="memberStatus"></span></p>
+        </div>
+        <div class="header-actions">
+          <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
+          <button class="header-bell-btn" id="headerBellBtn" onclick="openDashSection('notificationsModule')">🔔<span id="notificationBadge">0</span></button>
+          <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
+          <div class="admin-chip">Professional Study Member</div>
+        </div>
       </header>
 
       <section id="overview" class="dash-section active">
@@ -307,7 +335,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=192"></script>
-  <script src="app.js?v=192"></script>
+  <script src="config.js?v=19"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>
