@@ -1488,3 +1488,85 @@ body{
     padding:16px;
   }
 }
+
+
+/* ===== v17 Wide Website-like Logo + Progress + Notifications ===== */
+.sidebar-pro{
+  width:255px!important;
+}
+.full-logo-brand{
+  padding:7px 5px 12px!important;
+}
+.full-logo-brand img{
+  width:205px!important;
+  height:82px!important;
+  max-height:82px!important;
+  object-fit:contain!important;
+  border-radius:18px!important;
+  padding:6px 10px!important;
+  background:#ffffff!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.12)!important;
+}
+.brand-slogan{
+  font-size:11px!important;
+  line-height:1.18!important;
+  max-width:210px!important;
+  margin:6px auto 0!important;
+}
+.compact-two{
+  grid-template-columns:1fr 1fr!important;
+  gap:14px!important;
+}
+.progress-panel{
+  background:linear-gradient(135deg,#ffffff,#eef6ff)!important;
+}
+.progress-track{
+  height:14px;
+  background:#e5efff;
+  border-radius:999px;
+  overflow:hidden;
+  margin:10px 0 8px;
+}
+.progress-track span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#0b5ed7,#159947);
+  border-radius:999px;
+  transition:.25s ease;
+}
+.notification-preview{
+  border-left:5px solid #0b5ed7;
+}
+.notification-item{
+  border:1px solid #e2eefc;
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:10px;
+}
+.notification-item.unread{
+  background:#eef6ff;
+  border-color:#0b5ed7;
+}
+.notification-item h4{
+  margin:0 0 6px;
+  color:#10233f;
+}
+.notification-item p{
+  margin:0;
+  color:#5a6b82;
+}
+.notification-item small{
+  display:block;
+  margin-top:8px;
+  color:#0b5ed7;
+  font-weight:800;
+}
+@media(max-width:900px){
+  .compact-two{grid-template-columns:1fr!important}
+  .full-logo-brand img{
+    width:185px!important;
+    height:74px!important;
+  }
+}

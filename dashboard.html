@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=163" />
+  <link rel="stylesheet" href="style.css?v=17" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v16.3 Footer Modal</div>
+  <div class="version-badge">v17 Wide Logo + Progress</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -62,6 +62,7 @@
         <button onclick="openDashSection('library', this)">📖 My Library</button>
         <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
         <button onclick="openDashSection('notes', this)">📝 Notes</button>
+        <button onclick="openDashSection('notificationsModule', this)">🔔 Notifications</button>
         <button onclick="openDashSection('profile', this)">👤 Profile</button>
         <button onclick="openDashSection('security', this)">🔐 Security</button>
       </nav>
@@ -95,6 +96,24 @@
             <button class="mini-btn" onclick="clearGlobalSearch()">Clear</button>
           </div>
           <div id="globalSearchResults" class="post-list"></div>
+        </div>
+
+        <div class="two-col compact-two">
+          <div class="pro-panel progress-panel">
+            <div class="panel-head">
+              <h3>📊 Daily Study Progress</h3>
+              <button class="mini-btn" onclick="resetDailyProgress()">Reset</button>
+            </div>
+            <div class="progress-track"><span id="dailyProgressBar"></span></div>
+            <p id="dailyProgressText" class="muted">0 articles read today.</p>
+          </div>
+          <div class="pro-panel notification-preview">
+            <div class="panel-head">
+              <h3>🔔 Notifications</h3>
+              <button class="mini-btn" onclick="openDashSection('notificationsModule')">View All</button>
+            </div>
+            <div id="notificationPreviewBox" class="notice-preview">No new notification.</div>
+          </div>
         </div>
 
         <div class="three-col">
@@ -181,6 +200,16 @@
         </div>
       </section>
 
+      <section id="notificationsModule" class="dash-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <h3>🔔 Notification Center</h3>
+            <button class="mini-btn" onclick="markAllNotificationsRead()">Mark all as read</button>
+          </div>
+          <div id="notificationsList" class="post-list"></div>
+        </div>
+      </section>
+
       <section id="library" class="dash-section">
         <div class="pro-panel">
           <h3>📖 My Library</h3>
@@ -259,7 +288,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=163"></script>
-  <script src="app.js?v=163"></script>
+  <script src="config.js?v=17"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>

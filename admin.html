@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=163" />
+  <link rel="stylesheet" href="style.css?v=17" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v16.3 Footer Modal</div>
+  <div class="version-badge">v17 Wide Logo + Progress</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -38,6 +38,7 @@
         <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
+        <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
         <button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
         <button onclick="location.href='dashboard.html'">👤 Member View</button>
       </nav>
@@ -119,6 +120,17 @@
         </div>
       </section>
 
+      <section id="adminNotify" class="admin-section">
+        <div class="pro-panel">
+          <h3>📢 Portal Notification</h3>
+          <p class="muted">Create a dashboard notification for members. It will be saved locally in this portal version.</p>
+          <input id="notifyTitle" placeholder="Notification title" />
+          <textarea id="notifyBody" placeholder="Notification message..."></textarea>
+          <button class="primary-btn" onclick="savePortalNotification()">Publish Notification</button>
+          <p id="notifyMsg" class="small-msg"></p>
+        </div>
+      </section>
+
       <section id="adminNotice" class="admin-section">
         <div class="pro-panel">
           <h3>🔔 Notice / Announcement</h3>
@@ -156,7 +168,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=163"></script>
-  <script src="app.js?v=163"></script>
+  <script src="config.js?v=17"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>

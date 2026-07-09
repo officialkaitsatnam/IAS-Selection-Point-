@@ -1,11 +1,12 @@
-IAS Selection Point v16.3 - Clean Footer Modal + Logo Fix
+IAS Selection Point v17 - Wide Logo + Progress + Notifications
 
-Fixes:
-- Footer links no longer load full Blogger website layout.
-- Footer pages open in clean dashboard modal content.
-- Logo height reduced to look closer to website header logo.
-- Sidebar compact polish.
-- Existing post pagination and title-only list retained.
+New:
+- Logo made wider and lower height, closer to website header look
+- Daily Study Progress added
+- Notification Center added
+- Admin can create local portal notification
+- Article read count updates daily progress
+- Existing footer modal, pagination, emails remain same
 
 GitHub replace:
 index.html
@@ -20,4 +21,4 @@ Apps Script:
 No Code.gs change required if v15 is working.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=163
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=17

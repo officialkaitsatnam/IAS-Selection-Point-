@@ -744,3 +744,142 @@ function closeFooterPage(){
 function openFooterExternal(){
   // Kept for compatibility, but footer pages now open inside dashboard.
 }
+
+
+/* ===== v17 Study Progress + Notification Center ===== */
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+
+function getDailyReadCount(){
+  const u = currentUser().email || 'guest';
+  return Number(localStorage.getItem('isp_daily_read_' + u + '_' + todayKey()) || 0);
+}
+
+function setDailyReadCount(n){
+  const u = currentUser().email || 'guest';
+  localStorage.setItem('isp_daily_read_' + u + '_' + todayKey(), String(n));
+  updateDailyProgress();
+}
+
+function updateDailyProgress(){
+  const count = getDailyReadCount();
+  const target = 5;
+  const pct = Math.min(100, Math.round((count / target) * 100));
+  if(qs('dailyProgressBar')) qs('dailyProgressBar').style.width = pct + '%';
+  if(qs('dailyProgressText')) qs('dailyProgressText').textContent = `${count} of ${target} articles read today.`;
+}
+
+function resetDailyProgress(){
+  setDailyReadCount(0);
+  toast ? toast('Daily progress reset') : alert('Daily progress reset');
+}
+
+/* Count article read when user opens reader */
+if(typeof openPostReader === 'function'){
+  const ISP_OLD_OPEN_POST_READER_V17 = openPostReader;
+  openPostReader = function(index){
+    const beforeTitle = ISP_LOADED_POSTS[index]?.title || '';
+    ISP_OLD_OPEN_POST_READER_V17(index);
+    if(beforeTitle){
+      const u = currentUser().email || 'guest';
+      const readKey = 'isp_read_once_' + u + '_' + todayKey() + '_' + beforeTitle;
+      if(!localStorage.getItem(readKey)){
+        localStorage.setItem(readKey, '1');
+        setDailyReadCount(getDailyReadCount() + 1);
+      }
+    }
+  };
+}
+
+function defaultNotifications(){
+  return [
+    {id:1,title:'Welcome to IAS Selection Point',body:'Explore Knowledge Center, UPSC and UGC Political Science modules from your dashboard.',date:new Date().toLocaleDateString(),read:false},
+    {id:2,title:'Study Tip',body:'Read at least 5 articles daily and revise your saved notes.',date:new Date().toLocaleDateString(),read:false}
+  ];
+}
+
+function getNotifications(){
+  const key = 'isp_notifications_' + (currentUser().email || 'guest');
+  let arr = JSON.parse(localStorage.getItem(key) || 'null');
+  if(!arr){
+    arr = defaultNotifications();
+    localStorage.setItem(key, JSON.stringify(arr));
+  }
+  return arr;
+}
+
+function saveNotifications(arr){
+  const key = 'isp_notifications_' + (currentUser().email || 'guest');
+  localStorage.setItem(key, JSON.stringify(arr));
+}
+
+function renderNotifications(){
+  const arr = getNotifications();
+  const list = qs('notificationsList');
+  const preview = qs('notificationPreviewBox');
+  if(preview){
+    const latest = arr.find(x => !x.read) || arr[0];
+    preview.innerHTML = latest ? `<b>${escapeHtml(latest.title)}</b><p>${escapeHtml(latest.body)}</p>` : 'No notification.';
+  }
+  if(list){
+    if(!arr.length){ list.innerHTML = '<p class="muted">No notifications yet.</p>'; return; }
+    list.innerHTML = arr.map(n => `
+      <div class="notification-item ${n.read ? '' : 'unread'}">
+        <h4>${escapeHtml(n.title)}</h4>
+        <p>${escapeHtml(n.body)}</p>
+        <small>${escapeHtml(n.date)} ${n.read ? '· Read' : '· New'}</small>
+      </div>
+    `).join('');
+  }
+}
+
+function markAllNotificationsRead(){
+  const arr = getNotifications().map(n => ({...n, read:true}));
+  saveNotifications(arr);
+  renderNotifications();
+  toast ? toast('Notifications marked as read') : alert('Notifications marked as read');
+}
+
+function savePortalNotification(){
+  const title = qs('notifyTitle')?.value.trim();
+  const body = qs('notifyBody')?.value.trim();
+  if(!title || !body){ showSmall('notifyMsg','Title and message required.',false); return; }
+  const arr = JSON.parse(localStorage.getItem('isp_admin_global_notifications') || '[]');
+  arr.unshift({id:Date.now(),title,body,date:new Date().toLocaleString(),read:false});
+  localStorage.setItem('isp_admin_global_notifications', JSON.stringify(arr.slice(0,30)));
+  showSmall('notifyMsg','Notification saved successfully.',true);
+  if(qs('notifyTitle')) qs('notifyTitle').value = '';
+  if(qs('notifyBody')) qs('notifyBody').value = '';
+}
+
+/* Merge admin local notifications into user notifications */
+function syncAdminNotifications(){
+  const adminArr = JSON.parse(localStorage.getItem('isp_admin_global_notifications') || '[]');
+  if(!adminArr.length) return;
+  const userArr = getNotifications();
+  const existing = new Set(userArr.map(x => x.id));
+  adminArr.forEach(n => { if(!existing.has(n.id)) userArr.unshift(n); });
+  saveNotifications(userArr.slice(0,40));
+}
+
+/* Hook dashboard load */
+if(typeof loadDashboard === 'function'){
+  const ISP_OLD_LOAD_DASHBOARD_V17 = loadDashboard;
+  loadDashboard = async function(){
+    await ISP_OLD_LOAD_DASHBOARD_V17();
+    syncAdminNotifications();
+    updateDailyProgress();
+    renderNotifications();
+  };
+}
+
+/* Extend section open */
+if(typeof openDashSection === 'function'){
+  const ISP_OLD_OPEN_DASH_SECTION_V17 = openDashSection;
+  openDashSection = function(id,btn){
+    ISP_OLD_OPEN_DASH_SECTION_V17(id,btn);
+    if(id === 'notificationsModule') renderNotifications();
+  };
+}
