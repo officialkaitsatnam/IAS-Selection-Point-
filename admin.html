@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=143" />
+  <link rel="stylesheet" href="style.css?v=15" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v14.3 Email Notifications</div>
+  <div class="version-badge">v15 Communication Suite</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -31,6 +31,7 @@
         <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
+        <button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
         <button onclick="location.href='dashboard.html'">👤 Member View</button>
       </nav>
 
@@ -100,6 +101,17 @@
         </div>
       </section>
 
+      <section id="adminEmailCenter" class="admin-section">
+        <div class="pro-panel email-center-card">
+          <h3>📧 Admin Email Center</h3>
+          <p class="muted">Send a branded email to all active members.</p>
+          <input id="bulkEmailSubject" placeholder="Email subject" />
+          <textarea id="bulkEmailBody" placeholder="Write message for members..."></textarea>
+          <button class="primary-btn" onclick="sendBulkEmail()">Send to Active Members</button>
+          <p id="bulkEmailMsg" class="small-msg"></p>
+        </div>
+      </section>
+
       <section id="adminNotice" class="admin-section">
         <div class="pro-panel">
           <h3>🔔 Notice / Announcement</h3>
@@ -113,7 +125,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=143"></script>
-  <script src="app.js?v=143"></script>
+  <script src="config.js?v=15"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>

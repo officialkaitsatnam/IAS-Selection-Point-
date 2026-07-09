@@ -920,3 +920,7 @@ body{
   font-size:12px;
   font-weight:800;
 }
+
+/* ===== v15 Communication Suite ===== */
+.email-center-card{background:linear-gradient(135deg,#ffffff,#eef6ff);border:1px solid #dbeafe}
+.mail-template-preview{margin-top:14px;padding:16px;border-radius:16px;background:#f8fbff;border:1px solid #e2eefc}

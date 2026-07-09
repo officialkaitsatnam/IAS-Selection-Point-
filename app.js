@@ -499,3 +499,16 @@ renderUsersTable = function(users){
     }
   });
 };
+
+/* ===== v15 Admin Email Center ===== */
+async function sendBulkEmail(){
+  const subject = qs('bulkEmailSubject')?.value.trim();
+  const body = qs('bulkEmailBody')?.value.trim();
+  if(!subject || !body){ showSmall('bulkEmailMsg','Please enter subject and message.',false); return; }
+  if(!confirm('Send this email to all active members?')) return;
+  showLoader('Sending emails...','Please wait');
+  const r = await api('adminSendBulkEmail',{token:token(),subject,body});
+  hideLoader();
+  showSmall('bulkEmailMsg', r.message, r.success);
+  if(r.success){ qs('bulkEmailSubject').value=''; qs('bulkEmailBody').value=''; }
+}
