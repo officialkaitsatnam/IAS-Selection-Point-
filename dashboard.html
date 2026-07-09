@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=161" />
+  <link rel="stylesheet" href="style.css?v=162" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v16.1 Compact UI</div>
+  <div class="version-badge">v16.2 Footer Reader</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -35,6 +35,16 @@
       <button onclick="copyCurrentArticleLink()">🔗 Copy Link</button>
     </div>
     <article id="readerBody" class="reader-body"></article>
+  </div>
+
+  
+  <div class="footer-page-modal" id="footerPageModal">
+    <div class="footer-page-header">
+      <button onclick="closeFooterPage()">← Back</button>
+      <h3 id="footerPageTitle">Page</h3>
+      <button onclick="openFooterExternal()">Open Website</button>
+    </div>
+    <iframe id="footerPageFrame" class="footer-page-frame" src=""></iframe>
   </div>
 
   <div class="portal-shell">
@@ -116,7 +126,7 @@
             </div>
           </div>
           <div class="pro-panel">
-            <h3>📌 Continue Reading</h3>
+            <h3 class="hide-continue-title">📌 Continue Reading</h3>
             <div id="continueReading" class="continue-box">No article opened yet.</div>
           </div>
         </div>
@@ -230,20 +240,26 @@
             <span>Let's make your imagination true.</span>
           </div>
         </div>
-        <div class="footer-links">
-          <a href="https://iasselectionpoint.blogspot.com/p/about-us.html" target="_blank">About Us</a>
-          <a href="https://iasselectionpoint.blogspot.com/p/contact-us.html" target="_blank">Contact Us</a>
-          <a href="https://iasselectionpoint.blogspot.com/p/cookies-policy.html" target="_blank">Cookies Policy</a>
-          <a href="https://iasselectionpoint.blogspot.com/p/privacy-policy.html" target="_blank">Privacy Policy</a>
-          <a href="https://iasselectionpoint.blogspot.com/p/terms-conditions.html" target="_blank">Terms & Conditions</a>
-          <a href="https://iasselectionpoint.blogspot.com/p/disclaimer.html" target="_blank">Disclaimer</a>
+        <div class="footer-links footer-pipe-links">
+          <button onclick="openFooterPage('About Us','https://iasselectionpoint.blogspot.com/p/about-us.html')">About Us</button>
+          <span>|</span>
+          <button onclick="openFooterPage('Contact Us','https://iasselectionpoint.blogspot.com/p/contact-us.html')">Contact Us</button>
+          <span>|</span>
+          <button onclick="openFooterPage('Cookies Policy','https://iasselectionpoint.blogspot.com/p/cookies-policy.html')">Cookies Policy</button>
+          <span>|</span>
+          <button onclick="openFooterPage('Privacy Policy','https://iasselectionpoint.blogspot.com/p/privacy-policy.html')">Privacy Policy</button>
+          <span>|</span>
+          <button onclick="openFooterPage('Terms & Conditions','https://iasselectionpoint.blogspot.com/p/terms-conditions.html')">Terms & Conditions</button>
+          <span>|</span>
+          <button onclick="openFooterPage('Disclaimer','https://iasselectionpoint.blogspot.com/p/disclaimer.html')">Disclaimer</button>
         </div>
+        <div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
       </footer>
 
     </main>
   </div>
 
-  <script src="config.js?v=161"></script>
-  <script src="app.js?v=161"></script>
+  <script src="config.js?v=162"></script>
+  <script src="app.js?v=162"></script>
 </body>
 </html>

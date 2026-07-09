@@ -603,3 +603,64 @@ function renderLearningPosts(posts, listId){
 
   setLearningListHtml(listId, html + pagination);
 }
+
+
+/* ===== v16.2 Footer Internal Reader + Copyright ===== */
+let ISP_FOOTER_URL = '';
+
+function openFooterPage(title, url){
+  ISP_FOOTER_URL = url;
+  const modal = qs('footerPageModal');
+  const frame = qs('footerPageFrame');
+  const heading = qs('footerPageTitle');
+  if(heading) heading.textContent = title;
+  if(frame) frame.src = url;
+  if(modal) modal.classList.add('active');
+}
+
+function closeFooterPage(){
+  const modal = qs('footerPageModal');
+  const frame = qs('footerPageFrame');
+  if(modal) modal.classList.remove('active');
+  if(frame) frame.src = '';
+}
+
+function openFooterExternal(){
+  if(ISP_FOOTER_URL) window.open(ISP_FOOTER_URL, '_blank');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('#copyrightYear').forEach(el => el.textContent = new Date().getFullYear());
+});
+
+/* Strong title-only list override */
+function renderLearningPosts(posts, listId){
+  ISP_CURRENT_LIST_ID = listId;
+  const total = posts.length;
+  const totalPages = Math.max(1, Math.ceil(total / ISP_POSTS_PER_PAGE));
+  if(ISP_POST_PAGE > totalPages) ISP_POST_PAGE = totalPages;
+  if(ISP_POST_PAGE < 1) ISP_POST_PAGE = 1;
+
+  const pagePosts = paginatePosts(posts, ISP_POST_PAGE);
+  const html = pagePosts.map((p, localIndex) => {
+    const realIndex = ((ISP_POST_PAGE - 1) * ISP_POSTS_PER_PAGE) + localIndex;
+    return `<div class="post-item title-only-post" onclick="openPostReader(${realIndex})">
+      <span class="module-tag">${escapeHtml(p.moduleName || '')}</span>
+      <h4 title="${escapeAttr(p.title)}">${escapeHtml(p.title)}</h4>
+      <span class="post-meta">${escapeHtml(p.categoryTitle || ISP_CURRENT_CATEGORY)} ${p.published ? '· ' + escapeHtml(p.published) : ''}</span>
+      <div class="article-actions" onclick="event.stopPropagation()">
+        <button onclick="quickSavePost('loaded',${realIndex})">🔖 Save</button>
+        <button onclick="quickSharePost('loaded',${realIndex})">📤 Share</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const pagination = total > ISP_POSTS_PER_PAGE ? `
+    <div class="pagination-bar">
+      <button onclick="changePostPage(-1)" ${ISP_POST_PAGE <= 1 ? 'disabled' : ''}>← Previous</button>
+      <span class="pagination-info">Showing ${((ISP_POST_PAGE-1)*ISP_POSTS_PER_PAGE)+1}-${Math.min(ISP_POST_PAGE*ISP_POSTS_PER_PAGE,total)} of ${total} posts · Page ${ISP_POST_PAGE} of ${totalPages}</span>
+      <button onclick="changePostPage(1)" ${ISP_POST_PAGE >= totalPages ? 'disabled' : ''}>Next →</button>
+    </div>` : '';
+
+  setLearningListHtml(listId, html + pagination);
+}
