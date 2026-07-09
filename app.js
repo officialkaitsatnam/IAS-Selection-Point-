@@ -883,3 +883,289 @@ if(typeof openDashSection === 'function'){
     if(id === 'notificationsModule') renderNotifications();
   };
 }
+
+
+/* ===== v18 Performance + Study Tools ===== */
+const ISP_PERF_CACHE_VERSION = 'v18';
+let ISP_PREFETCH_STARTED = false;
+
+function applySavedTheme(){
+  const theme = localStorage.getItem('isp_theme') || 'light';
+  document.body.classList.toggle('portal-dark', theme === 'dark');
+}
+function togglePortalTheme(){
+  const isDark = document.body.classList.toggle('portal-dark');
+  localStorage.setItem('isp_theme', isDark ? 'dark' : 'light');
+  if(typeof toast === 'function') toast(isDark ? 'Dark mode enabled' : 'Light mode enabled');
+}
+document.addEventListener('DOMContentLoaded', applySavedTheme);
+
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+function getDailyReadCount(){
+  const u = currentUser().email || 'guest';
+  return Number(localStorage.getItem('isp_daily_read_' + u + '_' + todayKey()) || 0);
+}
+function setDailyReadCount(n){
+  const u = currentUser().email || 'guest';
+  localStorage.setItem('isp_daily_read_' + u + '_' + todayKey(), String(n));
+  updateDailyProgress();
+}
+function updateDailyProgress(){
+  const count = getDailyReadCount();
+  const target = 5;
+  const pct = Math.min(100, Math.round((count / target) * 100));
+  if(qs('dailyProgressBar')) qs('dailyProgressBar').style.width = pct + '%';
+  if(qs('dailyProgressText')) qs('dailyProgressText').textContent = `${count} of ${target} articles read today.`;
+  if(qs('statToday')) qs('statToday').textContent = count;
+}
+function resetDailyProgress(){
+  setDailyReadCount(0);
+  if(typeof toast === 'function') toast('Daily progress reset');
+}
+
+/* Notification Center */
+function defaultNotifications(){
+  return [
+    {id:1,title:'Welcome to IAS Selection Point',body:'Explore Knowledge Center, UPSC and UGC Political Science modules from your dashboard.',date:new Date().toLocaleDateString(),read:false},
+    {id:2,title:'Study Tip',body:'Read at least 5 articles daily and revise your saved notes.',date:new Date().toLocaleDateString(),read:false}
+  ];
+}
+function getNotifications(){
+  const key = 'isp_notifications_' + (currentUser().email || 'guest');
+  let arr = JSON.parse(localStorage.getItem(key) || 'null');
+  if(!arr){ arr = defaultNotifications(); localStorage.setItem(key, JSON.stringify(arr)); }
+  return arr;
+}
+function saveNotifications(arr){
+  const key = 'isp_notifications_' + (currentUser().email || 'guest');
+  localStorage.setItem(key, JSON.stringify(arr));
+}
+function renderNotifications(){
+  const arr = getNotifications();
+  const list = qs('notificationsList');
+  const preview = qs('notificationPreviewBox');
+  if(preview){
+    const latest = arr.find(x => !x.read) || arr[0];
+    preview.innerHTML = latest ? `<b>${escapeHtml(latest.title)}</b><p>${escapeHtml(latest.body)}</p>` : 'No notification.';
+  }
+  if(list){
+    list.innerHTML = arr.length ? arr.map(n => `
+      <div class="notification-item ${n.read ? '' : 'unread'}">
+        <h4>${escapeHtml(n.title)}</h4>
+        <p>${escapeHtml(n.body)}</p>
+        <small>${escapeHtml(n.date)} ${n.read ? '· Read' : '· New'}</small>
+      </div>`).join('') : '<p class="muted">No notifications yet.</p>';
+  }
+}
+function markAllNotificationsRead(){
+  saveNotifications(getNotifications().map(n => ({...n, read:true})));
+  renderNotifications();
+}
+function savePortalNotification(){
+  const title = qs('notifyTitle')?.value.trim();
+  const body = qs('notifyBody')?.value.trim();
+  if(!title || !body){ showSmall('notifyMsg','Title and message required.',false); return; }
+  const arr = JSON.parse(localStorage.getItem('isp_admin_global_notifications') || '[]');
+  arr.unshift({id:Date.now(),title,body,date:new Date().toLocaleString(),read:false});
+  localStorage.setItem('isp_admin_global_notifications', JSON.stringify(arr.slice(0,30)));
+  showSmall('notifyMsg','Notification saved successfully.',true);
+  if(qs('notifyTitle')) qs('notifyTitle').value = '';
+  if(qs('notifyBody')) qs('notifyBody').value = '';
+}
+function syncAdminNotifications(){
+  const adminArr = JSON.parse(localStorage.getItem('isp_admin_global_notifications') || '[]');
+  if(!adminArr.length) return;
+  const userArr = getNotifications();
+  const existing = new Set(userArr.map(x => x.id));
+  adminArr.forEach(n => { if(!existing.has(n.id)) userArr.unshift(n); });
+  saveNotifications(userArr.slice(0,40));
+}
+
+/* Pomodoro */
+let pomodoroSeconds = 25 * 60;
+let pomodoroTimer = null;
+function updatePomodoroDisplay(){
+  const m = Math.floor(pomodoroSeconds / 60);
+  const s = pomodoroSeconds % 60;
+  const el = qs('pomodoroTime');
+  if(el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function startPomodoro(){
+  if(pomodoroTimer) return;
+  pomodoroTimer = setInterval(() => {
+    pomodoroSeconds--;
+    updatePomodoroDisplay();
+    if(pomodoroSeconds <= 0){
+      clearInterval(pomodoroTimer);
+      pomodoroTimer = null;
+      pomodoroSeconds = 25 * 60;
+      updatePomodoroDisplay();
+      if(typeof toast === 'function') toast('Study session completed');
+      setDailyReadCount(getDailyReadCount() + 1);
+    }
+  }, 1000);
+}
+function pausePomodoro(){
+  if(pomodoroTimer){ clearInterval(pomodoroTimer); pomodoroTimer = null; }
+}
+function resetPomodoro(){
+  pausePomodoro();
+  pomodoroSeconds = 25 * 60;
+  updatePomodoroDisplay();
+}
+
+/* Speed: cache feed results in localStorage */
+function feedCacheKey(label){ return 'isp_feed_cache_' + ISP_PERF_CACHE_VERSION + '_' + label; }
+function getLocalFeedCache(label){
+  try{
+    const raw = localStorage.getItem(feedCacheKey(label));
+    if(!raw) return null;
+    const obj = JSON.parse(raw);
+    if(Date.now() - obj.time > 15 * 60 * 1000) return null;
+    return obj.posts || null;
+  }catch(e){ return null; }
+}
+function setLocalFeedCache(label, posts){
+  try{ localStorage.setItem(feedCacheKey(label), JSON.stringify({time:Date.now(), posts})); }catch(e){}
+}
+
+if(typeof getCachedPosts === 'function'){
+  const ISP_OLD_GET_CACHED_POSTS_V18 = getCachedPosts;
+  getCachedPosts = async function(label,title,moduleName){
+    const local = getLocalFeedCache(label);
+    if(local && local.length){
+      ISP_FEED_CACHE[label] = local;
+      return local;
+    }
+    const posts = await ISP_OLD_GET_CACHED_POSTS_V18(label,title,moduleName);
+    setLocalFeedCache(label, posts);
+    return posts;
+  };
+}
+
+/* Speed: show lightweight skeletons */
+if(typeof showSkeleton === 'function'){
+  showSkeleton = function(listId){
+    if(qs(listId)) qs(listId).innerHTML = '<div class="fast-skeleton"></div><div class="fast-skeleton"></div><div class="fast-skeleton"></div>';
+  };
+}
+
+/* Recently read + stats */
+function updateReadingMiniStats(){
+  const u = currentUser().email || 'guest';
+  const history = JSON.parse(localStorage.getItem('isp_reading_history_' + u) || '[]');
+  const bookmarks = JSON.parse(localStorage.getItem('isp_bookmarks_' + u) || '[]');
+  const favs = JSON.parse(localStorage.getItem('isp_favourites_' + u) || '[]');
+  if(qs('recentlyReadBox')){
+    qs('recentlyReadBox').innerHTML = history.length ? `<b>${escapeHtml(history[0].title)}</b><br><small>${escapeHtml(history[0].date || '')}</small>` : 'No recent article yet.';
+  }
+  if(qs('statSaved')) qs('statSaved').textContent = bookmarks.length;
+  if(qs('statFav')) qs('statFav').textContent = favs.length;
+}
+
+function addFavouriteArticle(post){
+  const u = currentUser().email || 'guest';
+  const key = 'isp_favourites_' + u;
+  const arr = JSON.parse(localStorage.getItem(key) || '[]');
+  if(!arr.some(x => x.title === post.title)){
+    arr.unshift({title:post.title, link:post.link || '', date:new Date().toLocaleString()});
+    localStorage.setItem(key, JSON.stringify(arr.slice(0,50)));
+  }
+  updateReadingMiniStats();
+  if(typeof toast === 'function') toast('Added to favourites');
+}
+
+/* Override reader open for progress */
+if(typeof openPostReader === 'function'){
+  const ISP_OLD_OPEN_POST_READER_V18 = openPostReader;
+  openPostReader = function(index){
+    const post = ISP_LOADED_POSTS[index];
+    ISP_OLD_OPEN_POST_READER_V18(index);
+    if(post && post.title){
+      const u = currentUser().email || 'guest';
+      const readKey = 'isp_read_once_' + u + '_' + todayKey() + '_' + post.title;
+      if(!localStorage.getItem(readKey)){
+        localStorage.setItem(readKey, '1');
+        setDailyReadCount(getDailyReadCount() + 1);
+      }
+      setTimeout(updateReadingMiniStats, 100);
+    }
+  };
+}
+
+/* Override post list: add Favourite button but keep title-only */
+if(typeof renderLearningPosts === 'function'){
+  renderLearningPosts = function(posts, listId){
+    ISP_CURRENT_LIST_ID = listId;
+    const total = posts.length;
+    const totalPages = Math.max(1, Math.ceil(total / ISP_POSTS_PER_PAGE));
+    if(ISP_POST_PAGE > totalPages) ISP_POST_PAGE = totalPages;
+    if(ISP_POST_PAGE < 1) ISP_POST_PAGE = 1;
+
+    const pagePosts = paginatePosts(posts, ISP_POST_PAGE);
+    const html = pagePosts.map((p, localIndex) => {
+      const realIndex = ((ISP_POST_PAGE - 1) * ISP_POSTS_PER_PAGE) + localIndex;
+      return `<div class="post-item title-only-post" onclick="openPostReader(${realIndex})">
+        <span class="module-tag">${escapeHtml(p.moduleName || '')}</span>
+        <h4 title="${escapeAttr(p.title)}">${escapeHtml(p.title)}</h4>
+        <span class="post-meta">${escapeHtml(p.categoryTitle || ISP_CURRENT_CATEGORY)} ${p.published ? '· ' + escapeHtml(p.published) : ''}</span>
+        <div class="article-actions" onclick="event.stopPropagation()">
+          <button onclick="quickSavePost('loaded',${realIndex})">🔖 Save</button>
+          <button onclick="addFavouriteArticle(ISP_LOADED_POSTS[${realIndex}])">⭐ Fav</button>
+          <button onclick="quickSharePost('loaded',${realIndex})">📤 Share</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const pagination = total > ISP_POSTS_PER_PAGE ? `
+      <div class="pagination-bar">
+        <button onclick="changePostPage(-1)" ${ISP_POST_PAGE <= 1 ? 'disabled' : ''}>← Previous</button>
+        <span class="pagination-info">Showing ${((ISP_POST_PAGE-1)*ISP_POSTS_PER_PAGE)+1}-${Math.min(ISP_POST_PAGE*ISP_POSTS_PER_PAGE,total)} of ${total} posts · Page ${ISP_POST_PAGE} of ${totalPages}</span>
+        <button onclick="changePostPage(1)" ${ISP_POST_PAGE >= totalPages ? 'disabled' : ''}>Next →</button>
+      </div>` : '';
+    setLearningListHtml(listId, html + pagination);
+  };
+}
+
+/* Speed: defer non-critical loads */
+function startSmartPrefetch(){
+  if(ISP_PREFETCH_STARTED) return;
+  ISP_PREFETCH_STARTED = true;
+  const cats = [];
+  try{
+    if(typeof ISP_KNOWLEDGE_CATEGORIES !== 'undefined') cats.push(...ISP_KNOWLEDGE_CATEGORIES.slice(0,2));
+    if(typeof ISP_UPSC_GS_CATEGORIES !== 'undefined') cats.push(...ISP_UPSC_GS_CATEGORIES.slice(0,1));
+    if(typeof ISP_UGC_POLITICAL_SCIENCE !== 'undefined') cats.push(...ISP_UGC_POLITICAL_SCIENCE.slice(0,1));
+  }catch(e){}
+  cats.forEach((c,i)=>{
+    setTimeout(()=>{ try{ getCachedPosts(c.label,c.title,c.module).catch(()=>{}); }catch(e){} }, 1200 + i*1200);
+  });
+}
+
+/* Hook loadDashboard */
+if(typeof loadDashboard === 'function'){
+  const ISP_OLD_LOAD_DASHBOARD_V18 = loadDashboard;
+  loadDashboard = async function(){
+    applySavedTheme();
+    await ISP_OLD_LOAD_DASHBOARD_V18();
+    syncAdminNotifications();
+    updateDailyProgress();
+    renderNotifications();
+    updatePomodoroDisplay();
+    updateReadingMiniStats();
+    setTimeout(startSmartPrefetch, 1500);
+  };
+}
+
+if(typeof openDashSection === 'function'){
+  const ISP_OLD_OPEN_DASH_SECTION_V18 = openDashSection;
+  openDashSection = function(id,btn){
+    ISP_OLD_OPEN_DASH_SECTION_V18(id,btn);
+    if(id === 'notificationsModule') renderNotifications();
+    if(id === 'studyToolsModule') updatePomodoroDisplay();
+    if(id === 'library') updateReadingMiniStats();
+  };
+}
