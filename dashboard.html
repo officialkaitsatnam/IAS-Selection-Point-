@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=201" />
+  <link rel="stylesheet" href="style.css?v=21" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v20.1 Stable Repair</div>
+  <div class="version-badge">v21 Admin Pro</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -242,11 +242,28 @@
       <section id="profile" class="dash-section">
         <div class="pro-panel">
           <h3>👤 My Profile</h3>
-          <div class="form-grid">
+          <div id="profileSummaryCard" class="profile-summary-card">
+            <b>Complete your profile</b>
+            <span>Target exam, city, subject and WhatsApp number help admin send better updates.</span>
+          </div>
+          <div class="form-grid profile-pro-grid">
             <input id="profileName" placeholder="Full name" />
-            <input id="profileMobile" placeholder="Mobile number" />
-            <input id="profileCity" placeholder="City" />
-            <input id="profileExam" placeholder="Preparing for exam" />
+            <input id="profileMobile" placeholder="Mobile / WhatsApp number" />
+            <input id="profileCity" placeholder="City / District" />
+            <select id="profileExam">
+              <option value="">Select target exam</option>
+              <option value="UPSC">UPSC</option>
+              <option value="UGC NET">UGC NET</option>
+              <option value="HPSC">HPSC</option>
+              <option value="State PCS">State PCS</option>
+              <option value="SSC">SSC</option>
+              <option value="Banking">Banking</option>
+              <option value="Railway">Railway</option>
+              <option value="Other">Other</option>
+            </select>
+            <input id="profileSubject" placeholder="Main subject / optional subject" />
+            <input id="profileGoal" placeholder="Daily study goal" />
+            <textarea id="profileBio" placeholder="Short bio / preparation note"></textarea>
           </div>
           <button class="primary-btn" onclick="saveProfile()">Save Profile</button>
           <p id="profileMsg" class="small-msg"></p>
@@ -335,7 +352,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=201"></script>
-  <script src="app.js?v=201"></script>
+  <script src="config.js?v=21"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>

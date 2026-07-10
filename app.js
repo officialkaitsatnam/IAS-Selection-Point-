@@ -1260,3 +1260,202 @@ if(typeof markAllNotificationsRead === 'function'){
     updateNotificationBadge();
   };
 }
+
+
+/* ===== v21 Admin Pro + WhatsApp + Profile Upgrade ===== */
+function cleanPhoneForWhatsApp(mobile){
+  let n = String(mobile || '').replace(/\D/g,'');
+  if(!n) return '';
+  if(n.length === 10) n = '91' + n;
+  return n;
+}
+
+function buildWhatsAppMessage(user, type){
+  const custom = qs('waCustomMessage')?.value.trim();
+  if(custom) return custom;
+  const name = user.name || 'Member';
+  const portal = 'https://officialkaitsatnam.github.io/IAS-Selection-Point-/';
+  const templates = {
+    welcome: `Hello ${name}, welcome to IAS Selection Point Learning Portal. You can login and start your study journey here: ${portal}`,
+    active: `Hello ${name}, your IAS Selection Point account has been activated. You can now access the learning portal: ${portal}`,
+    blocked: `Hello ${name}, your IAS Selection Point account has been blocked. Please contact admin for more details.`,
+    study: `Hello ${name}, new study material has been added on IAS Selection Point. Please check your dashboard: ${portal}`,
+    goal: `Hello ${name}, keep your daily study target complete. Open IAS Selection Point and continue learning: ${portal}`
+  };
+  return templates[type] || templates.welcome;
+}
+
+function openWhatsAppForUser(email){
+  const user = (ISP_ADMIN_USERS || []).find(x => String(x.email).toLowerCase() === String(email).toLowerCase());
+  if(!user){ alert('User not found'); return; }
+  const phone = cleanPhoneForWhatsApp(user.mobile || user.Mobile || '');
+  if(!phone){ alert('Mobile/WhatsApp number not found for this user.'); return; }
+  const type = qs('waTemplate')?.value || 'welcome';
+  const msg = encodeURIComponent(buildWhatsAppMessage(user, type));
+  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+}
+
+function openUserDetail(email){
+  const user = (ISP_ADMIN_USERS || []).find(x => String(x.email).toLowerCase() === String(email).toLowerCase());
+  if(!user){ alert('User not found'); return; }
+  let modal = qs('userDetailModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'userDetailModal';
+    modal.className = 'user-detail-modal';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div class="user-detail-card">
+      <div class="user-detail-head">
+        <h3>👤 User Details</h3>
+        <button onclick="closeUserDetail()">Close</button>
+      </div>
+      <div class="user-detail-body">
+        <div class="detail-grid">
+          <div class="detail-item"><small>Name</small><b>${escapeHtml(user.name || '')}</b></div>
+          <div class="detail-item"><small>Email</small><b>${escapeHtml(user.email || '')}</b></div>
+          <div class="detail-item"><small>Mobile</small><b>${escapeHtml(user.mobile || '')}</b></div>
+          <div class="detail-item"><small>Role</small><b>${escapeHtml(user.role || '')}</b></div>
+          <div class="detail-item"><small>Status</small><b>${escapeHtml(user.status || '')}</b></div>
+          <div class="detail-item"><small>Last Login</small><b>${escapeHtml(user.lastLogin || '')}</b></div>
+        </div>
+        <div class="quick-actions" style="margin-top:16px;">
+          <button onclick="openWhatsAppForUser('${escapeAttr(user.email)}')">💬 WhatsApp</button>
+          <button onclick="prefillSingleMessage('${escapeAttr(user.email)}')">📧 Message</button>
+          <button onclick="adminUpdateUser('${escapeAttr(user.email)}','Active')">Activate</button>
+          <button onclick="adminUpdateUser('${escapeAttr(user.email)}','Deactivated')">Deactivate</button>
+        </div>
+      </div>
+    </div>`;
+  modal.classList.add('active');
+}
+function closeUserDetail(){
+  if(qs('userDetailModal')) qs('userDetailModal').classList.remove('active');
+}
+
+function prefillSingleMessage(email){
+  if(qs('singleMsgEmail')) qs('singleMsgEmail').value = email;
+  openAdminSection('adminProTools');
+  closeUserDetail();
+}
+
+async function sendSingleUserMessage(){
+  const email = qs('singleMsgEmail')?.value.trim();
+  const subject = qs('singleMsgSubject')?.value.trim();
+  const body = qs('singleMsgBody')?.value.trim();
+  if(!email || !subject || !body){
+    showSmall('singleMsgStatus','Email, subject and message are required.',false);
+    return;
+  }
+  showLoader('Sending message...','Email and dashboard notification');
+  const r = await api('adminSendPortalNotification',{token:token(),target:'single',email,title:subject,body});
+  hideLoader();
+  showSmall('singleMsgStatus', r.message, r.success);
+  if(r.success){
+    qs('singleMsgSubject').value='';
+    qs('singleMsgBody').value='';
+  }
+}
+
+/* Strong admin table override with mobile/WhatsApp */
+renderUsersTable = function(users){
+  const tbody=qs('usersTable'); 
+  if(!tbody)return;
+  tbody.innerHTML=users.map(x=>{
+    const isAdmin=String(x.role).toLowerCase()==='admin';
+    const status=String(x.status||'Active');
+    const sl=status.toLowerCase();
+    const sc=sl==='blocked'?'blocked':sl==='deleted'?'deleted':sl==='pending'?'pending':sl==='deactivated'?'deactivated':'';
+    const rc=isAdmin?'admin':'member';
+    return `<tr>
+      <td><b>${escapeHtml(x.name||'')}</b></td>
+      <td>${escapeHtml(x.email||'')}</td>
+      <td>${escapeHtml(x.mobile||'')}</td>
+      <td><span class="role-pill ${rc}">${escapeHtml(x.role||'')}</span></td>
+      <td><span class="status-pill ${sc}">${escapeHtml(status)}</span></td>
+      <td>${escapeHtml(x.lastLogin||'')}</td>
+      <td>
+        <div class="action-btns">
+          <button class="action-btn view-btn" onclick="openUserDetail('${escapeAttr(x.email)}')">View</button>
+          <button class="action-btn wa-btn" onclick="openWhatsAppForUser('${escapeAttr(x.email)}')" ${x.mobile?'':'disabled'}>WhatsApp</button>
+          <button class="action-btn email-btn" onclick="prefillSingleMessage('${escapeAttr(x.email)}')">Msg</button>
+          <button class="action-btn activate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Active')" ${isAdmin?'disabled':''}>Activate</button>
+          <button class="action-btn deactivate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Deactivated')" ${isAdmin?'disabled':''}>Deactivate</button>
+          <button class="action-btn block-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Blocked')" ${isAdmin?'disabled':''}>Block</button>
+          <button class="action-btn delete-btn" onclick="adminDeleteUser('${escapeAttr(x.email)}')" ${isAdmin?'disabled':''}>Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+/* Upgrade loadAdmin to keep mobile from backend rows */
+if(typeof loadAdmin === 'function'){
+  const ISP_OLD_LOAD_ADMIN_V21 = loadAdmin;
+  loadAdmin = async function(){
+    showLoader('Opening admin panel...','Loading users and controls');
+    const u=currentUser(); 
+    if(!u.email||u.role!=='Admin'){location.href='index.html';return}
+    if(qs('adminEmail'))qs('adminEmail').textContent=u.email;
+    const r=await api('adminStats',{token:token()}); 
+    hideLoader();
+    if(r.success){
+      ISP_ADMIN_USERS=r.users||[]; 
+      if(qs('totalUsers'))qs('totalUsers').textContent=r.totalUsers||0; 
+      if(qs('activeUsers'))qs('activeUsers').textContent=r.activeUsers||0; 
+      if(qs('blockedUsers'))qs('blockedUsers').textContent=ISP_ADMIN_USERS.filter(x=>['blocked','deactivated'].includes(String(x.status).toLowerCase())).length; 
+      if(qs('adminCount'))qs('adminCount').textContent=ISP_ADMIN_USERS.filter(x=>x.role==='Admin').length||1; 
+      renderUsersTable(ISP_ADMIN_USERS); 
+      renderRecentUsersV14(ISP_ADMIN_USERS); 
+      renderAdminLogsLocal();
+    }else alert(r.message);
+  };
+}
+
+/* Profile pro local fields + backend save */
+if(typeof saveProfile === 'function'){
+  const ISP_OLD_SAVE_PROFILE_V21 = saveProfile;
+  saveProfile = async function(){
+    const extra = {
+      subject: qs('profileSubject')?.value || '',
+      goal: qs('profileGoal')?.value || '',
+      bio: qs('profileBio')?.value || ''
+    };
+    localStorage.setItem('isp_profile_extra_' + (currentUser().email || 'guest'), JSON.stringify(extra));
+    await ISP_OLD_SAVE_PROFILE_V21();
+    updateProfileSummary();
+  };
+}
+
+function loadProfileExtra(){
+  const extra = JSON.parse(localStorage.getItem('isp_profile_extra_' + (currentUser().email || 'guest')) || '{}');
+  if(qs('profileSubject')) qs('profileSubject').value = extra.subject || '';
+  if(qs('profileGoal')) qs('profileGoal').value = extra.goal || '';
+  if(qs('profileBio')) qs('profileBio').value = extra.bio || '';
+  updateProfileSummary();
+}
+
+function updateProfileSummary(){
+  const extra = JSON.parse(localStorage.getItem('isp_profile_extra_' + (currentUser().email || 'guest')) || '{}');
+  if(qs('profileSummaryCard')){
+    qs('profileSummaryCard').innerHTML = `<b>${escapeHtml(currentUser().name || 'Member')}</b>
+      <span>${escapeHtml(qs('profileExam')?.value || 'Target exam not selected')} · ${escapeHtml(extra.subject || 'Subject not added')} · ${escapeHtml(extra.goal || 'Goal not added')}</span>`;
+  }
+}
+
+if(typeof loadDashboard === 'function'){
+  const ISP_OLD_LOAD_DASHBOARD_V21 = loadDashboard;
+  loadDashboard = async function(){
+    await ISP_OLD_LOAD_DASHBOARD_V21();
+    setTimeout(loadProfileExtra, 600);
+  };
+}
+
+if(typeof openDashSection === 'function'){
+  const ISP_OLD_OPEN_DASH_SECTION_V21 = openDashSection;
+  openDashSection = function(id,btn){
+    ISP_OLD_OPEN_DASH_SECTION_V21(id,btn);
+    if(id === 'profile') loadProfileExtra();
+  };
+}

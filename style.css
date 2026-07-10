@@ -1806,3 +1806,125 @@ body.portal-dark .header-bell-btn{
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* ===== v21 Admin Pro + WhatsApp + Profile Upgrade ===== */
+#waTemplate,
+#notifyTarget,
+.profile-pro-grid select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #dbeafe;
+  background:#fff;
+  color:#10233f;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.profile-pro-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+.profile-pro-grid textarea{
+  grid-column:1/-1;
+  min-height:90px;
+}
+.profile-summary-card{
+  background:linear-gradient(135deg,#eef6ff,#ffffff);
+  border:1px solid #dbeafe;
+  border-radius:16px;
+  padding:14px;
+  margin:10px 0 16px;
+}
+.profile-summary-card b{
+  display:block;
+  color:#10233f;
+  margin-bottom:4px;
+}
+.profile-summary-card span{
+  display:block;
+  color:#5a6b82;
+  font-size:13px;
+}
+.wa-btn{
+  background:#e8fff0!important;
+  color:#128c3a!important;
+}
+.email-btn{
+  background:#eef6ff!important;
+  color:#0b5ed7!important;
+}
+.view-btn{
+  background:#f3e8ff!important;
+  color:#6f42c1!important;
+}
+.user-detail-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  z-index:30000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.user-detail-modal.active{
+  display:flex;
+}
+.user-detail-card{
+  width:min(760px,96vw);
+  max-height:88vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:22px;
+  box-shadow:0 24px 70px rgba(0,0,0,.25);
+}
+.user-detail-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:16px;
+  background:linear-gradient(135deg,#0b5ed7,#092a55);
+  color:#fff;
+}
+.user-detail-head h3{
+  flex:1;
+  margin:0;
+  color:#fff;
+}
+.user-detail-head button{
+  border:0;
+  background:#fff;
+  color:#0b5ed7;
+  border-radius:10px;
+  padding:9px 12px;
+  font-weight:900;
+}
+.user-detail-body{
+  padding:18px;
+}
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.detail-item{
+  border:1px solid #e2eefc;
+  background:#f8fbff;
+  border-radius:14px;
+  padding:12px;
+}
+.detail-item small{
+  display:block;
+  color:#5a6b82;
+  font-weight:800;
+  margin-bottom:4px;
+}
+.detail-item b{
+  color:#10233f;
+}
+@media(max-width:850px){
+  .profile-pro-grid,
+  .detail-grid{
+    grid-template-columns:1fr!important;
+  }
+}

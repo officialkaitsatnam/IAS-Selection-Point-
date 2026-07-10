@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=201" />
+  <link rel="stylesheet" href="style.css?v=21" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v20.1 Stable Repair</div>
+  <div class="version-badge">v21 Admin Pro</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -36,6 +36,7 @@
       <nav class="side-nav">
         <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
         <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
+        <button onclick="openAdminSection('adminProTools', this)">🛠️ Admin Pro Tools</button>
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
         <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
@@ -80,6 +81,40 @@
         </div>
       </section>
 
+      <section id="adminProTools" class="admin-section">
+        <div class="stats-grid-pro">
+          <div class="stat-card blue"><span>💬</span><h3>WhatsApp</h3><p>One-click messages</p></div>
+          <div class="stat-card green"><span>📧</span><h3>Email</h3><p>Single / Bulk users</p></div>
+          <div class="stat-card purple"><span>🔔</span><h3>Notify</h3><p>Dashboard alerts</p></div>
+          <div class="stat-card orange"><span>📊</span><h3>Reports</h3><p>CSV export ready</p></div>
+        </div>
+
+        <div class="two-col compact-two">
+          <div class="pro-panel">
+            <h3>💬 WhatsApp Quick Templates</h3>
+            <p class="muted">Free method: click button, WhatsApp opens with ready message. Admin presses Send.</p>
+            <select id="waTemplate">
+              <option value="welcome">Welcome Message</option>
+              <option value="active">Account Activated</option>
+              <option value="blocked">Account Blocked</option>
+              <option value="study">New Study Material</option>
+              <option value="goal">Daily Goal Reminder</option>
+            </select>
+            <textarea id="waCustomMessage" placeholder="Optional custom message..."></textarea>
+            <p class="small-msg">Use WhatsApp buttons in User Control table.</p>
+          </div>
+
+          <div class="pro-panel">
+            <h3>📧 Single User Message</h3>
+            <input id="singleMsgEmail" placeholder="User email" />
+            <input id="singleMsgSubject" placeholder="Subject / title" />
+            <textarea id="singleMsgBody" placeholder="Message body..."></textarea>
+            <button class="primary-btn" onclick="sendSingleUserMessage()">Send Email + Dashboard Notification</button>
+            <p id="singleMsgStatus" class="small-msg"></p>
+          </div>
+        </div>
+      </section>
+
       <section id="adminUsers" class="admin-section">
         <div class="pro-panel">
           <div class="panel-head">
@@ -93,7 +128,7 @@
             <table class="pro-table">
               <thead>
                 <tr>
-                  <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
+                  <th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
                 </tr>
               </thead>
               <tbody id="usersTable"></tbody>
@@ -173,7 +208,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=201"></script>
-  <script src="app.js?v=201"></script>
+  <script src="config.js?v=21"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>
