@@ -1686,3 +1686,24 @@ async function runSheetMaintenance(){
   hideLoader();
   showSmall('sheetCenterMsg',r.message,r.success);
 }
+
+
+/* ===== v23.1 Sheet Center Stable Hotfix ===== */
+async function formatGoogleSheets(){
+  showLoader('Formatting Google Sheets...','Refreshing professional design safely');
+  const r=await api('formatAllSheets',{token:token()});
+  hideLoader();
+  showSmall('sheetCenterMsg',r.message,r.success);
+}
+async function refreshSheetDashboard(){
+  showLoader('Refreshing Sheet Dashboard...','Rebuilding database summary safely');
+  const r=await api('refreshSheetDashboard',{token:token()});
+  hideLoader();
+  showSmall('sheetCenterMsg',r.message,r.success);
+}
+async function runSheetMaintenance(){
+  showLoader('Running maintenance...','Cleaning filters, rows and alternating colors safely');
+  const r=await api('runSheetMaintenance',{token:token()});
+  hideLoader();
+  showSmall('sheetCenterMsg',r.message,r.success);
+}

@@ -1,21 +1,12 @@
-IAS Selection Point v23 - Professional Google Sheets + Admin
+IAS Selection Point v23.1 - Sheet Center Stable Hotfix
 
-New:
-- Professional formatting for every Google Sheet tab
-- Colored headers and sheet tabs
-- Frozen header row and first column
-- Filters on all database sheets
-- Alternate row colors and borders
-- Better column widths and date formats
-- Status dropdowns and conditional colors
-- New DASHBOARD summary sheet
-- Google Sheet custom menu:
-  IAS Selection Point Admin
-  - Initialize System
-  - Format All Sheets
-  - Refresh Dashboard Summary
-  - Run Sheet Maintenance
-- Admin panel includes Google Sheet Center
+Fixed:
+- Alternating background color / banding conflict
+- Format All Sheets now removes old banding safely before applying new design
+- Refresh Dashboard safely rebuilds the DASHBOARD sheet
+- Run Maintenance safely refreshes filters, rows and formatting
+- Existing Google Sheet data is preserved
+- All v23 admin, communication, ticket and profile features are retained
 
 GitHub replace:
 index.html
@@ -30,9 +21,11 @@ Apps Script required:
 1. Replace Code.gs
 2. Save
 3. Run initializeSystem once
-4. Authorize permissions
-5. Deploy > Manage deployments > Edit > New version > Deploy
-6. Refresh Google Sheet to see custom menu
+4. Deploy > Manage deployments > Edit
+5. Select New version and Deploy
+6. Refresh Google Sheet and portal
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=23
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=231
+
+This v23.1 version should be used as the stable base for the next development version.
