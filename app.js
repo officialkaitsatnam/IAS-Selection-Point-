@@ -2012,3 +2012,235 @@ if(typeof loadDashboard==='function'){
   loadDashboard=async function(){await OLD_LOAD_DASH_V25();requestAnimationFrame(()=>setTimeout(()=>{try{renderReadingHistory()}catch(e){}},350))};
 }
 window.startSmartPrefetch=function(){if(ISP_PREFETCH_STARTED)return;ISP_PREFETCH_STARTED=true;setTimeout(()=>{try{const first=(typeof ISP_KNOWLEDGE_CATEGORIES!=='undefined'&&ISP_KNOWLEDGE_CATEGORIES[0])||null;if(first)getCachedPosts(first.label,first.title,first.module).catch(()=>{})}catch(e){}},4000)};
+
+
+/* ===== v26 Premium Reader + Offline Performance ===== */
+let ISP_V26_CURRENT_INDEX=-1;
+let ISP_V26_READER_THEME=localStorage.getItem('isp_v26_reader_theme')||'light';
+let ISP_V26_READER_FONT=Number(localStorage.getItem('isp_v26_reader_font')||18);
+let ISP_V26_FOCUS=localStorage.getItem('isp_v26_focus')==='1';
+
+function v26OfflineKey(title){
+  return 'isp_v26_offline_'+btoa(unescape(encodeURIComponent(title))).replace(/=/g,'');
+}
+function v26SaveOfflineArticle(post){
+  if(!post||!post.title)return;
+  try{
+    const data={title:post.title,content:post.content||post.html||'',category:post.categoryTitle||'',published:post.published||'',savedAt:Date.now()};
+    localStorage.setItem(v26OfflineKey(post.title),JSON.stringify(data));
+    const index=JSON.parse(localStorage.getItem('isp_v26_offline_index')||'[]').filter(x=>x.title!==post.title);
+    index.unshift({title:post.title,key:v26OfflineKey(post.title),savedAt:Date.now()});
+    const keep=index.slice(0,20);
+    localStorage.setItem('isp_v26_offline_index',JSON.stringify(keep));
+    index.slice(20).forEach(x=>localStorage.removeItem(x.key));
+  }catch(e){}
+}
+function v26GetResume(title){
+  try{return Number(localStorage.getItem('isp_v26_resume_'+title)||0)}catch(e){return 0}
+}
+function v26SetResume(title,value){
+  try{localStorage.setItem('isp_v26_resume_'+title,String(value))}catch(e){}
+}
+function v26ReaderRoot(){
+  return document.querySelector('.reader-shell-premium');
+}
+function v26ReaderContent(){
+  return qs('v26ReaderContent');
+}
+function v26BuildReader(post,index){
+  const oldModal=qs('readerModal')||document.querySelector('.reader-modal')||document.querySelector('.article-reader');
+  if(!oldModal)return false;
+  ISP_V26_CURRENT_INDEX=index;
+
+  const title=post?.title||'Article';
+  const content=post?.content||post?.html||post?.full||post?.plain||'';
+  const category=post?.categoryTitle||ISP_CURRENT_CATEGORY||'Article';
+  const date=post?.published||'';
+  const words=String(content).replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length;
+  const mins=Math.max(1,Math.ceil(words/220));
+
+  oldModal.innerHTML=`
+    <div class="reader-shell-premium" id="v26ReaderRoot">
+      <div class="reader-premium-header">
+        <button class="reader-back-btn" onclick="closePostReader ? closePostReader() : history.back()">← Back</button>
+        <h2>${escapeHtml(title)}</h2>
+        <span class="reader-offline-badge">⚡ Cached</span>
+      </div>
+      <div class="reader-premium-progress"><span id="v26TopProgress"></span></div>
+      <div class="reader-layout-premium">
+        <article class="reader-paper">
+          <div class="reader-paper-inner" id="v26ReaderContent">
+            <h1>${escapeHtml(title)}</h1>
+            <div class="reader-meta-premium">
+              <span>${escapeHtml(category)}</span>
+              ${date?`<span>${escapeHtml(date)}</span>`:''}
+              <span>Estimated reading time: ${mins} min</span>
+            </div>
+            <div id="v26ArticleBody">${content}</div>
+            <div class="reader-nav-bottom">
+              <button onclick="v26OpenAdjacent(-1)" ${index<=0?'disabled':''}>← Previous Article</button>
+              <button onclick="v26OpenAdjacent(1)" ${index>=ISP_LOADED_POSTS.length-1?'disabled':''}>Next Article →</button>
+            </div>
+          </div>
+        </article>
+        <aside class="reader-sidebar-premium">
+          <div class="reader-tool-card">
+            <div class="reader-progress-circle" id="v26ProgressCircle"><span id="v26CircleText">0%</span></div>
+            <div class="reader-tool-grid">
+              <button onclick="v26ChangeFont(-1)">A−</button>
+              <button onclick="v26ChangeFont(1)">A+</button>
+              <button onclick="v26SetTheme('light')">Light</button>
+              <button onclick="v26SetTheme('sepia')">Sepia</button>
+              <button onclick="v26SetTheme('dark')">Dark</button>
+              <button onclick="v26ToggleFocus()">Focus</button>
+              <button onclick="v26Speak()">🔊 Listen</button>
+              <button onclick="v26Print()">🖨 Print</button>
+              <button onclick="quickSavePost('loaded',${index})">🔖 Save</button>
+              <button onclick="quickSharePost('loaded',${index})">📤 Share</button>
+            </div>
+          </div>
+          <div class="reader-toc-card">
+            <h4>Contents</h4>
+            <div class="reader-toc-list" id="v26Toc"></div>
+          </div>
+          <div class="reader-related-card">
+            <h4>Related Articles</h4>
+            <div class="reader-related-list" id="v26Related"></div>
+          </div>
+        </aside>
+      </div>
+    </div>`;
+
+  v26ApplyTheme();
+  v26BuildToc();
+  v26BuildRelated(index);
+  v26SaveOfflineArticle(post);
+
+  const contentEl=v26ReaderContent();
+  if(contentEl){
+    contentEl.style.fontSize=ISP_V26_READER_FONT+'px';
+    contentEl.addEventListener('scroll',v26UpdateProgress,{passive:true});
+    window.addEventListener('scroll',v26UpdateProgress,{passive:true});
+  }
+
+  const resume=v26GetResume(title);
+  if(resume>0){
+    setTimeout(()=>{
+      window.scrollTo({top:resume,behavior:'smooth'});
+      v26ShowResumeToast(Math.round(resume));
+    },220);
+  }
+  v26UpdateProgress();
+  return true;
+}
+function v26ApplyTheme(){
+  const root=v26ReaderRoot();if(!root)return;
+  root.classList.remove('reader-sepia','reader-dark','reader-focus-mode');
+  if(ISP_V26_READER_THEME==='sepia')root.classList.add('reader-sepia');
+  if(ISP_V26_READER_THEME==='dark')root.classList.add('reader-dark');
+  if(ISP_V26_FOCUS)root.classList.add('reader-focus-mode');
+}
+function v26ChangeFont(delta){
+  ISP_V26_READER_FONT=Math.max(14,Math.min(27,ISP_V26_READER_FONT+delta));
+  localStorage.setItem('isp_v26_reader_font',ISP_V26_READER_FONT);
+  const el=v26ReaderContent();if(el)el.style.fontSize=ISP_V26_READER_FONT+'px';
+}
+function v26SetTheme(theme){
+  ISP_V26_READER_THEME=theme;
+  localStorage.setItem('isp_v26_reader_theme',theme);
+  v26ApplyTheme();
+}
+function v26ToggleFocus(){
+  ISP_V26_FOCUS=!ISP_V26_FOCUS;
+  localStorage.setItem('isp_v26_focus',ISP_V26_FOCUS?'1':'0');
+  v26ApplyTheme();
+}
+function v26UpdateProgress(){
+  const doc=document.documentElement;
+  const max=Math.max(1,doc.scrollHeight-window.innerHeight);
+  const pct=Math.min(100,Math.round((window.scrollY/max)*100));
+  if(qs('v26TopProgress'))qs('v26TopProgress').style.width=pct+'%';
+  if(qs('v26CircleText'))qs('v26CircleText').textContent=pct+'%';
+  if(qs('v26ProgressCircle'))qs('v26ProgressCircle').style.setProperty('--reader-angle',(pct*3.6)+'deg');
+  const post=ISP_LOADED_POSTS[ISP_V26_CURRENT_INDEX];
+  if(post?.title)v26SetResume(post.title,window.scrollY);
+}
+function v26BuildToc(){
+  const body=qs('v26ArticleBody'),toc=qs('v26Toc');
+  if(!body||!toc)return;
+  const headings=[...body.querySelectorAll('h2,h3')];
+  if(!headings.length){toc.innerHTML='<span class="muted">No headings available.</span>';return}
+  toc.innerHTML=headings.map((h,i)=>{
+    if(!h.id)h.id='v26_heading_'+i;
+    return `<button onclick="document.getElementById('${h.id}').scrollIntoView({behavior:'smooth'})">${escapeHtml(h.textContent)}</button>`;
+  }).join('');
+}
+function v26BuildRelated(index){
+  const box=qs('v26Related');if(!box)return;
+  const current=ISP_LOADED_POSTS[index];
+  const rows=ISP_LOADED_POSTS.filter((x,i)=>i!==index&&(x.categoryTitle===current?.categoryTitle||!current?.categoryTitle)).slice(0,4);
+  box.innerHTML=rows.length?rows.map(x=>{
+    const real=ISP_LOADED_POSTS.indexOf(x);
+    return `<button onclick="openPostReader(${real})">${escapeHtml(x.title)}</button>`;
+  }).join(''):'<span class="muted">No related articles.</span>';
+}
+function v26OpenAdjacent(dir){
+  const next=ISP_V26_CURRENT_INDEX+dir;
+  if(next>=0&&next<ISP_LOADED_POSTS.length)openPostReader(next);
+}
+function v26Speak(){
+  const body=qs('v26ArticleBody');
+  if(!body||!('speechSynthesis'in window))return alert('Text-to-speech is not supported.');
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(body.innerText.slice(0,18000));
+  u.rate=.95;
+  speechSynthesis.speak(u);
+}
+function v26Print(){
+  const body=qs('v26ArticleBody'),post=ISP_LOADED_POSTS[ISP_V26_CURRENT_INDEX];
+  if(!body)return;
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>${escapeHtml(post?.title||'Article')}</title><style>body{font-family:Arial;max-width:760px;margin:40px auto;line-height:1.7}</style></head><body><h1>${escapeHtml(post?.title||'Article')}</h1>${body.innerHTML}</body></html>`);
+  w.document.close();w.print();
+}
+function v26ShowResumeToast(position){
+  const el=document.createElement('div');
+  el.className='reader-resume-toast';
+  el.textContent='Continued from your last reading position';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2200);
+}
+document.addEventListener('keydown',e=>{
+  if(!v26ReaderRoot())return;
+  if(e.key==='ArrowLeft')v26OpenAdjacent(-1);
+  if(e.key==='ArrowRight')v26OpenAdjacent(1);
+  if(e.key.toLowerCase()==='f')v26ToggleFocus();
+  if(e.key.toLowerCase()==='d')v26SetTheme(ISP_V26_READER_THEME==='dark'?'light':'dark');
+  if(e.key==='+')v26ChangeFont(1);
+  if(e.key==='-')v26ChangeFont(-1);
+});
+
+if(typeof openPostReader==='function'){
+  const OLD_OPEN_POST_READER_V26=openPostReader;
+  openPostReader=function(index){
+    const post=ISP_LOADED_POSTS[index];
+    OLD_OPEN_POST_READER_V26(index);
+    setTimeout(()=>{
+      try{v26BuildReader(post,index)}catch(e){console.error('v26 reader',e)}
+    },90);
+  };
+}
+
+/* Faster instant article cache */
+function v26WarmArticleCache(posts){
+  (posts||[]).slice(0,5).forEach(post=>{
+    if(post?.title&&(post.content||post.html))v26SaveOfflineArticle(post);
+  });
+}
+if(typeof renderLearningPosts==='function'){
+  const OLD_RENDER_LEARNING_V26=renderLearningPosts;
+  renderLearningPosts=function(posts,listId){
+    OLD_RENDER_LEARNING_V26(posts,listId);
+    requestIdleCallback?requestIdleCallback(()=>v26WarmArticleCache(posts),{timeout:1200}):setTimeout(()=>v26WarmArticleCache(posts),700);
+  };
+}
