@@ -1459,3 +1459,209 @@ if(typeof openDashSection === 'function'){
     if(id === 'profile') loadProfileExtra();
   };
 }
+
+
+/* ===== v22 Enterprise Admin Suite ===== */
+let ISP_SELECTED_USERS = new Set();
+let ISP_ADMIN_TICKETS = [];
+
+function updateSelectedUserCount(){
+  if(qs('selectedUserCount')) qs('selectedUserCount').textContent = `${ISP_SELECTED_USERS.size} selected`;
+  const all = document.querySelectorAll('.user-select-checkbox');
+  if(qs('selectAllUsers')) qs('selectAllUsers').checked = all.length > 0 && Array.from(all).every(x => x.checked);
+}
+function toggleUserSelection(email, checked){
+  if(checked) ISP_SELECTED_USERS.add(email);
+  else ISP_SELECTED_USERS.delete(email);
+  updateSelectedUserCount();
+}
+function toggleSelectAllUsers(){
+  const checked = !!qs('selectAllUsers')?.checked;
+  document.querySelectorAll('.user-select-checkbox').forEach(cb => {
+    cb.checked = checked;
+    toggleUserSelection(cb.dataset.email, checked);
+  });
+}
+function getSelectedEmails(){ return Array.from(ISP_SELECTED_USERS); }
+
+function filterUsers(){
+  const q=(qs('userSearch')?.value||'').toLowerCase();
+  const status=(qs('userStatusFilter')?.value||'').toLowerCase();
+  const filtered=(ISP_ADMIN_USERS||[]).filter(x=>{
+    const matchesText =
+      String(x.name||'').toLowerCase().includes(q) ||
+      String(x.email||'').toLowerCase().includes(q) ||
+      String(x.mobile||'').toLowerCase().includes(q);
+    const matchesStatus = !status || String(x.status||'').toLowerCase() === status;
+    return matchesText && matchesStatus;
+  });
+  renderUsersTable(filtered);
+}
+
+renderUsersTable = function(users){
+  const tbody=qs('usersTable');
+  if(!tbody)return;
+  tbody.innerHTML=users.map(x=>{
+    const isAdmin=String(x.role).toLowerCase()==='admin';
+    const status=String(x.status||'Active');
+    const sl=status.toLowerCase();
+    const sc=sl==='blocked'?'blocked':sl==='deleted'?'deleted':sl==='pending'?'pending':sl==='deactivated'?'deactivated':'';
+    const rc=isAdmin?'admin':'member';
+    const selected=ISP_SELECTED_USERS.has(x.email);
+    return `<tr>
+      <td><input class="ticket-check user-select-checkbox" type="checkbox" data-email="${escapeAttr(x.email)}" ${selected?'checked':''} onchange="toggleUserSelection('${escapeAttr(x.email)}',this.checked)"></td>
+      <td><b>${escapeHtml(x.name||'')}</b></td>
+      <td>${escapeHtml(x.email||'')}</td>
+      <td>${escapeHtml(x.mobile||'')}</td>
+      <td><span class="role-pill ${rc}">${escapeHtml(x.role||'')}</span></td>
+      <td><span class="status-pill ${sc}">${escapeHtml(status)}</span></td>
+      <td>${escapeHtml(x.lastLogin||'')}</td>
+      <td><div class="action-btns">
+        <button class="action-btn view-btn" onclick="openUserDetail('${escapeAttr(x.email)}')">View</button>
+        <button class="action-btn wa-btn" onclick="openWhatsAppForUser('${escapeAttr(x.email)}')" ${x.mobile?'':'disabled'}>WhatsApp</button>
+        <button class="action-btn email-btn" onclick="prefillSingleMessage('${escapeAttr(x.email)}')">Msg</button>
+        <button class="action-btn activate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Active')" ${isAdmin?'disabled':''}>Activate</button>
+        <button class="action-btn deactivate-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Deactivated')" ${isAdmin?'disabled':''}>Deactivate</button>
+        <button class="action-btn block-btn" onclick="adminUpdateUser('${escapeAttr(x.email)}','Blocked')" ${isAdmin?'disabled':''}>Block</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  updateSelectedUserCount();
+};
+
+async function bulkUpdateUsers(status){
+  const emails=getSelectedEmails();
+  if(!emails.length){ alert('Select at least one user.'); return; }
+  if(!confirm(`Set ${emails.length} selected user(s) as ${status}?`)) return;
+  showLoader('Updating users...','Applying bulk action');
+  const r=await api('adminBulkUpdateUsers',{token:token(),emails,status});
+  hideLoader();
+  if(r.success){
+    ISP_SELECTED_USERS.clear();
+    toast(r.message);
+    await loadAdmin();
+  }else alert(r.message);
+}
+
+function openSelectedCommunication(){
+  if(!ISP_SELECTED_USERS.size){ alert('Select users first.'); return; }
+  if(qs('commAudience')) qs('commAudience').value='selected';
+  openAdminSection('adminCommunicationHub');
+  toggleCommunicationAudience();
+}
+function toggleCommunicationAudience(){
+  const val=qs('commAudience')?.value||'all';
+  if(qs('commSingleEmailWrap')) qs('commSingleEmailWrap').style.display=val==='single'?'block':'none';
+}
+async function sendCommunicationHub(){
+  const audience=qs('commAudience')?.value||'all';
+  const email=qs('commSingleEmail')?.value.trim()||'';
+  const title=qs('commSubject')?.value.trim()||'';
+  const body=qs('commMessage')?.value.trim()||'';
+  const sendEmail=!!qs('commEmail')?.checked;
+  const sendDashboard=!!qs('commDashboard')?.checked;
+  const emails=audience==='selected'?getSelectedEmails():[];
+  if(!title||!body){showSmall('commStatus','Subject and message are required.',false);return}
+  if(audience==='single'&&!email){showSmall('commStatus','Single user email is required.',false);return}
+  if(audience==='selected'&&!emails.length){showSmall('commStatus','Select users first.',false);return}
+  showLoader('Sending communication...','Please wait');
+  const r=await api('adminCommunicationHub',{token:token(),audience,email,emails,title,body,sendEmail,sendDashboard});
+  hideLoader();
+  showSmall('commStatus',r.message,r.success);
+  if(r.success){
+    qs('commSubject').value='';
+    qs('commMessage').value='';
+  }
+}
+
+/* Admin support tickets */
+async function loadAdminTickets(){
+  const r=await api('adminListTickets',{token:token()});
+  if(r.success){ ISP_ADMIN_TICKETS=r.tickets||[]; renderAdminTickets(); }
+  else if(qs('adminTicketsList')) qs('adminTicketsList').innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+}
+function renderAdminTickets(){
+  const box=qs('adminTicketsList'); if(!box)return;
+  const filter=qs('ticketStatusFilter')?.value||'';
+  const rows=ISP_ADMIN_TICKETS.filter(t=>!filter||t.status===filter);
+  if(qs('openTicketsCount')) qs('openTicketsCount').textContent=ISP_ADMIN_TICKETS.filter(t=>t.status!=='Resolved').length;
+  if(!rows.length){box.innerHTML='<p class="muted">No tickets found.</p>';return}
+  box.innerHTML=rows.map(t=>`<div class="ticket-card ${String(t.status).toLowerCase()}">
+    <div class="ticket-head"><div><h4>${escapeHtml(t.subject)}</h4><div class="ticket-meta">${escapeHtml(t.category)} · ${escapeHtml(t.email)} · ${escapeHtml(t.createdAt)}</div></div><span class="status-pill">${escapeHtml(t.status)}</span></div>
+    <div class="ticket-body">${escapeHtml(t.message)}</div>
+    ${t.adminReply?`<div class="ticket-reply"><b>Admin Reply:</b><br>${escapeHtml(t.adminReply)}</div>`:''}
+    <textarea id="reply_${escapeAttr(t.id)}" placeholder="Write reply...">${escapeHtml(t.adminReply||'')}</textarea>
+    <div class="ticket-actions">
+      <select id="status_${escapeAttr(t.id)}"><option ${t.status==='Open'?'selected':''}>Open</option><option ${t.status==='Pending'?'selected':''}>Pending</option><option ${t.status==='Resolved'?'selected':''}>Resolved</option></select>
+      <button onclick="updateAdminTicket('${escapeAttr(t.id)}')">Save Reply & Status</button>
+    </div>
+  </div>`).join('');
+}
+async function updateAdminTicket(id){
+  const reply=qs('reply_'+id)?.value.trim()||'';
+  const status=qs('status_'+id)?.value||'Pending';
+  showLoader('Updating ticket...','Saving reply');
+  const r=await api('adminUpdateTicket',{token:token(),ticketId:id,reply,status});
+  hideLoader();
+  if(r.success){toast(r.message);loadAdminTickets()}else alert(r.message);
+}
+
+/* User support tickets */
+async function createSupportTicket(){
+  const category=qs('ticketCategory')?.value||'Technical Issue';
+  const subject=qs('ticketSubject')?.value.trim()||'';
+  const message=qs('ticketMessage')?.value.trim()||'';
+  if(!subject||!message){showSmall('ticketMsg','Subject and message are required.',false);return}
+  showLoader('Submitting ticket...','Please wait');
+  const r=await api('createTicket',{token:token(),category,subject,message});
+  hideLoader();
+  showSmall('ticketMsg',r.message,r.success);
+  if(r.success){
+    qs('ticketSubject').value='';
+    qs('ticketMessage').value='';
+    loadMyTickets();
+  }
+}
+async function loadMyTickets(){
+  const box=qs('myTicketsList'); if(!box)return;
+  const r=await api('listMyTickets',{token:token()});
+  if(!r.success){box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;return}
+  const rows=r.tickets||[];
+  if(!rows.length){box.innerHTML='<p class="muted">No support tickets yet.</p>';return}
+  box.innerHTML=rows.map(t=>`<div class="ticket-card ${String(t.status).toLowerCase()}">
+    <div class="ticket-head"><h4>${escapeHtml(t.subject)}</h4><span class="status-pill">${escapeHtml(t.status)}</span></div>
+    <div class="ticket-meta">${escapeHtml(t.category)} · ${escapeHtml(t.createdAt)}</div>
+    <div class="ticket-body">${escapeHtml(t.message)}</div>
+    ${t.adminReply?`<div class="ticket-reply"><b>Admin Reply:</b><br>${escapeHtml(t.adminReply)}</div>`:''}
+  </div>`).join('');
+}
+
+/* Hook admin/dashboard sections */
+if(typeof openAdminSection==='function'){
+  const OLD_OPEN_ADMIN_V22=openAdminSection;
+  openAdminSection=function(id,btn){
+    OLD_OPEN_ADMIN_V22(id,btn);
+    if(id==='adminTickets') loadAdminTickets();
+  };
+}
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V22=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V22(id,btn);
+    if(id==='supportModule') loadMyTickets();
+  };
+}
+if(typeof loadAdmin==='function'){
+  const OLD_LOAD_ADMIN_V22=loadAdmin;
+  loadAdmin=async function(){
+    await OLD_LOAD_ADMIN_V22();
+    const r=await api('adminEnterpriseStats',{token:token()});
+    if(r.success){
+      if(qs('newUsersToday'))qs('newUsersToday').textContent=r.newUsersToday||0;
+      if(qs('loginsToday'))qs('loginsToday').textContent=r.loginsToday||0;
+      if(qs('emailsSentCount'))qs('emailsSentCount').textContent=r.emailsSent||0;
+      if(qs('openTicketsCount'))qs('openTicketsCount').textContent=r.openTickets||0;
+    }
+    setTimeout(loadAdminTickets,300);
+  };
+}

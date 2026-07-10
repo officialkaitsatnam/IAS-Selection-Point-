@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=21" />
+  <link rel="stylesheet" href="style.css?v=22" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v21 Admin Pro</div>
+  <div class="version-badge">v22 Enterprise Admin</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -37,6 +37,8 @@
         <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
         <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
         <button onclick="openAdminSection('adminProTools', this)">🛠️ Admin Pro Tools</button>
+        <button onclick="openAdminSection('adminCommunicationHub', this)">📣 Communication Hub</button>
+        <button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
         <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
@@ -62,6 +64,10 @@
           <div class="stat-card green"><span>✅</span><h3 id="activeUsers">0</h3><p>Active Users</p></div>
           <div class="stat-card orange"><span>⛔</span><h3 id="blockedUsers">0</h3><p>Blocked Users</p></div>
           <div class="stat-card purple"><span>🛡️</span><h3 id="adminCount">1</h3><p>Admins</p></div>
+          <div class="stat-card blue"><span>🆕</span><h3 id="newUsersToday">0</h3><p>New Today</p></div>
+          <div class="stat-card green"><span>🔐</span><h3 id="loginsToday">0</h3><p>Logins Today</p></div>
+          <div class="stat-card orange"><span>📧</span><h3 id="emailsSentCount">0</h3><p>Emails Sent</p></div>
+          <div class="stat-card purple"><span>🎫</span><h3 id="openTicketsCount">0</h3><p>Open Tickets</p></div>
         </div>
 
         <div class="two-col">
@@ -115,6 +121,53 @@
         </div>
       </section>
 
+      <section id="adminCommunicationHub" class="admin-section">
+        <div class="pro-panel">
+          <h3>📣 Communication Hub</h3>
+          <p class="muted">Send email and dashboard notifications to one user, selected users, or all active users.</p>
+          <div class="communication-grid">
+            <div>
+              <label>Audience</label>
+              <select id="commAudience" onchange="toggleCommunicationAudience()">
+                <option value="all">All Active Users</option>
+                <option value="single">Single User</option>
+                <option value="selected">Selected Users</option>
+              </select>
+            </div>
+            <div id="commSingleEmailWrap" style="display:none;">
+              <label>User Email</label>
+              <input id="commSingleEmail" placeholder="user@example.com" />
+            </div>
+          </div>
+          <input id="commSubject" placeholder="Subject / notification title" />
+          <textarea id="commMessage" placeholder="Write your professional message..."></textarea>
+          <div class="communication-options">
+            <label><input type="checkbox" id="commEmail" checked> Send Email</label>
+            <label><input type="checkbox" id="commDashboard" checked> Dashboard Notification</label>
+          </div>
+          <button class="primary-btn" onclick="sendCommunicationHub()">Send Communication</button>
+          <p id="commStatus" class="small-msg"></p>
+        </div>
+      </section>
+
+      <section id="adminTickets" class="admin-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>🎫 Support Tickets</h3>
+              <p class="muted">Review, reply and resolve member support requests.</p>
+            </div>
+            <select id="ticketStatusFilter" onchange="renderAdminTickets()">
+              <option value="">All Tickets</option>
+              <option value="Open">Open</option>
+              <option value="Pending">Pending</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </div>
+          <div id="adminTicketsList" class="ticket-list"><p class="muted">Loading tickets...</p></div>
+        </div>
+      </section>
+
       <section id="adminUsers" class="admin-section">
         <div class="pro-panel">
           <div class="panel-head">
@@ -122,13 +175,31 @@
               <h3>👥 User Control</h3>
               <p class="muted">Activate, block or delete member accounts.</p>
             </div>
-            <input id="userSearch" oninput="filterUsers()" placeholder="Search by name, email or status..." />
+            <div class="admin-filter-row">
+              <input id="userSearch" oninput="filterUsers()" placeholder="Search name, email or mobile..." />
+              <select id="userStatusFilter" onchange="filterUsers()">
+                <option value="">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Deactivated">Deactivated</option>
+                <option value="Blocked">Blocked</option>
+                <option value="Pending">Pending</option>
+                <option value="Deleted">Deleted</option>
+              </select>
+            </div>
+          </div>
+          <div class="bulk-toolbar">
+            <label><input type="checkbox" id="selectAllUsers" onchange="toggleSelectAllUsers()"> Select All</label>
+            <span id="selectedUserCount">0 selected</span>
+            <button onclick="bulkUpdateUsers('Active')">Activate</button>
+            <button onclick="bulkUpdateUsers('Deactivated')">Deactivate</button>
+            <button onclick="bulkUpdateUsers('Blocked')">Block</button>
+            <button onclick="openSelectedCommunication()">Message Selected</button>
           </div>
           <div class="table-wrap">
             <table class="pro-table">
               <thead>
                 <tr>
-                  <th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
+                  <th>Select</th><th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
                 </tr>
               </thead>
               <tbody id="usersTable"></tbody>
@@ -208,7 +279,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=21"></script>
-  <script src="app.js?v=21"></script>
+  <script src="config.js?v=22"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>

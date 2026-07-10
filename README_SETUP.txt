@@ -1,16 +1,19 @@
-IAS Selection Point v21 - Admin Pro + WhatsApp + Profile Upgrade
+IAS Selection Point v22 - Enterprise Admin Suite
 
 New:
-- Admin panel upgraded with Admin Pro Tools
-- User table now includes mobile number
-- One-click WhatsApp button for each user
-- Free WhatsApp method: opens WhatsApp with ready message; admin presses Send
-- WhatsApp templates: Welcome, Active, Blocked, Study Material, Daily Goal
-- View user detail modal
-- Send single user email + dashboard notification
-- User profile upgraded:
-  Mobile/WhatsApp, City, Target Exam, Subject, Daily Goal, Bio
-- Existing v20.1 stable layout retained
+- Advanced user search and status filter
+- Select users with checkboxes
+- Bulk Activate / Deactivate / Block
+- Communication Hub:
+  Single User / Selected Users / All Active Users
+  Email + Dashboard Notification
+- Professional analytics:
+  New Users Today, Logins Today, Emails Sent, Open Tickets
+- Support Ticket System:
+  User creates ticket
+  Admin replies and updates status
+  User gets email + dashboard notification
+- Existing v21 WhatsApp, profile, email and notification features retained
 
 GitHub replace:
 index.html
@@ -21,8 +24,11 @@ app.js
 config.js
 logo.jpg
 
-Apps Script:
-Replace Code.gs and deploy new version if you want mobile number visible in Admin table and single-user backend notifications working.
+Apps Script required:
+1. Replace Code.gs
+2. Save
+3. Run initializeSystem once
+4. Deploy > Manage deployments > Edit > New version > Deploy
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=21
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=22
