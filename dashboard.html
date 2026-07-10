@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=24" />
+  <link rel="stylesheet" href="style.css?v=25" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v24 Student Performance</div>
+  <div class="version-badge">v25 Smart Reader + Speed</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -66,6 +66,7 @@
         <button onclick="openDashSection('profile', this)">👤 Profile</button>
         <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
         <button onclick="openDashSection('performanceModule', this)">📊 My Performance</button>
+        <button onclick="openDashSection('readingHistoryModule', this)">🕒 Reading History</button>
         <button onclick="openDashSection('supportModule', this)">🎫 Help & Support</button>
         <button onclick="openDashSection('security', this)">🔐 Security</button>
       </nav>
@@ -398,6 +399,16 @@
         </div>
       </section>
 
+      <section id="readingHistoryModule" class="dash-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div><h3>🕒 Reading History</h3><p class="muted">Recently opened articles and saved reading position.</p></div>
+            <button class="mini-btn" onclick="clearReadingHistory()">Clear History</button>
+          </div>
+          <div id="readingHistoryList" class="history-list"></div>
+        </div>
+      </section>
+
       <section id="security" class="dash-section">
         <div class="pro-panel">
           <h3>🔐 Change Password</h3>
@@ -434,7 +445,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=24"></script>
-  <script src="app.js?v=24"></script>
+  <script src="config.js?v=25"></script>
+  <script src="app.js?v=25"></script>
 </body>
 </html>

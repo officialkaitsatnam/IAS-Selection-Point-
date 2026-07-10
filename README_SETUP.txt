@@ -1,20 +1,23 @@
-IAS Selection Point v24 - Student Performance & Achievement Suite
+IAS Selection Point v25 - Smart Reader + Performance Boost
+
+Performance:
+- Duplicate API calls deduplicated
+- Category/feed cache: 30 minutes
+- Delayed non-critical rendering
+- Reduced background prefetch
+- Debounced search
+- Lightweight skeleton loader
 
 New:
-- Student Performance dashboard
-- Reading streak
-- Total / weekly article reading statistics
-- Daily goal completion percentage
-- 28-day reading calendar
-- Weekly progress bars
-- Achievement badges
-- Admin Student Performance overview
-- Top learner leaderboard
-- New Google Sheet tabs:
-  STUDY_PROGRESS
-  ACHIEVEMENTS
-- Professional Sheet Center formatting supports new tabs
-- Existing v23.1 stable features retained
+- Smart Reader controls
+- Font size
+- Light / Sepia / Dark reading mode
+- Reading progress bar
+- Text-to-Speech
+- Print article
+- Reading History
+- Continue Reading position
+- New Sheet tabs: READING_HISTORY and CONTENT_ANALYTICS
 
 GitHub replace:
 index.html
@@ -25,13 +28,12 @@ app.js
 config.js
 logo.jpg
 
-Apps Script required:
+Apps Script:
 1. Replace Code.gs
 2. Save
 3. Run initializeSystem once
-4. Deploy > Manage deployments > Edit
-5. Select New version and Deploy
-6. Refresh portal and Google Sheet
+4. Deploy a New version
+5. Refresh portal and Google Sheet
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=24
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=25
