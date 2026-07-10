@@ -1665,3 +1665,24 @@ if(typeof loadAdmin==='function'){
     setTimeout(loadAdminTickets,300);
   };
 }
+
+
+/* ===== v23 Google Sheet Center ===== */
+async function formatGoogleSheets(){
+  showLoader('Formatting Google Sheets...','Applying professional design');
+  const r=await api('formatAllSheets',{token:token()});
+  hideLoader();
+  showSmall('sheetCenterMsg',r.message,r.success);
+}
+async function refreshSheetDashboard(){
+  showLoader('Refreshing Sheet Dashboard...','Building database summary');
+  const r=await api('refreshSheetDashboard',{token:token()});
+  hideLoader();
+  showSmall('sheetCenterMsg',r.message,r.success);
+}
+async function runSheetMaintenance(){
+  showLoader('Running maintenance...','Cleaning empty rows and refreshing filters');
+  const r=await api('runSheetMaintenance',{token:token()});
+  hideLoader();
+  showSmall('sheetCenterMsg',r.message,r.success);
+}

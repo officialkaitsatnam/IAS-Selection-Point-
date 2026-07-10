@@ -2088,3 +2088,53 @@ body.portal-dark .ticket-meta{
     margin-right:0;
   }
 }
+
+
+/* ===== v23 Professional Google Sheet Center ===== */
+.sheet-center-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  margin-top:16px;
+}
+.sheet-center-card{
+  border:1px solid #e2eefc;
+  border-radius:18px;
+  padding:18px;
+  background:linear-gradient(135deg,#ffffff,#f8fbff);
+}
+.sheet-center-card span{
+  font-size:30px;
+}
+.sheet-center-card h4{
+  margin:9px 0 6px;
+  color:#10233f;
+}
+.sheet-center-card p{
+  color:#5a6b82;
+  min-height:42px;
+}
+.sheet-center-card button{
+  border:0;
+  background:#0b5ed7;
+  color:#fff;
+  border-radius:11px;
+  padding:10px 13px;
+  font-weight:900;
+  cursor:pointer;
+}
+body.portal-dark .sheet-center-card{
+  background:#1f2937!important;
+  border-color:#334155!important;
+}
+body.portal-dark .sheet-center-card h4{
+  color:#f8fafc!important;
+}
+body.portal-dark .sheet-center-card p{
+  color:#cbd5e1!important;
+}
+@media(max-width:850px){
+  .sheet-center-grid{
+    grid-template-columns:1fr;
+  }
+}

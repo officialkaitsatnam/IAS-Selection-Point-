@@ -1,19 +1,21 @@
-IAS Selection Point v22 - Enterprise Admin Suite
+IAS Selection Point v23 - Professional Google Sheets + Admin
 
 New:
-- Advanced user search and status filter
-- Select users with checkboxes
-- Bulk Activate / Deactivate / Block
-- Communication Hub:
-  Single User / Selected Users / All Active Users
-  Email + Dashboard Notification
-- Professional analytics:
-  New Users Today, Logins Today, Emails Sent, Open Tickets
-- Support Ticket System:
-  User creates ticket
-  Admin replies and updates status
-  User gets email + dashboard notification
-- Existing v21 WhatsApp, profile, email and notification features retained
+- Professional formatting for every Google Sheet tab
+- Colored headers and sheet tabs
+- Frozen header row and first column
+- Filters on all database sheets
+- Alternate row colors and borders
+- Better column widths and date formats
+- Status dropdowns and conditional colors
+- New DASHBOARD summary sheet
+- Google Sheet custom menu:
+  IAS Selection Point Admin
+  - Initialize System
+  - Format All Sheets
+  - Refresh Dashboard Summary
+  - Run Sheet Maintenance
+- Admin panel includes Google Sheet Center
 
 GitHub replace:
 index.html
@@ -28,7 +30,9 @@ Apps Script required:
 1. Replace Code.gs
 2. Save
 3. Run initializeSystem once
-4. Deploy > Manage deployments > Edit > New version > Deploy
+4. Authorize permissions
+5. Deploy > Manage deployments > Edit > New version > Deploy
+6. Refresh Google Sheet to see custom menu
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=22
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=23

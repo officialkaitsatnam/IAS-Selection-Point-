@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=22" />
+  <link rel="stylesheet" href="style.css?v=23" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v22 Enterprise Admin</div>
+  <div class="version-badge">v23 Professional Sheets</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -39,6 +39,7 @@
         <button onclick="openAdminSection('adminProTools', this)">🛠️ Admin Pro Tools</button>
         <button onclick="openAdminSection('adminCommunicationHub', this)">📣 Communication Hub</button>
         <button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
+        <button onclick="openAdminSection('adminSheetCenter', this)">📊 Sheet Center</button>
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
         <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
@@ -168,6 +169,40 @@
         </div>
       </section>
 
+      <section id="adminSheetCenter" class="admin-section">
+        <div class="pro-panel">
+          <h3>📊 Google Sheet Center</h3>
+          <p class="muted">Manage and professionally format your IAS Selection Point database sheets.</p>
+          <div class="sheet-center-grid">
+            <div class="sheet-center-card">
+              <span>🎨</span>
+              <h4>Professional Formatting</h4>
+              <p>Headers, filters, frozen rows, widths, colors and date formats.</p>
+              <button onclick="formatGoogleSheets()">Format All Sheets</button>
+            </div>
+            <div class="sheet-center-card">
+              <span>📈</span>
+              <h4>Dashboard Summary</h4>
+              <p>Create or refresh a visual database summary sheet.</p>
+              <button onclick="refreshSheetDashboard()">Refresh Dashboard</button>
+            </div>
+            <div class="sheet-center-card">
+              <span>🧹</span>
+              <h4>Maintenance</h4>
+              <p>Remove empty rows and refresh filters safely.</p>
+              <button onclick="runSheetMaintenance()">Run Maintenance</button>
+            </div>
+            <div class="sheet-center-card">
+              <span>🔗</span>
+              <h4>Open Google Sheet</h4>
+              <p>Open the connected database in a new tab.</p>
+              <button onclick="window.open('https://docs.google.com/spreadsheets/d/1c4DN25D_RSyJfmr011h268OicU1xB2Ka-T-VFEuQtGw/edit','_blank')">Open Sheet</button>
+            </div>
+          </div>
+          <p id="sheetCenterMsg" class="small-msg"></p>
+        </div>
+      </section>
+
       <section id="adminUsers" class="admin-section">
         <div class="pro-panel">
           <div class="panel-head">
@@ -279,7 +314,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=22"></script>
-  <script src="app.js?v=22"></script>
+  <script src="config.js?v=23"></script>
+  <script src="app.js?v=23"></script>
 </body>
 </html>
