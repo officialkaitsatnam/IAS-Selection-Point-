@@ -1,47 +1,28 @@
-IAS Selection Point v26 - Premium Reader + Offline Performance
+IAS Selection Point v26.1 - Reader Back Button Hotfix
 
-New Premium Reader:
-- Clean narrow reading column
-- Sticky premium header
-- Top reading progress bar
-- Circular reading progress
-- Floating reader tools
-- Light / Sepia / Dark / Focus modes
-- Font size controls
-- Text-to-Speech
-- Print article
-- Automatic Table of Contents
-- Related articles
-- Previous / Next article
-- Auto-resume from last reading position
-- Keyboard shortcuts:
-  Left/Right = Previous/Next
-  F = Focus mode
-  D = Dark mode
-  + / - = Font size
-
-Performance:
-- Recent 20 articles cached locally
-- First 5 visible articles warmed in background
-- Existing v25 API deduplication and 30-minute category cache retained
-- Reader opens quickly after first category load
+Fixed:
+- Premium Reader Back button now works correctly
+- Reader modal closes and dashboard returns
+- Text-to-Speech stops when leaving reader
+- Fullscreen exits safely
+- Compatibility alias added for old closePostReader calls
+- All v26 Premium Reader, offline cache and performance features retained
 
 GitHub replace:
-index.html
 dashboard.html
-admin.html
-style.css
 app.js
 config.js
+index.html
+admin.html
+style.css
 logo.jpg
 
+Minimum required replacement:
+- app.js
+- dashboard.html
+
 Apps Script:
-Code.gs has only version update for v26.
-If v25 backend is already deployed, replacing Code.gs is optional.
-For exact version display:
-1. Replace Code.gs
-2. Save
-3. Deploy New version
+Code.gs replacement is optional because backend functionality is unchanged.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=26
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=261

@@ -2062,7 +2062,7 @@ function v26BuildReader(post,index){
   oldModal.innerHTML=`
     <div class="reader-shell-premium" id="v26ReaderRoot">
       <div class="reader-premium-header">
-        <button class="reader-back-btn" onclick="closePostReader ? closePostReader() : history.back()">← Back</button>
+        <button class="reader-back-btn" onclick="v261ClosePremiumReader()">← Back</button>
         <h2>${escapeHtml(title)}</h2>
         <span class="reader-offline-badge">⚡ Cached</span>
       </div>
@@ -2244,3 +2244,36 @@ if(typeof renderLearningPosts==='function'){
     requestIdleCallback?requestIdleCallback(()=>v26WarmArticleCache(posts),{timeout:1200}):setTimeout(()=>v26WarmArticleCache(posts),700);
   };
 }
+
+
+/* ===== v26.1 Reader Back Button Hotfix ===== */
+function v261ClosePremiumReader(){
+  try{
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }catch(e){}
+
+  const modal =
+    (typeof qs === 'function' && qs('readerModal')) ||
+    document.getElementById('readerModal') ||
+    document.querySelector('.reader-modal') ||
+    document.querySelector('.article-reader');
+
+  if(modal){
+    modal.classList.remove('active');
+    modal.classList.remove('dark-reader');
+  }
+
+  document.body.classList.remove('reader-open');
+  document.documentElement.classList.remove('reader-open');
+
+  try{
+    if(document.fullscreenElement && document.exitFullscreen){
+      document.exitFullscreen().catch(function(){});
+    }
+  }catch(e){}
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* Compatibility alias for any old/new reader button. */
+window.closePostReader = v261ClosePremiumReader;
