@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=231" />
+  <link rel="stylesheet" href="style.css?v=24" />
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v23.1 Sheet Center Stable</div>
+  <div class="version-badge">v24 Student Performance</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -65,6 +65,7 @@
         <button onclick="openDashSection('notificationsModule', this)">🔔 Notifications</button>
         <button onclick="openDashSection('profile', this)">👤 Profile</button>
         <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
+        <button onclick="openDashSection('performanceModule', this)">📊 My Performance</button>
         <button onclick="openDashSection('supportModule', this)">🎫 Help & Support</button>
         <button onclick="openDashSection('security', this)">🔐 Security</button>
       </nav>
@@ -341,6 +342,62 @@
         </div>
       </section>
 
+      <section id="performanceModule" class="dash-section">
+        <div class="performance-hero">
+          <div>
+            <span class="eyebrow">STUDENT PERFORMANCE</span>
+            <h2>Track Your Learning Journey</h2>
+            <p>Build consistency, complete daily goals and unlock achievement badges.</p>
+          </div>
+          <div class="streak-orb">
+            <strong id="currentStreak">0</strong>
+            <span>Day Streak 🔥</span>
+          </div>
+        </div>
+
+        <div class="stats-grid-pro performance-stats">
+          <div class="stat-card blue"><span>📖</span><h3 id="totalReadStat">0</h3><p>Total Articles Read</p></div>
+          <div class="stat-card green"><span>✅</span><h3 id="weeklyReadStat">0</h3><p>Read This Week</p></div>
+          <div class="stat-card purple"><span>🏆</span><h3 id="badgeCountStat">0</h3><p>Badges Earned</p></div>
+          <div class="stat-card orange"><span>🎯</span><h3 id="goalPercentStat">0%</h3><p>Goal Completion</p></div>
+        </div>
+
+        <div class="two-col compact-two">
+          <div class="pro-panel">
+            <div class="panel-head">
+              <div>
+                <h3>📅 Reading Calendar</h3>
+                <p class="muted">Last 28 days activity</p>
+              </div>
+            </div>
+            <div id="readingCalendar" class="reading-calendar"></div>
+          </div>
+
+          <div class="pro-panel">
+            <h3>🏅 Achievements</h3>
+            <div id="achievementGrid" class="achievement-grid"></div>
+          </div>
+        </div>
+
+        <div class="two-col compact-two">
+          <div class="pro-panel">
+            <h3>📈 Weekly Progress</h3>
+            <div id="weeklyProgressChart" class="weekly-bars"></div>
+          </div>
+
+          <div class="pro-panel">
+            <h3>🎯 Study Goal</h3>
+            <div class="goal-ring-wrap">
+              <div class="goal-ring" id="goalRing"><span id="goalRingText">0%</span></div>
+              <div>
+                <b id="goalDescription">0 of 5 articles completed today</b>
+                <p class="muted">Complete 5 articles daily to maintain your streak.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="security" class="dash-section">
         <div class="pro-panel">
           <h3>🔐 Change Password</h3>
@@ -377,7 +434,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=231"></script>
-  <script src="app.js?v=231"></script>
+  <script src="config.js?v=24"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

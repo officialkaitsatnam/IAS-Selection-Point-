@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=231" />
+  <link rel="stylesheet" href="style.css?v=24" />
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v23.1 Sheet Center Stable</div>
+  <div class="version-badge">v24 Student Performance</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -40,6 +40,7 @@
         <button onclick="openAdminSection('adminCommunicationHub', this)">📣 Communication Hub</button>
         <button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
         <button onclick="openAdminSection('adminSheetCenter', this)">📊 Sheet Center</button>
+        <button onclick="openAdminSection('adminPerformance', this)">🏆 Student Performance</button>
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
         <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
@@ -203,6 +204,30 @@
         </div>
       </section>
 
+      <section id="adminPerformance" class="admin-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>🏆 Student Performance Overview</h3>
+              <p class="muted">Monitor consistency, reading activity and top learners.</p>
+            </div>
+            <button class="mini-btn" onclick="loadAdminPerformance()">Refresh</button>
+          </div>
+
+          <div class="stats-grid-pro">
+            <div class="stat-card blue"><span>📖</span><h3 id="adminTotalReads">0</h3><p>Total Reads</p></div>
+            <div class="stat-card green"><span>🔥</span><h3 id="adminActiveStreaks">0</h3><p>Active Streaks</p></div>
+            <div class="stat-card purple"><span>🏅</span><h3 id="adminBadgesAwarded">0</h3><p>Badges Awarded</p></div>
+            <div class="stat-card orange"><span>👑</span><h3 id="adminTopScore">0</h3><p>Top Learner Score</p></div>
+          </div>
+
+          <div class="leaderboard-wrap">
+            <h3>🥇 Top Active Learners</h3>
+            <div id="adminLeaderboard" class="leaderboard-list"><p class="muted">Loading performance...</p></div>
+          </div>
+        </div>
+      </section>
+
       <section id="adminUsers" class="admin-section">
         <div class="pro-panel">
           <div class="panel-head">
@@ -314,7 +339,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=231"></script>
-  <script src="app.js?v=231"></script>
+  <script src="config.js?v=24"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

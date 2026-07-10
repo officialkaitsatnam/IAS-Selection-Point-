@@ -1,12 +1,20 @@
-IAS Selection Point v23.1 - Sheet Center Stable Hotfix
+IAS Selection Point v24 - Student Performance & Achievement Suite
 
-Fixed:
-- Alternating background color / banding conflict
-- Format All Sheets now removes old banding safely before applying new design
-- Refresh Dashboard safely rebuilds the DASHBOARD sheet
-- Run Maintenance safely refreshes filters, rows and formatting
-- Existing Google Sheet data is preserved
-- All v23 admin, communication, ticket and profile features are retained
+New:
+- Student Performance dashboard
+- Reading streak
+- Total / weekly article reading statistics
+- Daily goal completion percentage
+- 28-day reading calendar
+- Weekly progress bars
+- Achievement badges
+- Admin Student Performance overview
+- Top learner leaderboard
+- New Google Sheet tabs:
+  STUDY_PROGRESS
+  ACHIEVEMENTS
+- Professional Sheet Center formatting supports new tabs
+- Existing v23.1 stable features retained
 
 GitHub replace:
 index.html
@@ -23,9 +31,7 @@ Apps Script required:
 3. Run initializeSystem once
 4. Deploy > Manage deployments > Edit
 5. Select New version and Deploy
-6. Refresh Google Sheet and portal
+6. Refresh portal and Google Sheet
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=231
-
-This v23.1 version should be used as the stable base for the next development version.
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=24

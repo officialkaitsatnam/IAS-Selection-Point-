@@ -1707,3 +1707,181 @@ async function runSheetMaintenance(){
   hideLoader();
   showSmall('sheetCenterMsg',r.message,r.success);
 }
+
+
+/* ===== v24 Student Performance + Achievements ===== */
+const ISP_BADGES = [
+  {id:'first_read',icon:'📖',name:'First Step',desc:'Read your first article',target:1},
+  {id:'five_reads',icon:'⭐',name:'Focused Learner',desc:'Read 5 articles',target:5},
+  {id:'twenty_reads',icon:'🏅',name:'Consistent Reader',desc:'Read 20 articles',target:20},
+  {id:'fifty_reads',icon:'🥇',name:'Knowledge Seeker',desc:'Read 50 articles',target:50},
+  {id:'streak_3',icon:'🔥',name:'3-Day Streak',desc:'Study for 3 consecutive days',streak:3},
+  {id:'streak_7',icon:'💎',name:'7-Day Champion',desc:'Study for 7 consecutive days',streak:7}
+];
+
+function performanceKey(){
+  return 'isp_performance_' + (currentUser().email || 'guest');
+}
+function getPerformanceData(){
+  const fallback={totalReads:0,days:{},lastReadDate:'',streak:0,badges:[]};
+  try{return {...fallback,...JSON.parse(localStorage.getItem(performanceKey())||'{}')}}
+  catch(e){return fallback}
+}
+function savePerformanceData(data){
+  localStorage.setItem(performanceKey(),JSON.stringify(data));
+}
+function isoDate(d=new Date()){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function calculateStreak(days){
+  let streak=0;
+  const d=new Date();
+  for(let i=0;i<365;i++){
+    const key=isoDate(d);
+    if(Number(days[key]||0)>0){streak++;d.setDate(d.getDate()-1)}
+    else break;
+  }
+  return streak;
+}
+function recordPerformanceRead(post){
+  const data=getPerformanceData();
+  const today=isoDate();
+  const uniqueKey='isp_perf_once_'+(currentUser().email||'guest')+'_'+today+'_'+(post?.title||'article');
+  if(localStorage.getItem(uniqueKey)) return;
+  localStorage.setItem(uniqueKey,'1');
+  data.totalReads=Number(data.totalReads||0)+1;
+  data.days[today]=Number(data.days[today]||0)+1;
+  data.lastReadDate=today;
+  data.streak=calculateStreak(data.days);
+  data.badges=ISP_BADGES.filter(b=>
+    (b.target&&data.totalReads>=b.target)||(b.streak&&data.streak>=b.streak)
+  ).map(b=>b.id);
+  savePerformanceData(data);
+  syncPerformanceBackend(data);
+  renderPerformanceDashboard();
+}
+async function syncPerformanceBackend(data){
+  try{
+    await api('syncStudyProgress',{
+      token:token(),
+      totalReads:data.totalReads,
+      streak:data.streak,
+      days:data.days,
+      badges:data.badges
+    });
+  }catch(e){}
+}
+function renderPerformanceDashboard(){
+  const data=getPerformanceData();
+  const today=isoDate();
+  const todayCount=Number(data.days[today]||0);
+  const goal=Math.min(100,Math.round((todayCount/5)*100));
+  const now=new Date();
+  let weekly=0;
+  const weekData=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(now);
+    d.setDate(now.getDate()-i);
+    const key=isoDate(d);
+    const count=Number(data.days[key]||0);
+    weekly+=count;
+    weekData.push({label:d.toLocaleDateString(undefined,{weekday:'short'}).slice(0,2),count});
+  }
+
+  if(qs('currentStreak'))qs('currentStreak').textContent=data.streak||0;
+  if(qs('totalReadStat'))qs('totalReadStat').textContent=data.totalReads||0;
+  if(qs('weeklyReadStat'))qs('weeklyReadStat').textContent=weekly;
+  if(qs('badgeCountStat'))qs('badgeCountStat').textContent=(data.badges||[]).length;
+  if(qs('goalPercentStat'))qs('goalPercentStat').textContent=goal+'%';
+  if(qs('goalRingText'))qs('goalRingText').textContent=goal+'%';
+  if(qs('goalRing'))qs('goalRing').style.setProperty('--progress',(goal*3.6)+'deg');
+  if(qs('goalDescription'))qs('goalDescription').textContent=`${todayCount} of 5 articles completed today`;
+
+  const cal=qs('readingCalendar');
+  if(cal){
+    const boxes=[];
+    for(let i=27;i>=0;i--){
+      const d=new Date(now);
+      d.setDate(now.getDate()-i);
+      const key=isoDate(d);
+      const count=Number(data.days[key]||0);
+      const level=count>=5?4:count>=3?3:count>=2?2:count>=1?1:0;
+      boxes.push(`<div class="calendar-day level-${level}" title="${escapeAttr(key)} · ${count} read">${d.getDate()}</div>`);
+    }
+    cal.innerHTML=boxes.join('');
+  }
+
+  const achievement=qs('achievementGrid');
+  if(achievement){
+    achievement.innerHTML=ISP_BADGES.map(b=>{
+      const unlocked=(data.badges||[]).includes(b.id);
+      return `<div class="achievement-card ${unlocked?'':'locked'}">
+        <div class="achievement-icon">${b.icon}</div>
+        <div><b>${escapeHtml(b.name)}</b><small>${escapeHtml(b.desc)}</small></div>
+      </div>`;
+    }).join('');
+  }
+
+  const bars=qs('weeklyProgressChart');
+  if(bars){
+    const max=Math.max(5,...weekData.map(x=>x.count));
+    bars.innerHTML=weekData.map(x=>{
+      const h=Math.max(6,Math.round((x.count/max)*150));
+      return `<div class="week-bar-item"><b>${x.count}</b><div class="week-bar" style="height:${h}px"></div><span>${x.label}</span></div>`;
+    }).join('');
+  }
+}
+
+if(typeof openPostReader==='function'){
+  const OLD_OPEN_POST_READER_V24=openPostReader;
+  openPostReader=function(index){
+    const post=ISP_LOADED_POSTS[index];
+    OLD_OPEN_POST_READER_V24(index);
+    if(post) recordPerformanceRead(post);
+  };
+}
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V24=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V24(id,btn);
+    if(id==='performanceModule')renderPerformanceDashboard();
+  };
+}
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASH_V24=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASH_V24();
+    setTimeout(renderPerformanceDashboard,400);
+  };
+}
+
+/* Admin performance */
+async function loadAdminPerformance(){
+  const r=await api('adminPerformanceStats',{token:token()});
+  if(!r.success){
+    if(qs('adminLeaderboard'))qs('adminLeaderboard').innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+  if(qs('adminTotalReads'))qs('adminTotalReads').textContent=r.totalReads||0;
+  if(qs('adminActiveStreaks'))qs('adminActiveStreaks').textContent=r.activeStreaks||0;
+  if(qs('adminBadgesAwarded'))qs('adminBadgesAwarded').textContent=r.badgesAwarded||0;
+  if(qs('adminTopScore'))qs('adminTopScore').textContent=r.topScore||0;
+  const box=qs('adminLeaderboard');
+  const rows=r.leaderboard||[];
+  if(box){
+    box.innerHTML=rows.length?rows.map((x,i)=>`<div class="leaderboard-item">
+      <div class="leaderboard-rank">${i+1}</div>
+      <div class="leaderboard-user"><b>${escapeHtml(x.name||x.email)}</b><small>${escapeHtml(x.email)}</small></div>
+      <div class="leaderboard-score">${x.totalReads} reads</div>
+      <div class="leaderboard-streak">🔥 ${x.streak}</div>
+    </div>`).join(''):'<p class="muted">No performance data yet.</p>';
+  }
+}
+if(typeof openAdminSection==='function'){
+  const OLD_OPEN_ADMIN_V24=openAdminSection;
+  openAdminSection=function(id,btn){
+    OLD_OPEN_ADMIN_V24(id,btn);
+    if(id==='adminPerformance')loadAdminPerformance();
+  };
+}
