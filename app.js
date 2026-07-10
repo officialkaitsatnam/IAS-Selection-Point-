@@ -2277,3 +2277,460 @@ function v261ClosePremiumReader(){
 
 /* Compatibility alias for any old/new reader button. */
 window.closePostReader = v261ClosePremiumReader;
+
+
+/* =========================================================
+   v27 FINAL STABLE CONTROL LAYER
+   ========================================================= */
+(function(){
+  'use strict';
+
+  let currentIndex = -1;
+  let currentPost = null;
+  let readerFont = Number(localStorage.getItem('isp_v27_reader_font') || 18);
+  let readerTheme = localStorage.getItem('isp_v27_reader_theme') || 'light';
+  let focusMode = localStorage.getItem('isp_v27_reader_focus') === '1';
+  let speechActive = false;
+
+  function getModal(){
+    return document.getElementById('readerModal');
+  }
+
+  function sanitizedContent(post){
+    const html = post && (post.content || post.html || post.full || '');
+    try{
+      return typeof sanitizePostHtml === 'function' ? sanitizePostHtml(html) : html;
+    }catch(e){
+      return html || '<p>Article content is unavailable.</p>';
+    }
+  }
+
+  function estimate(post){
+    try{
+      if(typeof estimateReadTime === 'function') return estimateReadTime(post.content || '');
+    }catch(e){}
+    const words = String(post.content || '').replace(/<[^>]+>/g,' ').trim().split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.ceil(words / 200));
+  }
+
+  function buildReader(index){
+    const posts = Array.isArray(window.ISP_LOADED_POSTS) ? window.ISP_LOADED_POSTS : ISP_LOADED_POSTS;
+    const post = posts && posts[index];
+    if(!post) return;
+
+    currentIndex = index;
+    currentPost = post;
+    window.ISP_CURRENT_READER_POST = post;
+
+    const modal = getModal();
+    if(!modal) return;
+
+    modal.className = 'reader-modal v27-reader-modal active';
+    modal.innerHTML = `
+      <div class="v27-reader-shell">
+        <header class="v27-reader-header">
+          <button class="v27-reader-button" type="button" data-v27-action="back">← Back</button>
+          <h2>${escapeHtml(post.title || 'Article')}</h2>
+          <button class="v27-reader-button secondary" type="button" data-v27-action="save">🔖 Save</button>
+          <button class="v27-reader-button secondary" type="button" data-v27-action="share">📤 Share</button>
+        </header>
+        <div class="v27-reader-progress"><span id="v27TopProgress"></span></div>
+
+        <div class="v27-reader-layout">
+          <article class="v27-reader-paper">
+            <div class="v27-reader-content" id="v27ReaderContent">
+              <h1>${escapeHtml(post.title || 'Article')}</h1>
+              <div class="v27-reader-meta">
+                <span>${escapeHtml(post.moduleName || '')}</span>
+                <span>${escapeHtml(post.categoryTitle || window.ISP_CURRENT_CATEGORY || '')}</span>
+                ${post.published ? `<span>${escapeHtml(post.published)}</span>` : ''}
+                <span>${estimate(post)} min read</span>
+              </div>
+              <div id="v27ArticleBody">${sanitizedContent(post)}</div>
+              <div class="v27-reader-nav">
+                <button type="button" data-v27-action="previous" ${index <= 0 ? 'disabled' : ''}>← Previous</button>
+                <button type="button" data-v27-action="next" ${index >= posts.length - 1 ? 'disabled' : ''}>Next →</button>
+              </div>
+            </div>
+          </article>
+
+          <aside class="v27-reader-side">
+            <div class="v27-reader-card">
+              <div class="v27-progress-circle" id="v27ProgressCircle"><span id="v27CircleText">0%</span></div>
+              <div class="v27-tool-grid">
+                <button type="button" data-v27-action="font-down">A−</button>
+                <button type="button" data-v27-action="font-up">A+</button>
+                <button type="button" data-v27-action="light">Light</button>
+                <button type="button" data-v27-action="sepia">Sepia</button>
+                <button type="button" data-v27-action="dark">Dark</button>
+                <button type="button" data-v27-action="focus">Focus</button>
+                <button type="button" data-v27-action="listen">🔊 Listen</button>
+                <button type="button" data-v27-action="stop-listen">⏹ Stop</button>
+                <button type="button" data-v27-action="fullscreen">⛶ Screen</button>
+                <button type="button" data-v27-action="print">🖨 Print</button>
+                <button type="button" data-v27-action="copy">🔗 Copy</button>
+                <button type="button" data-v27-action="bookmark">⭐ Fav</button>
+              </div>
+            </div>
+
+            <div class="v27-reader-card">
+              <h4>Contents</h4>
+              <div class="v27-toc" id="v27Toc"></div>
+            </div>
+
+            <div class="v27-reader-card">
+              <h4>Related Articles</h4>
+              <div class="v27-related" id="v27Related"></div>
+            </div>
+          </aside>
+        </div>
+      </div>`;
+
+    document.body.classList.add('v27-reader-open');
+    applyReaderSettings();
+    buildToc();
+    buildRelated();
+    restorePosition();
+
+    window.addEventListener('scroll', updateProgress, {passive:true});
+    updateProgress();
+
+    try{
+      if(typeof saveReadingHistory === 'function') saveReadingHistory(post);
+      if(typeof renderContinueReading === 'function') renderContinueReading();
+      if(typeof v25AddHistory === 'function') v25AddHistory(post);
+      if(typeof recordPerformanceRead === 'function') recordPerformanceRead(post);
+    }catch(e){}
+  }
+
+  function closeReaderStable(){
+    try{
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+    }catch(e){}
+    speechActive = false;
+    savePosition();
+
+    const modal = getModal();
+    if(modal){
+      modal.classList.remove('active');
+      modal.innerHTML = '';
+    }
+    document.body.classList.remove('v27-reader-open');
+    window.removeEventListener('scroll', updateProgress);
+
+    if(document.fullscreenElement && document.exitFullscreen){
+      document.exitFullscreen().catch(function(){});
+    }
+  }
+
+  function applyReaderSettings(){
+    const modal = getModal();
+    const content = document.getElementById('v27ReaderContent');
+    if(!modal || !content) return;
+
+    content.style.fontSize = readerFont + 'px';
+    modal.classList.remove('v27-reader-sepia','v27-reader-dark','v27-reader-focus');
+    if(readerTheme === 'sepia') modal.classList.add('v27-reader-sepia');
+    if(readerTheme === 'dark') modal.classList.add('v27-reader-dark');
+    if(focusMode) modal.classList.add('v27-reader-focus');
+  }
+
+  function setTheme(theme){
+    readerTheme = theme;
+    localStorage.setItem('isp_v27_reader_theme', theme);
+    applyReaderSettings();
+  }
+
+  function changeFont(delta){
+    readerFont = Math.max(14, Math.min(28, readerFont + delta));
+    localStorage.setItem('isp_v27_reader_font', readerFont);
+    applyReaderSettings();
+  }
+
+  function toggleFocus(){
+    focusMode = !focusMode;
+    localStorage.setItem('isp_v27_reader_focus', focusMode ? '1' : '0');
+    applyReaderSettings();
+  }
+
+  function updateProgress(){
+    const modal = getModal();
+    if(!modal || !modal.classList.contains('active')) return;
+    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const percent = Math.min(100, Math.max(0, Math.round((window.scrollY / max) * 100)));
+
+    const top = document.getElementById('v27TopProgress');
+    const circle = document.getElementById('v27ProgressCircle');
+    const text = document.getElementById('v27CircleText');
+
+    if(top) top.style.width = percent + '%';
+    if(circle) circle.style.setProperty('--v27-angle', (percent * 3.6) + 'deg');
+    if(text) text.textContent = percent + '%';
+
+    savePosition();
+  }
+
+  function positionKey(){
+    return 'isp_v27_position_' + (currentPost ? currentPost.title : '');
+  }
+
+  function savePosition(){
+    if(!currentPost) return;
+    try{ localStorage.setItem(positionKey(), String(window.scrollY || 0)); }catch(e){}
+  }
+
+  function restorePosition(){
+    if(!currentPost) return;
+    let pos = 0;
+    try{ pos = Number(localStorage.getItem(positionKey()) || 0); }catch(e){}
+    if(pos > 80){
+      setTimeout(function(){
+        window.scrollTo({top:pos, behavior:'smooth'});
+      }, 180);
+    }else{
+      window.scrollTo(0,0);
+    }
+  }
+
+  function buildToc(){
+    const body = document.getElementById('v27ArticleBody');
+    const box = document.getElementById('v27Toc');
+    if(!body || !box) return;
+    const headings = Array.from(body.querySelectorAll('h2,h3'));
+    if(!headings.length){
+      box.innerHTML = '<span class="muted">No headings available.</span>';
+      return;
+    }
+    box.innerHTML = '';
+    headings.forEach(function(h, i){
+      if(!h.id) h.id = 'v27_heading_' + i;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = h.textContent || ('Section ' + (i+1));
+      btn.addEventListener('click', function(){
+        h.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      box.appendChild(btn);
+    });
+  }
+
+  function buildRelated(){
+    const box = document.getElementById('v27Related');
+    if(!box) return;
+    const posts = ISP_LOADED_POSTS || [];
+    const related = posts
+      .map(function(post,index){ return {post:post,index:index}; })
+      .filter(function(x){
+        return x.index !== currentIndex &&
+          (!currentPost.categoryTitle || x.post.categoryTitle === currentPost.categoryTitle);
+      })
+      .slice(0,4);
+
+    if(!related.length){
+      box.innerHTML = '<span class="muted">No related articles.</span>';
+      return;
+    }
+    box.innerHTML = '';
+    related.forEach(function(item){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = item.post.title || 'Article';
+      btn.addEventListener('click', function(){ buildReader(item.index); });
+      box.appendChild(btn);
+    });
+  }
+
+  function saveArticle(){
+    if(!currentPost) return;
+    try{
+      if(typeof saveArticleToBookmarks === 'function'){
+        saveArticleToBookmarks(currentPost);
+      }else if(typeof quickSavePost === 'function'){
+        quickSavePost('loaded', currentIndex);
+      }
+    }catch(e){
+      alert('Unable to save article.');
+    }
+  }
+
+  async function shareArticle(){
+    if(!currentPost) return;
+    try{
+      if(navigator.share){
+        await navigator.share({
+          title: currentPost.title || 'Article',
+          text: currentPost.title || '',
+          url: currentPost.link || location.href
+        });
+      }else if(typeof sharePost === 'function'){
+        await sharePost(currentPost);
+      }else{
+        await navigator.clipboard.writeText(currentPost.link || location.href);
+        alert('Link copied.');
+      }
+    }catch(e){}
+  }
+
+  async function copyLink(){
+    try{
+      await navigator.clipboard.writeText((currentPost && currentPost.link) || location.href);
+      if(typeof toast === 'function') toast('Article link copied');
+      else alert('Article link copied');
+    }catch(e){
+      alert('Copy failed.');
+    }
+  }
+
+  function listen(){
+    const body = document.getElementById('v27ArticleBody');
+    if(!body || !('speechSynthesis' in window)){
+      alert('Text-to-speech is not supported.');
+      return;
+    }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(body.innerText.slice(0,18000));
+    utterance.rate = 0.95;
+    speechActive = true;
+    utterance.onend = function(){ speechActive = false; };
+    speechSynthesis.speak(utterance);
+  }
+
+  function stopListen(){
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    speechActive = false;
+  }
+
+  function printArticle(){
+    const body = document.getElementById('v27ArticleBody');
+    if(!body) return;
+    const win = window.open('', '_blank');
+    if(!win) return alert('Please allow pop-ups to print.');
+    win.document.write(
+      '<html><head><title>' + escapeHtml(currentPost.title || 'Article') + '</title>' +
+      '<style>body{font-family:Arial,sans-serif;max-width:760px;margin:40px auto;line-height:1.7;padding:0 20px}h1{line-height:1.2}</style>' +
+      '</head><body><h1>' + escapeHtml(currentPost.title || 'Article') + '</h1>' +
+      body.innerHTML + '</body></html>'
+    );
+    win.document.close();
+    win.focus();
+    setTimeout(function(){ win.print(); }, 250);
+  }
+
+  function toggleFullscreen(){
+    const modal = getModal();
+    if(!modal) return;
+    if(document.fullscreenElement){
+      document.exitFullscreen().catch(function(){});
+    }else if(modal.requestFullscreen){
+      modal.requestFullscreen().catch(function(){});
+    }
+  }
+
+  function openAdjacent(direction){
+    const next = currentIndex + direction;
+    if(next >= 0 && next < ISP_LOADED_POSTS.length){
+      buildReader(next);
+    }
+  }
+
+  function favourite(){
+    try{
+      if(typeof addFavouriteArticle === 'function'){
+        addFavouriteArticle(currentPost);
+      }else{
+        saveArticle();
+      }
+    }catch(e){
+      saveArticle();
+    }
+  }
+
+  document.addEventListener('click', function(event){
+    const button = event.target.closest('[data-v27-action]');
+    if(!button) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const action = button.getAttribute('data-v27-action');
+    const actions = {
+      back: closeReaderStable,
+      save: saveArticle,
+      share: shareArticle,
+      copy: copyLink,
+      'font-down': function(){ changeFont(-1); },
+      'font-up': function(){ changeFont(1); },
+      light: function(){ setTheme('light'); },
+      sepia: function(){ setTheme('sepia'); },
+      dark: function(){ setTheme('dark'); },
+      focus: toggleFocus,
+      listen: listen,
+      'stop-listen': stopListen,
+      fullscreen: toggleFullscreen,
+      print: printArticle,
+      bookmark: favourite,
+      previous: function(){ openAdjacent(-1); },
+      next: function(){ openAdjacent(1); }
+    };
+    if(actions[action]) actions[action]();
+  });
+
+  document.addEventListener('keydown', function(event){
+    const modal = getModal();
+    if(!modal || !modal.classList.contains('active')) return;
+
+    if(event.key === 'Escape') closeReaderStable();
+    else if(event.key === 'ArrowLeft') openAdjacent(-1);
+    else if(event.key === 'ArrowRight') openAdjacent(1);
+    else if(event.key.toLowerCase() === 'f') toggleFocus();
+    else if(event.key.toLowerCase() === 'd') setTheme(readerTheme === 'dark' ? 'light' : 'dark');
+    else if(event.key === '+') changeFont(1);
+    else if(event.key === '-') changeFont(-1);
+  });
+
+  // Final global overrides
+  window.openPostReader = buildReader;
+  window.closeReader = closeReaderStable;
+  window.closePostReader = closeReaderStable;
+  window.v261ClosePremiumReader = closeReaderStable;
+
+  // Mobile sidebar
+  function sidebar(){
+    return document.querySelector('.sidebar-pro');
+  }
+  function backdrop(){
+    return document.getElementById('mobileSidebarBackdrop');
+  }
+  function openMobileSidebar(){
+    const side = sidebar();
+    const back = backdrop();
+    if(side) side.classList.add('mobile-open');
+    if(back) back.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobileSidebar(){
+    const side = sidebar();
+    const back = backdrop();
+    if(side) side.classList.remove('mobile-open');
+    if(back) back.classList.remove('active');
+    if(!document.body.classList.contains('v27-reader-open')) document.body.style.overflow = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const menu = document.getElementById('mobileMenuButton');
+    const back = backdrop();
+
+    if(menu) menu.addEventListener('click', openMobileSidebar);
+    if(back) back.addEventListener('click', closeMobileSidebar);
+
+    document.querySelectorAll('.side-nav button, .side-logout').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(window.innerWidth <= 900) closeMobileSidebar();
+      });
+    });
+  });
+
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 900) closeMobileSidebar();
+  });
+})();

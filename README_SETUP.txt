@@ -1,28 +1,48 @@
-IAS Selection Point v26.1 - Reader Back Button Hotfix
+IAS Selection Point v27 - Stable Enterprise + Mobile Friendly
 
-Fixed:
-- Premium Reader Back button now works correctly
-- Reader modal closes and dashboard returns
-- Text-to-Speech stops when leaving reader
-- Fullscreen exits safely
-- Compatibility alias added for old closePostReader calls
-- All v26 Premium Reader, offline cache and performance features retained
+Major stability review:
+- Final event-delegation control layer for Premium Reader
+- Back button
+- Save
+- Share
+- Copy Link
+- Favourite
+- A− / A+
+- Light / Sepia / Dark
+- Focus Mode
+- Listen / Stop
+- Full Screen / Exit Full Screen
+- Print
+- Previous / Next
+- Related Articles
+- Table of Contents
+- ESC key closes reader
+- Duplicate/old reader functions overridden safely
+
+Mobile friendly:
+- Mobile menu button
+- Slide-in sidebar
+- Background overlay
+- Sidebar closes automatically after selecting menu
+- Touch-friendly button sizes
+- Responsive dashboard cards
+- Responsive header/search
+- Mobile reader layout
+- Mobile reader tool grid
+- Narrow comfortable article width
 
 GitHub replace:
-dashboard.html
-app.js
-config.js
 index.html
+dashboard.html
 admin.html
 style.css
+app.js
+config.js
 logo.jpg
 
-Minimum required replacement:
-- app.js
-- dashboard.html
-
 Apps Script:
-Code.gs replacement is optional because backend functionality is unchanged.
+Code.gs replacement is optional if v26 backend already works.
+Replace it only for v27 API version display.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=261
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=27
