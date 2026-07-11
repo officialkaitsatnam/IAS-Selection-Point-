@@ -191,7 +191,15 @@ function entryToPost(entry){
   const published=entry.published?.$t?new Date(entry.published.$t).toLocaleDateString():"";
   let link=""; if(entry.link){const alt=entry.link.find(l=>l.rel==="alternate"); if(alt)link=alt.href}
   const plain=stripHtml(content).slice(0,180);
-  return{title,content,published,link,plain};
+  let thumbnail=entry.media$thumbnail?.url||"";
+  if(!thumbnail){
+    const match=String(content).match(/<img[^>]+src=["']([^"']+)["']/i);
+    if(match)thumbnail=match[1];
+  }
+  if(thumbnail){
+    thumbnail=thumbnail.replace(/\/s\d+(-c)?\//,'/s160-c/');
+  }
+  return{title,content,published,link,plain,thumbnail};
 }
 
 /* Module categories */
@@ -3183,5 +3191,118 @@ if(typeof loadDashboard==='function'){
       renderV291Ticker();
       loadV291ProfessionalProfile();
     },450);
+  };
+}
+
+
+/* ======================================================
+   v29.2 AUTO IMAGE TICKER — INTERNAL PORTAL READER
+   ====================================================== */
+function v292EscapeImageUrl(url){
+  return String(url||'').replace(/"/g,'&quot;');
+}
+function v292PostImage(post){
+  if(post&&post.thumbnail)return post.thumbnail;
+  const html=String((post&&(post.content||post.html))||'');
+  const match=html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?match[1]:'logo.jpg';
+}
+function v292TickerPosts(){
+  if(typeof ISP_LATEST_POSTS!=='undefined'&&Array.isArray(ISP_LATEST_POSTS)&&ISP_LATEST_POSTS.length){
+    return ISP_LATEST_POSTS;
+  }
+  if(typeof ISP_LOADED_POSTS!=='undefined'&&Array.isArray(ISP_LOADED_POSTS)){
+    return ISP_LOADED_POSTS;
+  }
+  return [];
+}
+window.renderV291Ticker=function(){
+  const track=document.getElementById('v291TickerTrack');
+  if(!track)return;
+
+  const posts=v292TickerPosts().slice(0,12);
+  if(!posts.length){
+    track.classList.remove('v292-auto-track');
+    track.innerHTML='<span style="padding:0 18px;">Latest posts will appear here automatically.</span>';
+    return;
+  }
+
+  track.classList.add('v292-auto-track');
+
+  const createCards=function(group){
+    return posts.map(function(post,index){
+      const image=v292PostImage(post);
+      return `<article class="v292-ticker-card" data-v292-index="${index}" data-v292-group="${group}" role="button" tabindex="0">
+        <img class="v292-ticker-thumb" src="${v292EscapeImageUrl(image)}" alt="" loading="lazy"
+             onerror="this.onerror=null;this.src='logo.jpg'">
+        <div class="v292-ticker-copy">
+          <div class="v292-ticker-top">
+            <span class="v292-latest-pill">LATEST</span>
+            <span class="v292-ticker-date">${escapeHtml(post.published||'')}</span>
+          </div>
+          <span class="v292-ticker-title">${escapeHtml(post.title||'Article')}</span>
+        </div>
+      </article>`;
+    }).join('');
+  };
+
+  // Two identical groups make the CSS animation seamless.
+  track.innerHTML=`<div class="v292-ticker-group">${createCards(1)}</div><div class="v292-ticker-group" aria-hidden="true">${createCards(2)}</div>`;
+
+  const estimatedWidth=Math.max(1,posts.length)*355;
+  const seconds=Math.max(32,Math.min(80,Math.round(estimatedWidth/58)));
+  track.style.setProperty('--v292-duration',seconds+'s');
+};
+
+function v292OpenTickerPost(index){
+  const posts=v292TickerPosts();
+  const post=posts[index];
+  if(!post)return;
+
+  // Always open inside the portal reader—never redirect to the public blog.
+  if(typeof ISP_LOADED_POSTS!=='undefined'){
+    ISP_LOADED_POSTS=posts.slice();
+  }
+  if(typeof openPostReader==='function'){
+    openPostReader(index);
+  }
+}
+
+document.addEventListener('click',function(event){
+  const card=event.target.closest('.v292-ticker-card');
+  if(!card)return;
+  event.preventDefault();
+  event.stopPropagation();
+  v292OpenTickerPost(Number(card.getAttribute('data-v292-index')));
+},true);
+
+document.addEventListener('keydown',function(event){
+  const card=event.target.closest&&event.target.closest('.v292-ticker-card');
+  if(!card||!(event.key==='Enter'||event.key===' '))return;
+  event.preventDefault();
+  v292OpenTickerPost(Number(card.getAttribute('data-v292-index')));
+});
+
+/* Disable the old manual ticker movement; animation is now automatic. */
+window.moveV291Ticker=function(){};
+
+/* Ensure the latest feed and ticker load independently on dashboard startup. */
+async function v292EnsureLatestTicker(){
+  try{
+    if((typeof ISP_LATEST_POSTS==='undefined'||!ISP_LATEST_POSTS.length)&&typeof bloggerAllPostsJsonp==='function'){
+      const data=await bloggerAllPostsJsonp(20);
+      ISP_LATEST_POSTS=(data.feed?.entry||[]).map(entryToPost).map(function(post){
+        return Object.assign({},post,{moduleName:'Latest Articles',categoryTitle:'Latest'});
+      });
+    }
+  }catch(e){}
+  renderV291Ticker();
+}
+
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASHBOARD_V292=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASHBOARD_V292();
+    setTimeout(v292EnsureLatestTicker,250);
   };
 }

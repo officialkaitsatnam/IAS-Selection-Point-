@@ -1,51 +1,39 @@
-IAS Selection Point v29.1 - Stable Dashboard + Ticker + Profile Hotfix
+IAS Selection Point v29.2 - Automatic Image News Ticker Hotfix
 
-Important:
-- Built again from stable v28 base.
-- Broken v29 HTML is not used.
+Built from stable v29.1.
 
-Fixed:
-- All dashboard modules and buttons work again.
-- HTML closing tags restored and verified.
-- Notification sidebar button removed safely.
-- Notification preview card removed safely.
-- Notifications open only from bell icon.
-- Bell dropdown includes unread messages and Mark all read.
+Ticker improvements:
+- Continuous automatic ticker like the Breaking News strip on satnamkait.in
+- Seamless, non-stop horizontal movement
+- Post thumbnail/image shown with every item
+- Latest pill, post date and title
+- Hover/touch pauses ticker temporarily
+- Smooth mobile layout
+- Broken/missing thumbnails fall back to logo.jpg
 
-Breaking News ticker:
-- Design inspired by the Breaking News strip on satnamkait.in.
-- Latest IAS Selection Point posts display in the ticker.
-- Previous / Next controls included.
-- Clicking a loaded post opens inside the portal.
+Important behavior:
+- Clicking ticker posts NEVER opens the public Blogger website
+- Latest posts are loaded into ISP_LOADED_POSTS
+- Selected post opens directly inside the portal Premium Reader
+- Premium Reader Back button returns to dashboard
 
-Professional Profile:
-- Profile photo
-- State and District
-- Date of Birth and Gender
-- Qualification and Occupation
-- Preferred Language
-- Address and Website/Social Profile
-- Profile Completion percentage
-- New PROFILE_PRO Google Sheet tab
-
-GitHub upload/replace:
-index.html
+GitHub replace/upload:
 dashboard.html
-admin.html
 style.css
 app.js
 config.js
-logo.jpg
-manifest.webmanifest
 sw.js
-offline.html
+
+For complete version consistency, replace all files from the ZIP.
 
 Apps Script:
-1. Replace Code.gs
-2. Save
-3. Run initializeSystem once
-4. Deploy > Manage deployments > Edit > New version > Deploy
-5. Refresh portal using ?v=291
+Code.gs replacement is optional because backend functionality is unchanged.
 
-Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=291
+After GitHub upload:
+1. Open the portal with ?v=292
+2. On Android Chrome, clear the old PWA/service-worker cache if the old ticker remains:
+   Chrome Settings > Site settings > Storage > officialkaitsatnam.github.io > Clear
+3. Reload the portal
+
+Portal:
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=292
