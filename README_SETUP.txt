@@ -1,19 +1,17 @@
-IAS Selection Point v31.2 - Question Manager + Fast Loading
+IAS Selection Point v31.3 - Mock Test Opening + Loader Hotfix
 
-Fixes:
-- Add Question button now gives immediate feedback.
-- Button is disabled during save to prevent duplicate questions.
-- 15-second request timeout added.
-- Slow or failed requests show a clear message instead of endless loading.
-- Required question and all four options are validated.
-- Question form clears after successful save.
-- Selected test remains selected after refresh.
-- Question count updates immediately.
-- Create Test button receives the same loading and duplicate-click protection.
-- Admin test list cached briefly for faster loading.
-- Member published-test list cached for faster loading.
-- Cached tests display if server is temporarily slow.
-- Backend test cache invalidates after create, edit, delete, question add or publish.
+Main fix:
+- Test questions now open reliably.
+- Loading overlay is always closed using try/finally.
+- Question request has a 15-second timeout.
+- An 18-second loader safety timer prevents endless loading.
+- Duplicate Start Test clicks are blocked.
+- Clear retry message is shown when loading fails.
+- Questions are cached locally for 30 minutes.
+- Backend questions are cached per test for 5 minutes.
+- Backend reads only actual used question rows, not the entire formatted sheet.
+- Tests with zero questions have a disabled Start button.
+- Old startV31Test references now point to the fixed function.
 
 GitHub upload/replace:
 index.html
@@ -31,9 +29,14 @@ Apps Script:
 1. Replace Code.gs.
 2. Save.
 3. Deploy > Manage deployments > Edit > New version > Deploy.
-4. initializeSystem() does not need to be run again if TESTS and QUESTIONS sheets already exist.
-5. Open portal with ?v=312.
+4. No need to run initializeSystem() again if sheets already exist.
+5. Open portal with ?v=313.
 
-Important:
-If the old JavaScript remains, clear site data/service-worker cache for
-officialkaitsatnam.github.io and reload.
+Testing:
+1. Admin > Exam Management.
+2. Confirm test has more than 0 questions.
+3. Publish the test.
+4. Member > Mock Tests > Start Test.
+5. Questions should open and loader should close automatically.
+
+If old code remains, clear GitHub Pages site data/service-worker cache.

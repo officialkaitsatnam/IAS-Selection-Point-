@@ -4289,3 +4289,240 @@ window.loadV31Tests=async function(){
     }
   }
 };
+
+
+/* ======================================================
+   v31.3 MOCK TEST OPENING + GUARANTEED LOADER CLEANUP
+   ====================================================== */
+let V313_TEST_OPENING=false;
+
+function v313QuestionsCacheKey(testId){
+  return 'isp_v313_questions_'+testId;
+}
+function v313GetCachedQuestions(testId){
+  try{
+    const raw=localStorage.getItem(v313QuestionsCacheKey(testId));
+    if(!raw)return null;
+    const obj=JSON.parse(raw);
+    if(Date.now()-obj.savedAt>30*60*1000){
+      localStorage.removeItem(v313QuestionsCacheKey(testId));
+      return null;
+    }
+    return obj.questions||[];
+  }catch(e){return null}
+}
+function v313SaveQuestions(testId,questions){
+  try{
+    localStorage.setItem(v313QuestionsCacheKey(testId),JSON.stringify({
+      savedAt:Date.now(),
+      questions:questions
+    }));
+  }catch(e){}
+}
+function v313SetStartButtons(testId,loading){
+  document.querySelectorAll('.v313-start-test-btn').forEach(function(btn){
+    if(btn.dataset.testId===testId){
+      btn.disabled=loading;
+      btn.classList.toggle('loading',loading);
+      btn.textContent=loading?'Opening Test...':'Start Test';
+    }else if(loading){
+      btn.disabled=true;
+    }else{
+      btn.disabled=btn.dataset.noQuestions==='1';
+    }
+  });
+}
+
+window.loadV31Tests=async function(){
+  const box=document.getElementById('v31TestsList');
+  if(!box)return;
+  box.innerHTML='<p class="muted">Loading published tests...</p>';
+
+  try{
+    const r=await v312Api('listPublishedTests',{token:token()},12000);
+    if(!r.success){
+      box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+      return;
+    }
+
+    V31_TESTS=r.tests||[];
+    try{
+      localStorage.setItem('isp_v312_tests_cache',JSON.stringify(V31_TESTS));
+    }catch(e){}
+
+    if(!V31_TESTS.length){
+      box.innerHTML=`<div class="v311-member-test-help">
+        <b>No published tests available.</b>
+        <span>Admin must create a test, add questions and publish it.</span>
+      </div>`;
+      return;
+    }
+
+    box.innerHTML=V31_TESTS.map(function(t){
+      const noQuestions=Number(t.questionCount||0)===0;
+      return `<div class="v31-test-card">
+        <h4>${escapeHtml(t.title)}</h4>
+        <p>${escapeHtml(t.description||'Practice mock test')}</p>
+        <div class="v31-test-meta">
+          <span>${escapeHtml(t.category||'General')}</span>
+          <span>${t.duration} min</span>
+          <span>${t.questionCount} questions</span>
+        </div>
+        <button
+          class="v313-start-test-btn"
+          data-test-id="${escapeAttr(t.id)}"
+          data-no-questions="${noQuestions?'1':'0'}"
+          onclick="startV313Test('${escapeAttr(t.id)}')"
+          ${noQuestions?'disabled':''}>
+          ${noQuestions?'No Questions Added':'Start Test'}
+        </button>
+        <div id="v313TestError_${escapeAttr(t.id)}"></div>
+      </div>`;
+    }).join('');
+  }catch(error){
+    let cached=[];
+    try{
+      cached=JSON.parse(localStorage.getItem('isp_v312_tests_cache')||'[]');
+    }catch(e){}
+
+    if(cached.length){
+      V31_TESTS=cached;
+      box.innerHTML=cached.map(function(t){
+        const noQuestions=Number(t.questionCount||0)===0;
+        return `<div class="v31-test-card">
+          <h4>${escapeHtml(t.title)}</h4>
+          <p>${escapeHtml(t.description||'Practice mock test')}</p>
+          <div class="v31-test-meta">
+            <span>${escapeHtml(t.category||'General')}</span>
+            <span>${t.duration} min</span>
+            <span>${t.questionCount} questions</span>
+          </div>
+          <button
+            class="v313-start-test-btn"
+            data-test-id="${escapeAttr(t.id)}"
+            data-no-questions="${noQuestions?'1':'0'}"
+            onclick="startV313Test('${escapeAttr(t.id)}')"
+            ${noQuestions?'disabled':''}>
+            ${noQuestions?'No Questions Added':'Start Test'}
+          </button>
+          <div id="v313TestError_${escapeAttr(t.id)}"></div>
+        </div>`;
+      }).join('');
+      v312Toast('Showing cached tests because server response was slow.','error');
+    }else{
+      box.innerHTML=`<p class="muted">${escapeHtml(error.message)}</p>`;
+    }
+  }
+};
+
+window.startV313Test=async function(testId){
+  if(V313_TEST_OPENING)return;
+
+  const test=(V31_TESTS||[]).find(function(x){return String(x.id)===String(testId)});
+  if(!test){
+    v312Toast('Test details not found. Refresh tests.','error');
+    return;
+  }
+  if(Number(test.questionCount||0)<1){
+    v312Toast('This test has no questions. Ask admin to add questions.','error');
+    return;
+  }
+
+  const errorBox=document.getElementById('v313TestError_'+testId);
+  if(errorBox)errorBox.innerHTML='';
+
+  V313_TEST_OPENING=true;
+  v313SetStartButtons(testId,true);
+  showLoader('Opening mock test...','Loading questions. Please wait.');
+
+  try{
+    let questions=v313GetCachedQuestions(testId);
+
+    if(!questions||!questions.length){
+      const response=await v312Api(
+        'getTestQuestions',
+        {token:token(),testId:testId},
+        15000
+      );
+
+      if(!response||!response.success){
+        throw new Error(response?.message||'Unable to load questions.');
+      }
+      questions=response.questions||[];
+      if(questions.length)v313SaveQuestions(testId,questions);
+    }
+
+    if(!questions.length){
+      throw new Error('No questions were found for this test. Check that questions were added to the same Test ID.');
+    }
+
+    V31_ACTIVE_TEST=test;
+    V31_QUESTIONS=questions;
+
+    let saved=null;
+    try{
+      saved=JSON.parse(localStorage.getItem(v31AttemptKey(testId))||'null');
+    }catch(e){}
+
+    V31_ANSWERS=saved?.answers||{};
+    V31_REVIEW=new Set(saved?.review||[]);
+    V31_CURRENT_INDEX=Math.min(
+      Number(saved?.currentIndex||0),
+      V31_QUESTIONS.length-1
+    );
+    V31_SECONDS_LEFT=Number(
+      saved?.secondsLeft||Number(test.duration||10)*60
+    );
+
+    const title=document.getElementById('v31ExamTitle');
+    if(title)title.textContent=test.title;
+
+    openDashSection('v31ExamModule');
+    renderV31Question();
+    renderV31Palette();
+    startV31Timer();
+
+    v312Toast('Test opened successfully');
+  }catch(error){
+    console.error('v31.3 test opening error',error);
+
+    if(errorBox){
+      errorBox.innerHTML=`<div class="v313-test-error">
+        ${escapeHtml(error.message)}
+        <br>
+        <button type="button" onclick="startV313Test('${escapeAttr(testId)}')">Retry</button>
+      </div>`;
+    }
+    v312Toast(error.message||'Test could not be opened.','error');
+  }finally{
+    hideLoader();
+    V313_TEST_OPENING=false;
+    v313SetStartButtons(testId,false);
+  }
+};
+
+/* Preserve old entry point references */
+window.startV31Test=window.startV313Test;
+
+/* Safety: no loader may remain open indefinitely */
+(function(){
+  const oldShowLoader=window.showLoader||showLoader;
+  let loaderSafetyTimer=null;
+
+  window.showLoader=function(title,text){
+    clearTimeout(loaderSafetyTimer);
+    oldShowLoader(title,text);
+    loaderSafetyTimer=setTimeout(function(){
+      hideLoader();
+      if(V313_TEST_OPENING){
+        V313_TEST_OPENING=false;
+        document.querySelectorAll('.v313-start-test-btn').forEach(function(btn){
+          btn.classList.remove('loading');
+          btn.disabled=btn.dataset.noQuestions==='1';
+          btn.textContent=btn.dataset.noQuestions==='1'?'No Questions Added':'Start Test';
+        });
+        v312Toast('Loading took too long. Please try again.','error');
+      }
+    },18000);
+  };
+})();
