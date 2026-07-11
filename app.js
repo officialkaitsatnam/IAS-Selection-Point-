@@ -690,7 +690,7 @@ const ISP_FOOTER_PAGES = {
     html: `<h2>Contact Us</h2>
       <p>You can contact IAS Selection Point for support, account-related help, content queries, or portal access issues.</p>
       <div class="info-box">
-        <p><b>Email:</b> <a href="mailto:kaitsatnam@gmail.com">kaitsatnam@gmail.com</a></p>
+        <p><b>Email:</b> <a href="mailto:iasselection1@gmail.com">iasselection1@gmail.com</a></p>
         <p><b>Website:</b> <a href="https://iasselectionpoint.blogspot.com/" target="_blank">IAS Selection Point</a></p>
       </div>
       <p>For account activation, deactivation, blocking, or password-related issues, please contact the admin.</p>`
@@ -4529,7 +4529,7 @@ window.startV31Test=window.startV313Test;
 
 
 /* ======================================================
-   v31.4 FINAL MOCK TEST NAVIGATION + SYNC FIX
+   v31.5 New Backend Migration FINAL MOCK TEST NAVIGATION + SYNC FIX
    ====================================================== */
 (function(){
   let testsRequestId=0;
