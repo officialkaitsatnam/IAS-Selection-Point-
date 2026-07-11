@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=316" />
+  <link rel="stylesheet" href="style.css?v=317" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v31.6 Password Visibility + Account UX</div>
+  <div class="version-badge">v31.7 Achievement Email Rewards</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -50,6 +50,7 @@
         <button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
         <button onclick="openAdminSection('adminSheetCenter', this)">📊 Sheet Center</button>
         <button onclick="openAdminSection('adminPerformance', this)">🏆 Student Performance</button>
+        <button onclick="openAdminSection('adminAchievements', this)">🎖 Achievement Center</button>
         
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
@@ -318,6 +319,20 @@
         </div>
       </section>
 
+      <section id="adminAchievements" class="admin-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>🎖 Achievement Center</h3>
+              <p class="muted">Review milestone emails and badge history.</p>
+            </div>
+            <button class="mini-btn" onclick="loadV317AdminAchievements()">Refresh</button>
+          </div>
+          <div id="v317AdminAchievementStats" class="v317-achievement-summary"></div>
+          <div id="v317AdminAchievementList" class="v317-admin-achievement-list"></div>
+        </div>
+      </section>
+
       <section id="adminUsers" class="admin-section">
         <div class="pro-panel">
           <div class="panel-head">
@@ -429,7 +444,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=316"></script>
-  <script src="app.js?v=316"></script>
+  <script src="config.js?v=317"></script>
+  <script src="app.js?v=317"></script>
 </body>
 </html>

@@ -4810,3 +4810,259 @@ window.startV31Test=window.startV313Test;
 
   window.enhanceV316PasswordFields=scanPasswordFields;
 })();
+
+
+/* ======================================================
+   v31.7 ACHIEVEMENT + EMAIL REWARD SYSTEM
+   ====================================================== */
+const V317_MILESTONES=[
+  {count:10,key:'READ_10',title:'Bronze Reader',icon:'🥉'},
+  {count:20,key:'READ_20',title:'Silver Reader',icon:'🥈'},
+  {count:30,key:'READ_30',title:'Gold Reader',icon:'🥇'},
+  {count:50,key:'READ_50',title:'Platinum Reader',icon:'💎'},
+  {count:100,key:'READ_100',title:'Diamond Reader',icon:'👑'}
+];
+const V317_BADGES=[
+  {key:'FIRST_ARTICLE',title:'First Step',icon:'📖',description:'Read your first article'},
+  {key:'READ_10',title:'Bronze Reader',icon:'🥉',description:'Read 10 articles'},
+  {key:'READ_20',title:'Silver Reader',icon:'🥈',description:'Read 20 articles'},
+  {key:'READ_30',title:'Gold Reader',icon:'🥇',description:'Read 30 articles'},
+  {key:'READ_50',title:'Platinum Reader',icon:'💎',description:'Read 50 articles'},
+  {key:'READ_100',title:'Diamond Reader',icon:'👑',description:'Read 100 articles'},
+  {key:'FIRST_NOTE',title:'Note Maker',icon:'📝',description:'Create your first note'},
+  {key:'FIRST_BOOKMARK',title:'Smart Saver',icon:'🔖',description:'Save your first article'},
+  {key:'FIRST_TEST',title:'Test Starter',icon:'🎯',description:'Complete your first mock test'},
+  {key:'HIGH_SCORE',title:'Top Performer',icon:'🏆',description:'Score 90% or more in a test'},
+  {key:'FIRST_REVISION',title:'Revision Master',icon:'🔁',description:'Complete your first revision'}
+];
+
+function v317AchievementKey(){
+  return 'isp_v317_achievements_'+((currentUser&&currentUser().email)||'guest');
+}
+function v317GetLocalAchievements(){
+  try{return JSON.parse(localStorage.getItem(v317AchievementKey())||'[]')}catch(e){return []}
+}
+function v317SaveLocalAchievements(rows){
+  localStorage.setItem(v317AchievementKey(),JSON.stringify(rows.slice(0,200)));
+}
+function v317HistoryCount(){
+  try{
+    if(typeof v25GetHistory==='function'){
+      const rows=v25GetHistory()||[];
+      return new Set(rows.map(x=>x.title||x.link||JSON.stringify(x))).size;
+    }
+  }catch(e){}
+  try{
+    const user=(currentUser&&currentUser())||{};
+    const keys=Object.keys(localStorage);
+    const historyKey=keys.find(k=>k.startsWith('isp_v25_history_')&&k.includes(user.email||''));
+    const rows=historyKey?JSON.parse(localStorage.getItem(historyKey)||'[]'):[];
+    return new Set(rows.map(x=>x.title||x.link||JSON.stringify(x))).size;
+  }catch(e){return 0}
+}
+async function unlockV317Achievement(key,meta={}){
+  const badge=V317_BADGES.find(x=>x.key===key)||{key,title:key,icon:'🏅',description:''};
+  const current=v317GetLocalAchievements();
+  if(current.some(x=>x.key===key))return false;
+
+  const item={
+    key,
+    title:badge.title,
+    icon:badge.icon,
+    description:badge.description,
+    meta,
+    unlockedAt:new Date().toISOString()
+  };
+  current.unshift(item);
+  v317SaveLocalAchievements(current);
+  renderV317Achievements();
+  if(typeof toast==='function')toast(`${badge.icon} ${badge.title} unlocked`);
+
+  try{
+    const response=await api('unlockAchievement',{
+      token:token(),
+      achievement:item
+    });
+    if(response?.success && response.emailSent){
+      if(typeof toast==='function')toast('Congratulations email sent');
+    }
+  }catch(e){}
+  return true;
+}
+window.checkV317ReadingMilestones=async function(){
+  const count=v317HistoryCount();
+  if(count>=1)await unlockV317Achievement('FIRST_ARTICLE',{articlesRead:count});
+  for(const milestone of V317_MILESTONES){
+    if(count>=milestone.count){
+      await unlockV317Achievement(milestone.key,{articlesRead:count,milestone:milestone.count});
+    }
+  }
+  renderV317Achievements();
+};
+function nextV317Milestone(count){
+  return V317_MILESTONES.find(x=>count<x.count)||null;
+}
+window.renderV317Achievements=function(){
+  const count=v317HistoryCount();
+  const rows=v317GetLocalAchievements();
+  const next=nextV317Milestone(count);
+  const previous=V317_MILESTONES.filter(x=>count>=x.count).slice(-1)[0];
+  const start=previous?previous.count:0;
+  const target=next?next.count:(V317_MILESTONES.slice(-1)[0]?.count||100);
+  const pct=next?Math.max(0,Math.min(100,((count-start)/(target-start))*100)):100;
+
+  const total=document.getElementById('v317TotalBadges');
+  const read=document.getElementById('v317ArticlesRead');
+  const nextEl=document.getElementById('v317NextMilestone');
+  const progressText=document.getElementById('v317ProgressText');
+  const progressBar=document.getElementById('v317ProgressBar');
+
+  if(total)total.textContent=rows.length;
+  if(read)read.textContent=count;
+  if(nextEl)nextEl.textContent=next?next.count:'Completed';
+  if(progressText)progressText.textContent=next?`${count} / ${next.count}`:`${count} articles`;
+  if(progressBar)progressBar.style.width=pct+'%';
+
+  const badgeGrid=document.getElementById('v317BadgeGrid');
+  if(badgeGrid){
+    badgeGrid.innerHTML=V317_BADGES.map(b=>{
+      const unlocked=rows.some(x=>x.key===b.key);
+      return `<div class="v317-badge-card ${unlocked?'unlocked':''}">
+        <div class="v317-badge-icon">${b.icon}</div>
+        <h4>${escapeHtml(b.title)}</h4>
+        <p>${escapeHtml(b.description)}</p>
+      </div>`;
+    }).join('');
+  }
+
+  const timeline=document.getElementById('v317AchievementTimeline');
+  if(timeline){
+    timeline.innerHTML=rows.length?rows.map(x=>`<div class="v317-timeline-row">
+      <span>${x.icon||'🏅'}</span>
+      <div><b>${escapeHtml(x.title)}</b><small>${escapeHtml(x.description||'Achievement unlocked')}</small></div>
+      <time>${escapeHtml(new Date(x.unlockedAt).toLocaleDateString())}</time>
+    </div>`).join(''):'<p class="muted">No achievements unlocked yet.</p>';
+  }
+};
+window.loadV317Achievements=async function(){
+  renderV317Achievements();
+  try{
+    const r=await api('getMyAchievements',{token:token()});
+    if(r?.success&&Array.isArray(r.achievements)){
+      const local=v317GetLocalAchievements();
+      const merged=[...r.achievements,...local].filter((x,i,a)=>a.findIndex(y=>y.key===x.key)===i);
+      v317SaveLocalAchievements(merged);
+      renderV317Achievements();
+    }
+  }catch(e){}
+};
+
+/* Hook reading completion */
+if(typeof saveReadingHistory==='function'){
+  const OLD_SAVE_READING_V317=saveReadingHistory;
+  saveReadingHistory=function(post){
+    const result=OLD_SAVE_READING_V317(post);
+    setTimeout(checkV317ReadingMilestones,100);
+    return result;
+  };
+}
+if(typeof v25AddHistory==='function'){
+  const OLD_V25_HISTORY_V317=v25AddHistory;
+  v25AddHistory=function(post){
+    const result=OLD_V25_HISTORY_V317(post);
+    setTimeout(checkV317ReadingMilestones,120);
+    return result;
+  };
+}
+
+/* Other task/badge hooks */
+if(typeof saveV28Note==='function'){
+  const OLD_SAVE_NOTE_V317=saveV28Note;
+  saveV28Note=async function(){
+    const result=await OLD_SAVE_NOTE_V317();
+    setTimeout(()=>unlockV317Achievement('FIRST_NOTE'),100);
+    return result;
+  };
+}
+if(typeof quickSavePost==='function'){
+  const OLD_QUICK_SAVE_V317=quickSavePost;
+  quickSavePost=function(...args){
+    const result=OLD_QUICK_SAVE_V317(...args);
+    setTimeout(()=>unlockV317Achievement('FIRST_BOOKMARK'),100);
+    return result;
+  };
+}
+if(typeof submitV31Test==='function'){
+  const OLD_SUBMIT_TEST_V317=submitV31Test;
+  submitV31Test=async function(autoSubmit){
+    const before=v31GetLocalResults?.().length||0;
+    const result=await OLD_SUBMIT_TEST_V317(autoSubmit);
+    setTimeout(async()=>{
+      const rows=v31GetLocalResults?.()||[];
+      if(rows.length>before){
+        await unlockV317Achievement('FIRST_TEST');
+        if(Number(rows[0]?.percentage||0)>=90)await unlockV317Achievement('HIGH_SCORE',{percentage:rows[0].percentage});
+      }
+    },250);
+    return result;
+  };
+}
+if(typeof completeV28Revision==='function'){
+  const OLD_COMPLETE_REV_V317=completeV28Revision;
+  completeV28Revision=function(id){
+    const result=OLD_COMPLETE_REV_V317(id);
+    setTimeout(()=>unlockV317Achievement('FIRST_REVISION'),100);
+    return result;
+  };
+}
+
+/* Admin */
+window.loadV317AdminAchievements=async function(){
+  const list=document.getElementById('v317AdminAchievementList');
+  const stats=document.getElementById('v317AdminAchievementStats');
+  if(list)list.innerHTML='<p class="muted">Loading achievement history...</p>';
+  try{
+    const r=await api('adminAchievementReport',{token:token()});
+    if(!r.success){
+      if(list)list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+      return;
+    }
+    if(stats){
+      stats.innerHTML=`
+        <div><small>TOTAL UNLOCKS</small><b>${r.total||0}</b></div>
+        <div><small>EMAILS SENT</small><b>${r.emailsSent||0}</b></div>
+        <div><small>USERS REWARDED</small><b>${r.users||0}</b></div>`;
+    }
+    if(list){
+      list.innerHTML=(r.rows||[]).length?(r.rows||[]).map(x=>`<div class="v317-timeline-row">
+        <span>${x.icon||'🏅'}</span>
+        <div><b>${escapeHtml(x.title)} — ${escapeHtml(x.email)}</b><small>${escapeHtml(x.key)} · Email: ${escapeHtml(x.emailStatus)}</small></div>
+        <time>${escapeHtml(x.unlockedAt)}</time>
+      </div>`).join(''):'<p class="muted">No achievement records yet.</p>';
+    }
+  }catch(e){
+    if(list)list.innerHTML=`<p class="muted">${escapeHtml(e.message)}</p>`;
+  }
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V317=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V317(id,btn);
+    if(id==='achievementsModule')loadV317Achievements();
+  };
+}
+if(typeof openAdminSection==='function'){
+  const OLD_OPEN_ADMIN_V317=openAdminSection;
+  openAdminSection=function(id,btn){
+    OLD_OPEN_ADMIN_V317(id,btn);
+    if(id==='adminAchievements')loadV317AdminAchievements();
+  };
+}
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASH_V317=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASH_V317();
+    setTimeout(checkV317ReadingMilestones,700);
+  };
+}
