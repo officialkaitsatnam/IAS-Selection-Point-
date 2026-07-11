@@ -3931,3 +3931,116 @@ if(typeof openAdminSection==='function'){
     if(id==='adminExamManager')loadV31AdminTests();
   };
 }
+
+
+/* ======================================================
+   v31.1 EXAM MANAGEMENT STABLE CONTROLS
+   ====================================================== */
+window.loadV31AdminTests=async function(){
+  const box=document.getElementById('v31AdminTestsList');
+  if(box)box.innerHTML='<p class="muted">Loading tests...</p>';
+
+  const r=await api('adminListTests',{token:token()});
+  if(!r.success){
+    if(box)box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+
+  V31_ADMIN_TESTS=r.tests||[];
+  const select=document.getElementById('v31AdminQuestionTest');
+  if(select){
+    select.innerHTML=V31_ADMIN_TESTS.length
+      ? V31_ADMIN_TESTS.map(t=>`<option value="${escapeAttr(t.id)}">${escapeHtml(t.title)} (${t.questionCount} questions)</option>`).join('')
+      : '<option value="">Create a test first</option>';
+  }
+
+  if(!box)return;
+  if(!V31_ADMIN_TESTS.length){
+    box.innerHTML='<div class="v311-member-test-help"><b>No tests created yet.</b><span>Use Create Mock Test above, or click Create Demo Test.</span></div>';
+    return;
+  }
+
+  box.innerHTML=V31_ADMIN_TESTS.map(t=>`<div class="v31-admin-test-row">
+    <div>
+      <b>${escapeHtml(t.title)}</b>
+      <small>${escapeHtml(t.category||'General')} · ${t.questionCount} question${t.questionCount===1?'':'s'} · ${t.duration} min</small>
+    </div>
+    <span>${escapeHtml(t.status)}</span>
+    <div class="v31-admin-row-actions">
+      <button onclick="toggleV31TestPublish('${escapeAttr(t.id)}','${t.status==='Published'?'Draft':'Published'}')">${t.status==='Published'?'Unpublish':'Publish'}</button>
+      <button onclick="editV311Test('${escapeAttr(t.id)}')">Edit</button>
+      <button class="danger" onclick="deleteV311Test('${escapeAttr(t.id)}')">Delete</button>
+    </div>
+  </div>`).join('');
+};
+
+window.createV311DemoTest=async function(){
+  if(!confirm('Create a sample 5-question published test?'))return;
+  showLoader('Creating demo test...','Adding questions and publishing');
+  const r=await api('adminCreateDemoTest',{token:token()});
+  hideLoader();
+  if(r.success){
+    if(typeof toast==='function')toast('Demo test created and published');
+    await loadV31AdminTests();
+  }else{
+    alert(r.message);
+  }
+};
+
+window.editV311Test=function(testId){
+  const t=(V31_ADMIN_TESTS||[]).find(x=>x.id===testId);
+  if(!t)return;
+  const title=prompt('Test title',t.title);
+  if(title===null)return;
+  const category=prompt('Category',t.category||'');
+  if(category===null)return;
+  const duration=prompt('Duration in minutes',String(t.duration||10));
+  if(duration===null)return;
+  updateV311Test(testId,{title,category,duration:Number(duration||10)});
+};
+
+async function updateV311Test(testId,changes){
+  const r=await api('adminEditTest',{token:token(),testId,...changes});
+  if(r.success){
+    if(typeof toast==='function')toast('Test updated');
+    loadV31AdminTests();
+  }else alert(r.message);
+}
+
+window.deleteV311Test=async function(testId){
+  if(!confirm('Delete this test and all its questions?'))return;
+  const r=await api('adminDeleteTest',{token:token(),testId});
+  if(r.success){
+    if(typeof toast==='function')toast('Test deleted');
+    loadV31AdminTests();
+  }else alert(r.message);
+};
+
+/* Ensure member list always explains why no test appears */
+window.loadV31Tests=async function(){
+  const box=document.getElementById('v31TestsList');if(!box)return;
+  box.innerHTML='<p class="muted">Loading tests...</p>';
+  const r=await api('listPublishedTests',{token:token()});
+  if(!r.success){
+    box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+  V31_TESTS=r.tests||[];
+  if(!V31_TESTS.length){
+    box.innerHTML=`<div class="v311-member-test-help">
+      <b>No published tests available.</b>
+      <span>Admin must create a test, add at least one question and publish it from Admin → Exam Management.</span>
+    </div>`;
+    return;
+  }
+  box.innerHTML=V31_TESTS.map(t=>`<div class="v31-test-card">
+    <h4>${escapeHtml(t.title)}</h4>
+    <p>${escapeHtml(t.description||'Practice mock test')}</p>
+    <div class="v31-test-meta">
+      <span>${escapeHtml(t.category||'General')}</span>
+      <span>${t.duration} min</span>
+      <span>${t.questionCount} questions</span>
+    </div>
+    <button onclick="startV31Test('${escapeAttr(t.id)}')">Start Test</button>
+  </div>`).join('');
+};

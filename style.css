@@ -3937,3 +3937,196 @@ body.portal-dark .v31-question-panel h3{color:#f8fafc!important}
   .v31-exam-actions{display:grid;grid-template-columns:1fr 1fr}
   .v31-result-row,.v31-admin-test-row{grid-template-columns:1fr}
 }
+
+
+/* ======================================================
+   v31.1 EXAM MANAGEMENT STABLE HOTFIX
+   ====================================================== */
+.v311-exam-nav-btn{
+  background:linear-gradient(135deg,#6d28d9,#7c3aed)!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.25)!important;
+  box-shadow:0 8px 18px rgba(109,40,217,.22)!important;
+}
+.v311-exam-nav-btn:hover{
+  transform:translateX(2px);
+}
+.v311-exam-quick-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 14px;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid #ddd6fe;
+  background:linear-gradient(135deg,#f5f3ff,#fff);
+}
+.v311-exam-quick-card>div{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+.v311-exam-quick-card>div>span{
+  width:50px;
+  height:50px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:#ede9fe;
+  font-size:25px;
+}
+.v311-exam-quick-card h3{
+  margin:0 0 4px;
+  color:#4c1d95;
+}
+.v311-exam-quick-card p{
+  margin:0;
+  color:#6b7280;
+}
+.v311-exam-quick-card button,
+.v311-exam-toolbar button{
+  border:0;
+  border-radius:11px;
+  padding:10px 13px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v311-exam-quick-card button{
+  background:#7c3aed;
+  color:#fff;
+}
+.v311-exam-guide{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:14px;
+}
+.v311-exam-guide div{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:12px;
+  border-radius:14px;
+  background:#fff;
+  border:1px solid #e2e8f0;
+}
+.v311-exam-guide b{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#7c3aed;
+  color:#fff;
+  font-size:11px;
+}
+.v311-exam-guide span{
+  color:#334155;
+  font-weight:900;
+  font-size:12px;
+}
+.v311-exam-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+  padding:18px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#0B2A55,#5B21B6);
+  color:#fff;
+}
+.v311-exam-toolbar h2{
+  margin:0 0 5px;
+  color:#fff;
+}
+.v311-exam-toolbar p{
+  margin:0;
+  color:#ddd6fe;
+}
+.v311-exam-toolbar>div:last-child{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.v311-exam-toolbar .secondary-btn{
+  background:#fff;
+  color:#5B21B6;
+}
+#adminExamManager .pro-panel label{
+  display:block;
+  margin:10px 0 5px;
+  color:#334155;
+  font-size:12px;
+  font-weight:900;
+}
+.v311-member-test-help{
+  margin-top:14px;
+  padding:12px 14px;
+  border:1px solid #dbeafe;
+  border-radius:14px;
+  background:#eff6ff;
+}
+.v311-member-test-help b{
+  display:block;
+  margin-bottom:4px;
+  color:#1d4ed8;
+}
+.v311-member-test-help span{
+  color:#475569;
+  font-size:13px;
+}
+
+/* Force smart dashboard cards to remain styled even with stale earlier CSS */
+.v30-smart-strip{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:0 0 12px!important;
+}
+.v30-smart-card{
+  display:grid!important;
+  grid-template-columns:auto 1fr auto!important;
+  align-items:center!important;
+  gap:11px!important;
+  padding:13px 14px!important;
+  border:1px solid #dbe7f4!important;
+  border-radius:16px!important;
+  background:#fff!important;
+}
+.v30-smart-card button{
+  border:0!important;
+  border-radius:9px!important;
+  padding:8px 10px!important;
+  background:#0B5ED7!important;
+  color:#fff!important;
+  font-weight:900!important;
+}
+body.portal-dark .v311-exam-guide div,
+body.portal-dark .v311-exam-quick-card{
+  background:#111827!important;
+  border-color:#334155!important;
+}
+body.portal-dark .v311-exam-guide span,
+body.portal-dark #adminExamManager .pro-panel label{
+  color:#e5e7eb!important;
+}
+@media(max-width:900px){
+  .v311-exam-guide{
+    grid-template-columns:repeat(2,1fr);
+  }
+  .v311-exam-toolbar,
+  .v311-exam-quick-card{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .v30-smart-strip{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:600px){
+  .v311-exam-guide{
+    grid-template-columns:1fr;
+  }
+}

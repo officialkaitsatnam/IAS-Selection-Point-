@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=31" />
+  <link rel="stylesheet" href="style.css?v=311" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v31 Enterprise Mock Test Engine</div>
+  <div class="version-badge">v31.1 Exam Management Stable</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -42,6 +42,7 @@
       </div>
 
       <nav class="side-nav">
+        <button class="v311-exam-nav-btn" onclick="openAdminSection('adminExamManager', this)">📝 Exam Management</button>
         <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
         <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
         <button onclick="openAdminSection('adminProTools', this)">🛠️ Admin Pro Tools</button>
@@ -49,7 +50,7 @@
         <button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
         <button onclick="openAdminSection('adminSheetCenter', this)">📊 Sheet Center</button>
         <button onclick="openAdminSection('adminPerformance', this)">🏆 Student Performance</button>
-        <button onclick="openAdminSection('adminExamManager', this)">📝 Exam Management</button>
+        
         <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
         <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
         <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
@@ -238,35 +239,62 @@
       </section>
 
       <section id="adminExamManager" class="admin-section">
+        <div class="v311-exam-guide">
+          <div><b>Step 1</b><span>Create Test</span></div>
+          <div><b>Step 2</b><span>Add Questions</span></div>
+          <div><b>Step 3</b><span>Publish Test</span></div>
+          <div><b>Step 4</b><span>Member Attempts Test</span></div>
+        </div>
+
+        <div class="v311-exam-toolbar">
+          <div>
+            <h2>📝 Exam Management</h2>
+            <p>Create and publish mock tests for portal members.</p>
+          </div>
+          <div>
+            <button type="button" class="secondary-btn" onclick="createV311DemoTest()">⚡ Create Demo Test</button>
+            <button type="button" class="primary-btn" onclick="loadV31AdminTests()">Refresh</button>
+          </div>
+        </div>
+
         <div class="two-col compact-two">
           <div class="pro-panel">
-            <h3>📝 Create Mock Test</h3>
-            <input id="v31AdminTestTitle" placeholder="Test title" />
-            <input id="v31AdminTestCategory" placeholder="Category / Subject" />
-            <input id="v31AdminTestDuration" type="number" min="1" value="10" placeholder="Duration in minutes" />
-            <input id="v31AdminPositiveMarks" type="number" step="0.25" value="1" placeholder="Marks per correct answer" />
-            <input id="v31AdminNegativeMarks" type="number" step="0.25" value="0.25" placeholder="Negative marks" />
-            <input id="v31AdminPassingMarks" type="number" step="0.25" value="5" placeholder="Passing marks" />
-            <textarea id="v31AdminTestDescription" placeholder="Test description"></textarea>
+            <h3>1️⃣ Create Mock Test</h3>
+            <label>Test Title</label>
+            <input id="v31AdminTestTitle" placeholder="Example: Current Affairs Practice Test 1" />
+            <label>Category / Subject</label>
+            <input id="v31AdminTestCategory" placeholder="Current Affairs / UPSC / Political Science" />
+            <div class="form-grid">
+              <div><label>Duration (minutes)</label><input id="v31AdminTestDuration" type="number" min="1" value="10" /></div>
+              <div><label>Marks per correct</label><input id="v31AdminPositiveMarks" type="number" step="0.25" value="1" /></div>
+              <div><label>Negative marks</label><input id="v31AdminNegativeMarks" type="number" step="0.25" value="0.25" /></div>
+              <div><label>Passing marks</label><input id="v31AdminPassingMarks" type="number" step="0.25" value="5" /></div>
+            </div>
+            <label>Description</label>
+            <textarea id="v31AdminTestDescription" placeholder="Short test instructions or description"></textarea>
             <button class="primary-btn" onclick="createV31AdminTest()">Create Test</button>
             <p id="v31AdminTestMsg" class="small-msg"></p>
           </div>
 
           <div class="pro-panel">
-            <h3>❓ Add Question</h3>
+            <h3>2️⃣ Add Question</h3>
+            <label>Select Test</label>
             <select id="v31AdminQuestionTest"></select>
-            <textarea id="v31AdminQuestionText" placeholder="Question text"></textarea>
+            <label>Question</label>
+            <textarea id="v31AdminQuestionText" placeholder="Enter the complete question"></textarea>
             <input id="v31OptionA" placeholder="Option A" />
             <input id="v31OptionB" placeholder="Option B" />
             <input id="v31OptionC" placeholder="Option C" />
             <input id="v31OptionD" placeholder="Option D" />
+            <label>Correct Answer</label>
             <select id="v31CorrectOption">
-              <option value="A">Correct: A</option>
-              <option value="B">Correct: B</option>
-              <option value="C">Correct: C</option>
-              <option value="D">Correct: D</option>
+              <option value="A">Option A</option>
+              <option value="B">Option B</option>
+              <option value="C">Option C</option>
+              <option value="D">Option D</option>
             </select>
-            <textarea id="v31Explanation" placeholder="Explanation"></textarea>
+            <label>Explanation</label>
+            <textarea id="v31Explanation" placeholder="Explain why the answer is correct"></textarea>
             <button class="primary-btn" onclick="addV31AdminQuestion()">Add Question</button>
             <p id="v31AdminQuestionMsg" class="small-msg"></p>
           </div>
@@ -275,12 +303,14 @@
         <div class="pro-panel">
           <div class="panel-head">
             <div>
-              <h3>📚 Existing Tests</h3>
-              <p class="muted">Publish, unpublish and manage tests.</p>
+              <h3>3️⃣ Existing Tests</h3>
+              <p class="muted">Add questions first, then publish the test.</p>
             </div>
             <button class="mini-btn" onclick="loadV31AdminTests()">Refresh</button>
           </div>
-          <div id="v31AdminTestsList" class="v31-admin-tests-list"></div>
+          <div id="v31AdminTestsList" class="v31-admin-tests-list">
+            <p class="muted">Loading tests...</p>
+          </div>
         </div>
       </section>
 
@@ -395,7 +425,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=31"></script>
-  <script src="app.js?v=31"></script>
+  <script src="config.js?v=311"></script>
+  <script src="app.js?v=311"></script>
 </body>
 </html>

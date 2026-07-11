@@ -1,39 +1,28 @@
-IAS Selection Point v31 - Enterprise Mock Test Engine
+IAS Selection Point v31.1 - Exam Management Stable Hotfix
 
-Student features:
-- Mock Tests module
-- Published test list
-- Countdown timer
-- Previous / Next
-- Question palette
-- Answered / Unanswered / Mark for Review
-- Clear Response
-- Auto-save answers
-- Resume interrupted test
-- Auto-submit when time ends
-- Instant result
-- Correct / Wrong / Unanswered / Score / Percentage
-- Answer review with explanation
-- My Results section
+Main fixes:
+- Exam Management is placed near the top of the Admin sidebar.
+- A prominent Exam Management quick-access card is added.
+- Guided flow: Create Test > Add Questions > Publish > Member Test.
+- Create Demo Test button creates and publishes a 5-question sample test.
+- Edit and Delete test options added.
+- Member dashboard clearly explains when no published test exists.
+- Continue Learning / Revision / Notes cards receive forced styling fix.
+- Service-worker cache bumped to v311.
 
-Admin features:
-- Exam Management
-- Create test
-- Duration
-- Positive marks
-- Negative marks
-- Passing marks
-- Add MCQ questions
-- Correct option
-- Explanation
-- Publish / Unpublish
-- Question count
+How to create a test:
+1. Login as Admin.
+2. Open Exam Management.
+3. Fill Create Mock Test and click Create Test.
+4. Select the test in Add Question.
+5. Add all questions with options, correct answer and explanation.
+6. In Existing Tests click Publish.
+7. Login as a member and open Mock Tests.
 
-New Google Sheet tabs:
-TESTS
-QUESTIONS
-TEST_ATTEMPTS
-TEST_RESULTS
+Fast verification:
+- Click Create Demo Test.
+- A published 5-question Current Affairs test is created.
+- Member Mock Tests section will show it immediately after refresh.
 
 GitHub upload/replace:
 index.html
@@ -49,10 +38,10 @@ offline.html
 
 Apps Script:
 1. Replace Code.gs
-2. Save
-3. Run initializeSystem once
-4. Deploy > Manage deployments > Edit > New version > Deploy
-5. Refresh Google Sheet and portal
+2. Save.
+3. Run initializeSystem() once.
+4. Deploy > Manage deployments > Edit > New version > Deploy.
+5. Refresh portal with ?v=311.
 
-Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=31
+Portal:
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=311
