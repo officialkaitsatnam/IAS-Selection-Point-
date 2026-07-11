@@ -1,37 +1,23 @@
-IAS Selection Point v27 - Stable Enterprise + Mobile Friendly
+IAS Selection Point v28 - PWA App + Notes + Revision Center
 
-Major stability review:
-- Final event-delegation control layer for Premium Reader
-- Back button
-- Save
-- Share
-- Copy Link
-- Favourite
-- A− / A+
-- Light / Sepia / Dark
-- Focus Mode
-- Listen / Stop
-- Full Screen / Exit Full Screen
-- Print
-- Previous / Next
-- Related Articles
-- Table of Contents
-- ESC key closes reader
-- Duplicate/old reader functions overridden safely
+New:
+- Install portal as mobile/desktop app
+- Service Worker and offline fallback
+- Faster repeat loading using cached core files
+- Install App button
+- Reader: Add Note button
+- Reader: Schedule Revision button
+- My Notes section
+- Notes search, copy and delete
+- Revision Center
+- 1 / 7 / 30 day revision scheduling
+- Due / Upcoming / Completed filters
+- Complete, reschedule and delete revision
+- New Google Sheet tabs:
+  USER_NOTES
+  REVISION_QUEUE
 
-Mobile friendly:
-- Mobile menu button
-- Slide-in sidebar
-- Background overlay
-- Sidebar closes automatically after selecting menu
-- Touch-friendly button sizes
-- Responsive dashboard cards
-- Responsive header/search
-- Mobile reader layout
-- Mobile reader tool grid
-- Narrow comfortable article width
-
-GitHub replace:
+GitHub upload/replace:
 index.html
 dashboard.html
 admin.html
@@ -39,10 +25,19 @@ style.css
 app.js
 config.js
 logo.jpg
+manifest.webmanifest
+sw.js
+offline.html
 
 Apps Script:
-Code.gs replacement is optional if v26 backend already works.
-Replace it only for v27 API version display.
+1. Replace Code.gs
+2. Save
+3. Run initializeSystem once
+4. Deploy > Manage deployments > Edit > New version > Deploy
+5. Refresh Google Sheet and portal
+
+Important:
+GitHub Pages must be enabled and portal must use HTTPS for PWA install/service worker.
 
 Open:
-https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=27
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=28

@@ -3162,3 +3162,181 @@ body.v27-reader-open{
     flex-direction:column;
   }
 }
+
+
+/* ===== v28 PWA + Notes + Revision Center ===== */
+.install-app-btn{
+  border:0;
+  background:#159947;
+  color:#fff;
+  padding:9px 12px;
+  border-radius:999px;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.v28-notes-list,
+.v28-revision-list{
+  display:grid;
+  gap:11px;
+  margin-top:14px;
+}
+.v28-note-card,
+.v28-revision-card{
+  border:1px solid #e2eefc;
+  border-radius:16px;
+  padding:14px;
+  background:#fff;
+}
+.v28-note-head,
+.v28-revision-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.v28-note-head h4,
+.v28-revision-head h4{
+  margin:0;
+  color:#10233f;
+}
+.v28-note-meta,
+.v28-revision-meta{
+  margin-top:5px;
+  color:#5a6b82;
+  font-size:12px;
+  font-weight:800;
+}
+.v28-note-body{
+  margin-top:11px;
+  padding:11px;
+  border-radius:12px;
+  background:#f8fbff;
+  color:#24364f;
+  line-height:1.55;
+  white-space:pre-wrap;
+}
+.v28-card-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:11px;
+}
+.v28-card-actions button{
+  border:0;
+  border-radius:9px;
+  padding:8px 10px;
+  font-weight:900;
+  cursor:pointer;
+  background:#eef6ff;
+  color:#0B5ED7;
+}
+.v28-card-actions button.danger{
+  background:#fdecec;
+  color:#b91c1c;
+}
+.revision-filter-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:12px 0 4px;
+}
+.revision-filter-row button{
+  border:0;
+  border-radius:999px;
+  padding:8px 12px;
+  background:#eef6ff;
+  color:#0B5ED7;
+  font-weight:900;
+  cursor:pointer;
+}
+.revision-due-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#fff2e5;
+  color:#b45309;
+  font-weight:900;
+  font-size:12px;
+}
+.revision-status{
+  display:inline-flex;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+}
+.revision-status.due{background:#fdecec;color:#b91c1c}
+.revision-status.upcoming{background:#eef6ff;color:#0B5ED7}
+.revision-status.completed{background:#e9f8ef;color:#116B36}
+.v28-offline-banner{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  z-index:60000;
+  padding:10px 14px;
+  border-radius:12px;
+  background:#10233f;
+  color:#fff;
+  font-weight:800;
+  box-shadow:0 12px 30px rgba(0,0,0,.2);
+}
+.v28-note-modal{
+  position:fixed;
+  inset:0;
+  z-index:61000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:rgba(15,23,42,.58);
+}
+.v28-note-modal.active{display:flex}
+.v28-note-dialog{
+  width:min(560px,96vw);
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+.v28-note-dialog header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 16px;
+  background:linear-gradient(135deg,#0B2A55,#0B5ED7);
+  color:#fff;
+}
+.v28-note-dialog header h3{flex:1;margin:0;color:#fff}
+.v28-note-dialog header button{
+  border:0;background:#fff;color:#0B5ED7;border-radius:9px;padding:7px 10px;font-weight:900
+}
+.v28-note-dialog .body{padding:16px}
+.v28-note-dialog textarea{width:100%;min-height:150px}
+.v28-note-dialog .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+body.portal-dark .v28-note-card,
+body.portal-dark .v28-revision-card,
+body.portal-dark .v28-note-dialog{
+  background:#1f2937!important;
+  border-color:#334155!important;
+}
+body.portal-dark .v28-note-head h4,
+body.portal-dark .v28-revision-head h4{
+  color:#f8fafc!important;
+}
+body.portal-dark .v28-note-body{
+  background:#111827!important;
+  color:#e5e7eb!important;
+}
+@media(max-width:700px){
+  .v28-note-head,
+  .v28-revision-head{
+    display:block;
+  }
+  .install-app-btn{
+    width:100%;
+  }
+}

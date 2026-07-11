@@ -4,10 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=27" />
+  <link rel="stylesheet" href="style.css?v=28" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0B2A55">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v27 Stable Enterprise Mobile</div>
+  <div class="version-badge">v28 PWA + Notes + Revision</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -69,6 +75,8 @@
         <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
         <button onclick="openDashSection('performanceModule', this)">📊 My Performance</button>
         <button onclick="openDashSection('readingHistoryModule', this)">🕒 Reading History</button>
+        <button onclick="openDashSection('notesCenterModule', this)">📝 My Notes</button>
+        <button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
         <button onclick="openDashSection('supportModule', this)">🎫 Help & Support</button>
         <button onclick="openDashSection('security', this)">🔐 Security</button>
       </nav>
@@ -85,6 +93,7 @@
         <div class="header-actions">
           <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
           <button class="header-bell-btn" id="headerBellBtn" onclick="openDashSection('notificationsModule')">🔔<span id="notificationBadge">0</span></button>
+          <button id="installAppBtn" class="install-app-btn" onclick="installPortalApp()" style="display:none;">📲 Install App</button>
           <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
           <div class="admin-chip">Professional Study Member</div>
         </div>
@@ -411,6 +420,38 @@
         </div>
       </section>
 
+      <section id="notesCenterModule" class="dash-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>📝 My Notes</h3>
+              <p class="muted">Personal notes saved from articles.</p>
+            </div>
+            <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
+          </div>
+          <div id="v28NotesList" class="v28-notes-list"></div>
+        </div>
+      </section>
+
+      <section id="revisionCenterModule" class="dash-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>🎯 Revision Center</h3>
+              <p class="muted">Review articles scheduled for revision.</p>
+            </div>
+            <span class="revision-due-badge" id="revisionDueBadge">0 due</span>
+          </div>
+          <div class="revision-filter-row">
+            <button onclick="setRevisionFilter('all')">All</button>
+            <button onclick="setRevisionFilter('due')">Due</button>
+            <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
+            <button onclick="setRevisionFilter('completed')">Completed</button>
+          </div>
+          <div id="v28RevisionList" class="v28-revision-list"></div>
+        </div>
+      </section>
+
       <section id="security" class="dash-section">
         <div class="pro-panel">
           <h3>🔐 Change Password</h3>
@@ -447,7 +488,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=27"></script>
-  <script src="app.js?v=27"></script>
+  <script src="config.js?v=28"></script>
+  <script src="app.js?v=28"></script>
 </body>
 </html>

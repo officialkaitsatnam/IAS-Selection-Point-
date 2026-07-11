@@ -2370,6 +2370,8 @@ window.closePostReader = v261ClosePremiumReader;
                 <button type="button" data-v27-action="print">🖨 Print</button>
                 <button type="button" data-v27-action="copy">🔗 Copy</button>
                 <button type="button" data-v27-action="bookmark">⭐ Fav</button>
+                <button type="button" data-v27-action="note">📝 Note</button>
+                <button type="button" data-v27-action="revision">🎯 Revise</button>
               </div>
             </div>
 
@@ -2669,6 +2671,8 @@ window.closePostReader = v261ClosePremiumReader;
       fullscreen: toggleFullscreen,
       print: printArticle,
       bookmark: favourite,
+      note: function(){ window.openV28NoteModal(currentPost); },
+      revision: function(){ window.openV28RevisionPicker(currentPost); },
       previous: function(){ openAdjacent(-1); },
       next: function(){ openAdjacent(1); }
     };
@@ -2734,3 +2738,240 @@ window.closePostReader = v261ClosePremiumReader;
     if(window.innerWidth > 900) closeMobileSidebar();
   });
 })();
+
+
+/* =========================================================
+   v28 PWA + NOTES + REVISION CENTER
+   ========================================================= */
+let V28_INSTALL_PROMPT = null;
+let V28_REVISION_FILTER = 'all';
+let V28_NOTE_POST = null;
+
+function v28UserKey(prefix){
+  return prefix + '_' + ((typeof currentUser==='function' && currentUser().email) || 'guest');
+}
+function v28GetNotes(){
+  try{return JSON.parse(localStorage.getItem(v28UserKey('isp_v28_notes'))||'[]')}catch(e){return []}
+}
+function v28SaveNotes(rows){
+  localStorage.setItem(v28UserKey('isp_v28_notes'),JSON.stringify(rows.slice(0,200)));
+}
+function v28GetRevisions(){
+  try{return JSON.parse(localStorage.getItem(v28UserKey('isp_v28_revisions'))||'[]')}catch(e){return []}
+}
+function v28SaveRevisions(rows){
+  localStorage.setItem(v28UserKey('isp_v28_revisions'),JSON.stringify(rows.slice(0,300)));
+}
+
+window.openV28NoteModal=function(post){
+  V28_NOTE_POST=post||window.ISP_CURRENT_READER_POST||null;
+  let modal=document.getElementById('v28NoteModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='v28NoteModal';
+    modal.className='v28-note-modal';
+    modal.innerHTML=`
+      <div class="v28-note-dialog">
+        <header><h3>📝 Add Personal Note</h3><button type="button" onclick="closeV28NoteModal()">Close</button></header>
+        <div class="body">
+          <p class="muted" id="v28NoteArticleTitle"></p>
+          <textarea id="v28NoteText" placeholder="Write your note, important point or revision summary..."></textarea>
+          <div class="actions">
+            <button class="mini-btn" type="button" onclick="closeV28NoteModal()">Cancel</button>
+            <button class="primary-btn" type="button" onclick="saveV28Note()">Save Note</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  const title=document.getElementById('v28NoteArticleTitle');
+  if(title)title.textContent=V28_NOTE_POST?.title||'General Note';
+  const area=document.getElementById('v28NoteText');
+  if(area)area.value='';
+  modal.classList.add('active');
+  setTimeout(()=>area&&area.focus(),100);
+};
+window.closeV28NoteModal=function(){
+  const modal=document.getElementById('v28NoteModal');
+  if(modal)modal.classList.remove('active');
+};
+window.saveV28Note=function(){
+  const text=document.getElementById('v28NoteText')?.value.trim()||'';
+  if(!text)return alert('Please write a note.');
+  const post=V28_NOTE_POST||{};
+  const rows=v28GetNotes();
+  rows.unshift({
+    id:'NOTE_'+Date.now(),
+    title:post.title||'General Note',
+    category:post.categoryTitle||window.ISP_CURRENT_CATEGORY||'',
+    articleLink:post.link||'',
+    text:text,
+    createdAt:new Date().toISOString()
+  });
+  v28SaveNotes(rows);
+  closeV28NoteModal();
+  if(typeof toast==='function')toast('Note saved');
+  renderV28Notes();
+  try{
+    if(typeof api==='function')api('saveV28Note',{token:token(),note:rows[0]}).catch(()=>{});
+  }catch(e){}
+};
+window.renderV28Notes=function(){
+  const box=document.getElementById('v28NotesList');
+  if(!box)return;
+  const q=(document.getElementById('notesSearch')?.value||'').toLowerCase();
+  const rows=v28GetNotes().filter(n=>
+    String(n.title||'').toLowerCase().includes(q)||
+    String(n.text||'').toLowerCase().includes(q)||
+    String(n.category||'').toLowerCase().includes(q)
+  );
+  if(!rows.length){box.innerHTML='<p class="muted">No notes found.</p>';return}
+  box.innerHTML=rows.map(n=>`<div class="v28-note-card">
+    <div class="v28-note-head"><div><h4>${escapeHtml(n.title)}</h4><div class="v28-note-meta">${escapeHtml(n.category||'')} · ${escapeHtml(new Date(n.createdAt).toLocaleString())}</div></div></div>
+    <div class="v28-note-body">${escapeHtml(n.text)}</div>
+    <div class="v28-card-actions">
+      <button onclick="copyV28Note('${escapeAttr(n.id)}')">Copy</button>
+      <button class="danger" onclick="deleteV28Note('${escapeAttr(n.id)}')">Delete</button>
+    </div>
+  </div>`).join('');
+};
+window.copyV28Note=async function(id){
+  const n=v28GetNotes().find(x=>x.id===id);if(!n)return;
+  try{await navigator.clipboard.writeText(n.text);if(typeof toast==='function')toast('Note copied')}catch(e){alert('Copy failed')}
+};
+window.deleteV28Note=function(id){
+  if(!confirm('Delete this note?'))return;
+  v28SaveNotes(v28GetNotes().filter(x=>x.id!==id));
+  renderV28Notes();
+};
+
+window.openV28RevisionPicker=function(post){
+  const target=post||window.ISP_CURRENT_READER_POST;
+  if(!target)return;
+  const choice=prompt('Revision after how many days? Enter 1, 7 or 30','7');
+  if(choice===null)return;
+  const days=[1,7,30].includes(Number(choice))?Number(choice):7;
+  const due=new Date();
+  due.setDate(due.getDate()+days);
+  const rows=v28GetRevisions().filter(x=>x.title!==target.title||x.status==='completed');
+  const item={
+    id:'REV_'+Date.now(),
+    title:target.title,
+    category:target.categoryTitle||window.ISP_CURRENT_CATEGORY||'',
+    link:target.link||'',
+    dueDate:due.toISOString(),
+    createdAt:new Date().toISOString(),
+    status:'pending',
+    intervalDays:days
+  };
+  rows.unshift(item);
+  v28SaveRevisions(rows);
+  if(typeof toast==='function')toast(`Revision scheduled in ${days} day(s)`);
+  renderV28Revisions();
+  try{
+    if(typeof api==='function')api('saveV28Revision',{token:token(),revision:item}).catch(()=>{});
+  }catch(e){}
+};
+function v28RevisionState(item){
+  if(item.status==='completed')return 'completed';
+  return new Date(item.dueDate)<=new Date()?'due':'upcoming';
+}
+window.setRevisionFilter=function(filter){
+  V28_REVISION_FILTER=filter;
+  renderV28Revisions();
+};
+window.renderV28Revisions=function(){
+  const box=document.getElementById('v28RevisionList');
+  const badge=document.getElementById('revisionDueBadge');
+  if(!box)return;
+  const all=v28GetRevisions();
+  const dueCount=all.filter(x=>v28RevisionState(x)==='due').length;
+  if(badge)badge.textContent=dueCount+' due';
+  const rows=all.filter(x=>V28_REVISION_FILTER==='all'||v28RevisionState(x)===V28_REVISION_FILTER);
+  if(!rows.length){box.innerHTML='<p class="muted">No revision items in this view.</p>';return}
+  box.innerHTML=rows.map(x=>{
+    const state=v28RevisionState(x);
+    return `<div class="v28-revision-card">
+      <div class="v28-revision-head">
+        <div><h4>${escapeHtml(x.title)}</h4><div class="v28-revision-meta">${escapeHtml(x.category||'')} · Due: ${escapeHtml(new Date(x.dueDate).toLocaleDateString())}</div></div>
+        <span class="revision-status ${state}">${state}</span>
+      </div>
+      <div class="v28-card-actions">
+        <button onclick="completeV28Revision('${escapeAttr(x.id)}')">Complete</button>
+        <button onclick="rescheduleV28Revision('${escapeAttr(x.id)}',7)">+7 Days</button>
+        <button class="danger" onclick="deleteV28Revision('${escapeAttr(x.id)}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+};
+window.completeV28Revision=function(id){
+  const rows=v28GetRevisions();
+  const item=rows.find(x=>x.id===id);
+  if(item){item.status='completed';item.completedAt=new Date().toISOString()}
+  v28SaveRevisions(rows);renderV28Revisions();
+};
+window.rescheduleV28Revision=function(id,days){
+  const rows=v28GetRevisions();
+  const item=rows.find(x=>x.id===id);
+  if(item){const d=new Date();d.setDate(d.getDate()+days);item.dueDate=d.toISOString();item.status='pending'}
+  v28SaveRevisions(rows);renderV28Revisions();
+};
+window.deleteV28Revision=function(id){
+  if(!confirm('Delete this revision item?'))return;
+  v28SaveRevisions(v28GetRevisions().filter(x=>x.id!==id));
+  renderV28Revisions();
+};
+
+/* PWA */
+window.addEventListener('beforeinstallprompt',function(event){
+  event.preventDefault();
+  V28_INSTALL_PROMPT=event;
+  const btn=document.getElementById('installAppBtn');
+  if(btn)btn.style.display='inline-flex';
+});
+window.installPortalApp=async function(){
+  if(!V28_INSTALL_PROMPT){
+    alert('Install option is available from your browser menu: Add to Home screen / Install app.');
+    return;
+  }
+  V28_INSTALL_PROMPT.prompt();
+  await V28_INSTALL_PROMPT.userChoice;
+  V28_INSTALL_PROMPT=null;
+  const btn=document.getElementById('installAppBtn');
+  if(btn)btn.style.display='none';
+};
+window.addEventListener('appinstalled',function(){
+  const btn=document.getElementById('installAppBtn');
+  if(btn)btn.style.display='none';
+  if(typeof toast==='function')toast('IAS Selection Point app installed');
+});
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js?v=28').catch(function(err){
+      console.warn('Service worker registration failed',err);
+    });
+  });
+}
+function showV28NetworkStatus(message){
+  const old=document.querySelector('.v28-offline-banner');if(old)old.remove();
+  const el=document.createElement('div');el.className='v28-offline-banner';el.textContent=message;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2500);
+}
+window.addEventListener('offline',()=>showV28NetworkStatus('You are offline. Cached portal pages remain available.'));
+window.addEventListener('online',()=>showV28NetworkStatus('Internet connection restored.'));
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V28=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V28(id,btn);
+    if(id==='notesCenterModule')renderV28Notes();
+    if(id==='revisionCenterModule')renderV28Revisions();
+  };
+}
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASH_V28=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASH_V28();
+    setTimeout(()=>{renderV28Notes();renderV28Revisions()},500);
+  };
+}
