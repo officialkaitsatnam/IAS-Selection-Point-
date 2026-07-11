@@ -4629,3 +4629,184 @@ window.startV31Test=window.startV313Test;
     },700);
   });
 })();
+
+
+/* ======================================================
+   v31.6 PASSWORD VISIBILITY + STRENGTH UX
+   ====================================================== */
+(function(){
+  'use strict';
+
+  function fieldLabel(input){
+    const id=(input.id||'').toLowerCase();
+    const name=(input.name||'').toLowerCase();
+    const placeholder=(input.placeholder||'').toLowerCase();
+    return id+' '+name+' '+placeholder;
+  }
+
+  function passwordIcon(visible){
+    return visible ? '🙈' : '👁';
+  }
+
+  function enhancePasswordInput(input){
+    if(!input || input.dataset.v316Enhanced==='1') return;
+    if(input.type!=='password') return;
+
+    input.dataset.v316Enhanced='1';
+
+    const parent=input.parentElement;
+    if(!parent) return;
+
+    let wrap;
+    if(parent.classList.contains('password-field-wrap')){
+      wrap=parent;
+    }else{
+      wrap=document.createElement('div');
+      wrap.className='password-field-wrap';
+      parent.insertBefore(wrap,input);
+      wrap.appendChild(input);
+    }
+
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='password-toggle-btn';
+    button.setAttribute('aria-label','Show password');
+    button.setAttribute('aria-pressed','false');
+    button.title='Show password';
+    button.textContent=passwordIcon(false);
+
+    button.addEventListener('click',function(event){
+      event.preventDefault();
+      const selectionStart=input.selectionStart;
+      const selectionEnd=input.selectionEnd;
+      const visible=input.type==='text';
+
+      input.type=visible?'password':'text';
+      button.setAttribute('aria-pressed',visible?'false':'true');
+      button.setAttribute('aria-label',visible?'Show password':'Hide password');
+      button.title=visible?'Show password':'Hide password';
+      button.textContent=passwordIcon(!visible);
+
+      input.focus({preventScroll:true});
+      try{
+        input.setSelectionRange(selectionStart,selectionEnd);
+      }catch(e){}
+    });
+
+    wrap.appendChild(button);
+
+    const label=fieldLabel(input);
+    const isMainPassword=!label.includes('confirm')&&!label.includes('repeat')&&!label.includes('otp');
+    const isSignupPassword=isMainPassword && (
+      label.includes('signup') ||
+      input.closest('#signupForm,.signup-form,[data-form="signup"]')
+    );
+
+    if(isSignupPassword){
+      addStrengthIndicator(input,wrap);
+    }
+
+    if(label.includes('confirm')||label.includes('repeat')){
+      addMatchIndicator(input,wrap);
+    }
+  }
+
+  function scorePassword(value){
+    let score=0;
+    if(value.length>=6)score++;
+    if(/[a-z]/.test(value)&&/[A-Z]/.test(value))score++;
+    if(/\d/.test(value))score++;
+    if(/[^A-Za-z0-9]/.test(value))score++;
+    return score;
+  }
+
+  function addStrengthIndicator(input,wrap){
+    if(wrap.nextElementSibling?.classList.contains('password-strength-box'))return;
+
+    const box=document.createElement('div');
+    box.className='password-strength-box';
+    box.innerHTML='<div class="password-strength-track"><span></span></div><div class="password-strength-text">Enter a strong password</div>';
+    wrap.insertAdjacentElement('afterend',box);
+
+    function update(){
+      const value=input.value||'';
+      const score=scorePassword(value);
+      box.classList.remove('weak','fair','good','strong');
+      if(!value){
+        box.querySelector('.password-strength-text').textContent='Use uppercase, lowercase, number and symbol';
+        return;
+      }
+      const states=[
+        ['weak','Weak password'],
+        ['fair','Fair password'],
+        ['good','Good password'],
+        ['strong','Strong password']
+      ];
+      const state=states[Math.max(0,score-1)];
+      box.classList.add(state[0]);
+      box.querySelector('.password-strength-text').textContent=state[1];
+    }
+
+    input.addEventListener('input',update);
+    update();
+  }
+
+  function addMatchIndicator(confirmInput,wrap){
+    if(wrap.nextElementSibling?.classList.contains('password-match-message'))return;
+
+    const message=document.createElement('div');
+    message.className='password-match-message';
+    wrap.insertAdjacentElement('afterend',message);
+
+    function findPrimaryPassword(){
+      const form=confirmInput.closest('form')||document;
+      const passwords=[...form.querySelectorAll('input[type="password"],input[data-v316-enhanced="1"]')]
+        .filter(el=>el!==confirmInput);
+      return passwords.find(el=>{
+        const label=fieldLabel(el);
+        return !label.includes('confirm')&&!label.includes('repeat');
+      })||passwords[0];
+    }
+
+    function update(){
+      const primary=findPrimaryPassword();
+      if(!confirmInput.value){
+        message.textContent='';
+        message.className='password-match-message';
+        return;
+      }
+      const match=primary && primary.value===confirmInput.value;
+      message.textContent=match?'Passwords match':'Passwords do not match';
+      message.className='password-match-message '+(match?'match':'no-match');
+    }
+
+    confirmInput.addEventListener('input',update);
+    document.addEventListener('input',function(event){
+      if(event.target!==confirmInput && event.target.matches('input[type="password"],input[data-v316-enhanced="1"]')){
+        update();
+      }
+    });
+  }
+
+  function scanPasswordFields(root=document){
+    root.querySelectorAll('input[type="password"]').forEach(enhancePasswordInput);
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    scanPasswordFields();
+
+    const observer=new MutationObserver(function(mutations){
+      for(const mutation of mutations){
+        for(const node of mutation.addedNodes){
+          if(node.nodeType!==1)continue;
+          if(node.matches?.('input[type="password"]'))enhancePasswordInput(node);
+          scanPasswordFields(node);
+        }
+      }
+    });
+
+    observer.observe(document.body,{childList:true,subtree:true});
+  });
+
+  window.enhanceV316PasswordFields=scanPasswordFields;
+})();
