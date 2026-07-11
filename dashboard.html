@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=293" />
+  <link rel="stylesheet" href="style.css?v=294" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v29.3 Continuous Ticker Fix</div>
+  <div class="version-badge">v29.4 Native Marquee Ticker</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -113,9 +113,19 @@
       <div class="v291-breaking-wrap" aria-label="Latest articles">
         <div class="v291-breaking-label">⚡ BREAKING NEWS</div>
         <div class="v291-breaking-window">
-          <div id="v291TickerTrack" class="v291-breaking-track v292-auto-track">
-            <span>Latest articles are loading...</span>
-          </div>
+          <marquee id="v294TickerMarquee"
+                   class="v294-native-marquee"
+                   behavior="scroll"
+                   direction="left"
+                   scrollamount="4"
+                   scrolldelay="20"
+                   truespeed
+                   onmouseenter="this.stop()"
+                   onmouseleave="this.start()"
+                   ontouchstart="this.stop()"
+                   ontouchend="this.start()">
+            <span id="v294TickerContent">Latest articles are loading...</span>
+          </marquee>
         </div>
       </div>
 
@@ -479,7 +489,7 @@
             </div>
             <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
           </div>
-          <div id="v29.3 Continuous Ticker Fix" class="v29.3 Continuous Ticker Fix"></div>
+          <div id="v29.4 Native Marquee Ticker" class="v29.4 Native Marquee Ticker"></div>
         </div>
       </section>
 
@@ -498,7 +508,7 @@
             <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
             <button onclick="setRevisionFilter('completed')">Completed</button>
           </div>
-          <div id="v29.3 Continuous Ticker Fix" class="v29.3 Continuous Ticker Fix"></div>
+          <div id="v29.4 Native Marquee Ticker" class="v29.4 Native Marquee Ticker"></div>
         </div>
       </section>
 
@@ -538,7 +548,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=293"></script>
-  <script src="app.js?v=293"></script>
+  <script src="config.js?v=294"></script>
+  <script src="app.js?v=294"></script>
 </body>
 </html>

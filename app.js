@@ -3428,3 +3428,119 @@ if(typeof loadDashboard==='function'){
     }, 500);
   });
 })();
+
+
+/* ======================================================
+   v29.4 NATIVE MARQUEE TICKER FINAL OVERRIDE
+   ====================================================== */
+(function(){
+  function posts(){
+    if(typeof ISP_LATEST_POSTS!=='undefined' && Array.isArray(ISP_LATEST_POSTS) && ISP_LATEST_POSTS.length){
+      return ISP_LATEST_POSTS.slice(0,15);
+    }
+    if(typeof ISP_LOADED_POSTS!=='undefined' && Array.isArray(ISP_LOADED_POSTS)){
+      return ISP_LOADED_POSTS.slice(0,15);
+    }
+    return [];
+  }
+
+  function image(post){
+    if(post && post.thumbnail) return post.thumbnail;
+    const html=String((post && (post.content||post.html)) || '');
+    const match=html.match(/<img[^>]+src=["']([^"']+)["']/i);
+    return match ? match[1] : 'logo.jpg';
+  }
+
+  function safeUrl(value){
+    return String(value||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  }
+
+  window.renderV291Ticker=function(){
+    const content=document.getElementById('v294TickerContent');
+    const marquee=document.getElementById('v294TickerMarquee');
+    if(!content || !marquee) return;
+
+    const rows=posts();
+    if(!rows.length){
+      content.innerHTML='<span style="padding:0 20px;">Latest posts will appear here automatically.</span>';
+      return;
+    }
+
+    // Duplicate cards provide a long continuous stream.
+    const doubled=rows.concat(rows);
+    content.innerHTML=doubled.map(function(post,index){
+      const realIndex=index % rows.length;
+      return `<span class="v294-native-card" data-v294-index="${realIndex}" role="button" tabindex="0">
+        <img src="${safeUrl(image(post))}" alt="" loading="eager"
+             onerror="this.onerror=null;this.src='logo.jpg'">
+        <span class="v294-native-copy">
+          <span class="v294-native-meta">
+            <span class="v294-native-pill">LATEST</span>
+            <span class="v294-native-date">${escapeHtml(post.published||'')}</span>
+          </span>
+          <span class="v294-native-title">${escapeHtml(post.title||'Article')}</span>
+        </span>
+      </span>`;
+    }).join('');
+
+    // Force restart even if the browser restored a stopped marquee state.
+    try{
+      marquee.stop();
+      setTimeout(function(){ marquee.start(); },50);
+    }catch(e){}
+  };
+
+  function openInside(index){
+    const rows=posts();
+    const post=rows[index];
+    if(!post) return;
+
+    // Open inside the portal Premium Reader.
+    if(typeof ISP_LOADED_POSTS!=='undefined'){
+      ISP_LOADED_POSTS=rows.slice();
+    }
+    if(typeof openPostReader==='function'){
+      openPostReader(index);
+    }
+  }
+
+  document.addEventListener('click',function(event){
+    const card=event.target.closest('.v294-native-card');
+    if(!card) return;
+    event.preventDefault();
+    event.stopPropagation();
+    openInside(Number(card.getAttribute('data-v294-index')));
+  },true);
+
+  document.addEventListener('keydown',function(event){
+    const card=event.target.closest && event.target.closest('.v294-native-card');
+    if(!card || (event.key!=='Enter' && event.key!==' ')) return;
+    event.preventDefault();
+    openInside(Number(card.getAttribute('data-v294-index')));
+  });
+
+  async function ensure(){
+    try{
+      if((typeof ISP_LATEST_POSTS==='undefined' || !ISP_LATEST_POSTS.length) &&
+         typeof bloggerAllPostsJsonp==='function'){
+        const data=await bloggerAllPostsJsonp(20);
+        ISP_LATEST_POSTS=(data.feed?.entry||[]).map(entryToPost).map(function(post){
+          return Object.assign({},post,{moduleName:'Latest Articles',categoryTitle:'Latest'});
+        });
+      }
+    }catch(e){}
+    window.renderV291Ticker();
+  }
+
+  window.addEventListener('load',function(){
+    setTimeout(ensure,300);
+  });
+
+  if(typeof loadDashboard==='function'){
+    const OLD_LOAD_DASHBOARD_V294=loadDashboard;
+    loadDashboard=async function(){
+      await OLD_LOAD_DASHBOARD_V294();
+      setTimeout(ensure,220);
+    };
+  }
+})();

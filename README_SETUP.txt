@@ -1,28 +1,27 @@
-IAS Selection Point v29.3 - Continuous Ticker Hotfix
+IAS Selection Point v29.4 - Native Marquee Ticker
+
+This version replaces all previous ticker animation engines with the browser's
+native marquee movement for maximum compatibility.
 
 Fixed:
-- News ticker now continuously moves from right to left.
-- Uses requestAnimationFrame JavaScript engine instead of unreliable CSS animation.
-- Seamless loop with no visible jump.
-- Automatically starts after images and layout finish loading.
-- Re-measures after screen resize/orientation change.
-- Pauses on hover/touch and resumes automatically.
-- Post image, date, LATEST badge and title remain visible.
-- Clicking a ticker post opens it inside the portal Premium Reader.
+- News ticker continuously moves right to left.
+- Works in Chrome desktop and Chrome Android.
+- Automatically restarts after data loads.
+- Image, LATEST badge, date and title included.
+- Hover/touch pauses it; leaving resumes it.
+- Clicking any ticker post opens inside the portal Premium Reader.
+- It never redirects to the public Blogger website.
 
-GitHub minimum replacement:
-- app.js
-- style.css
-- dashboard.html
-- config.js
-- sw.js
-
-For complete consistency, upload every file from the ZIP.
+Minimum GitHub replacement:
+dashboard.html
+style.css
+app.js
+config.js
+sw.js
 
 After upload:
-1. Open portal with ?v=293
-2. Clear old GitHub Pages site data/service-worker cache if necessary.
-3. Reload once.
+Open with ?v=294.
+If an older version remains, clear site data for officialkaitsatnam.github.io
+and reload once.
 
-Apps Script:
-Code.gs replacement is optional because backend behavior is unchanged.
+Apps Script Code.gs change is optional.
