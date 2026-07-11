@@ -1,27 +1,31 @@
-IAS Selection Point v29.4 - Native Marquee Ticker
+IAS Selection Point v30 - Smooth Ticker + Smart Dashboard
 
-This version replaces all previous ticker animation engines with the browser's
-native marquee movement for maximum compatibility.
+Ticker improvements:
+- Speed reduced from scrollamount 4 to scrollamount 2.
+- Delay increased for smoother, easier-to-read movement.
+- Crisp font rendering and stable card layout.
+- Pause / Play button added.
+- Hover/touch pause retained.
+- Clicking a ticker article opens inside the portal reader.
 
-Fixed:
-- News ticker continuously moves right to left.
-- Works in Chrome desktop and Chrome Android.
-- Automatically restarts after data loads.
-- Image, LATEST badge, date and title included.
-- Hover/touch pauses it; leaving resumes it.
-- Clicking any ticker post opens inside the portal Premium Reader.
-- It never redirects to the public Blogger website.
+Smart Dashboard:
+- Continue Learning card.
+- Due revision count.
+- Personal notes count.
+- Quick access buttons.
 
-Minimum GitHub replacement:
+GitHub minimum replacement:
 dashboard.html
 style.css
 app.js
 config.js
 sw.js
 
-After upload:
-Open with ?v=294.
-If an older version remains, clear site data for officialkaitsatnam.github.io
-and reload once.
+For complete version consistency, upload all files from the ZIP.
 
-Apps Script Code.gs change is optional.
+After upload:
+Open portal with ?v=30.
+If old ticker remains, clear GitHub Pages site data/service-worker cache and reload.
+
+Apps Script:
+Code.gs replacement is optional.

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=294" />
+  <link rel="stylesheet" href="style.css?v=30" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v29.4 Native Marquee Ticker</div>
+  <div class="version-badge">v30 Smooth Ticker + Smart Dashboard</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -117,8 +117,8 @@
                    class="v294-native-marquee"
                    behavior="scroll"
                    direction="left"
-                   scrollamount="4"
-                   scrolldelay="20"
+                   scrollamount="2"
+                   scrolldelay="35"
                    truespeed
                    onmouseenter="this.stop()"
                    onmouseleave="this.start()"
@@ -127,7 +127,35 @@
             <span id="v294TickerContent">Latest articles are loading...</span>
           </marquee>
         </div>
+        <button id="v30TickerToggle" class="v30-ticker-toggle" type="button" onclick="toggleV30Ticker()">⏸</button>
       </div>
+
+      <section id="v30SmartDashboardStrip" class="v30-smart-strip">
+        <div class="v30-smart-card">
+          <span class="v30-smart-icon">📖</span>
+          <div>
+            <small>CONTINUE LEARNING</small>
+            <b id="v30ContinueTitle">Open an article to begin</b>
+          </div>
+          <button type="button" onclick="openV30ContinueLearning()">Resume</button>
+        </div>
+        <div class="v30-smart-card">
+          <span class="v30-smart-icon">🎯</span>
+          <div>
+            <small>REVISION DUE</small>
+            <b id="v30DueRevisionCount">0 items</b>
+          </div>
+          <button type="button" onclick="openDashSection('revisionCenterModule')">Review</button>
+        </div>
+        <div class="v30-smart-card">
+          <span class="v30-smart-icon">📝</span>
+          <div>
+            <small>PERSONAL NOTES</small>
+            <b id="v30NotesCount">0 notes</b>
+          </div>
+          <button type="button" onclick="openDashSection('notesCenterModule')">Open</button>
+        </div>
+      </section>
 
       <section id="overview" class="dash-section active">
         <div class="stats-grid-pro">
@@ -489,7 +517,7 @@
             </div>
             <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
           </div>
-          <div id="v29.4 Native Marquee Ticker" class="v29.4 Native Marquee Ticker"></div>
+          <div id="v30 Smooth Ticker + Smart Dashboard" class="v30 Smooth Ticker + Smart Dashboard"></div>
         </div>
       </section>
 
@@ -508,7 +536,7 @@
             <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
             <button onclick="setRevisionFilter('completed')">Completed</button>
           </div>
-          <div id="v29.4 Native Marquee Ticker" class="v29.4 Native Marquee Ticker"></div>
+          <div id="v30 Smooth Ticker + Smart Dashboard" class="v30 Smooth Ticker + Smart Dashboard"></div>
         </div>
       </section>
 
@@ -548,7 +576,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=294"></script>
-  <script src="app.js?v=294"></script>
+  <script src="config.js?v=30"></script>
+  <script src="app.js?v=30"></script>
 </body>
 </html>

@@ -3544,3 +3544,112 @@ if(typeof loadDashboard==='function'){
     };
   }
 })();
+
+
+/* ======================================================
+   v30 SMOOTH TICKER CONTROLS + SMART DASHBOARD
+   ====================================================== */
+let V30_TICKER_PAUSED=false;
+
+window.toggleV30Ticker=function(){
+  const marquee=document.getElementById('v294TickerMarquee');
+  const button=document.getElementById('v30TickerToggle');
+  if(!marquee)return;
+
+  if(V30_TICKER_PAUSED){
+    try{marquee.start()}catch(e){}
+    V30_TICKER_PAUSED=false;
+    if(button)button.textContent='⏸';
+    if(button)button.title='Pause ticker';
+  }else{
+    try{marquee.stop()}catch(e){}
+    V30_TICKER_PAUSED=true;
+    if(button)button.textContent='▶';
+    if(button)button.title='Play ticker';
+  }
+};
+
+function v30HistoryRows(){
+  try{
+    if(typeof v25GetHistory==='function')return v25GetHistory()||[];
+  }catch(e){}
+  try{
+    const key='isp_v25_history_'+((currentUser&&currentUser().email)||'guest');
+    return JSON.parse(localStorage.getItem(key)||'[]');
+  }catch(e){return []}
+}
+function v30RevisionRows(){
+  try{
+    if(typeof v28GetRevisions==='function')return v28GetRevisions()||[];
+  }catch(e){}
+  return [];
+}
+function v30NotesRows(){
+  try{
+    if(typeof v28GetNotes==='function')return v28GetNotes()||[];
+  }catch(e){}
+  return [];
+}
+window.renderV30SmartDashboard=function(){
+  const history=v30HistoryRows();
+  const revisions=v30RevisionRows();
+  const notes=v30NotesRows();
+
+  const continueTitle=document.getElementById('v30ContinueTitle');
+  const due=document.getElementById('v30DueRevisionCount');
+  const noteCount=document.getElementById('v30NotesCount');
+
+  if(continueTitle){
+    continueTitle.textContent=history.length?(history[0].title||'Continue reading'):'Open an article to begin';
+  }
+  if(due){
+    const count=revisions.filter(function(item){
+      if(item.status==='completed')return false;
+      return new Date(item.dueDate)<=new Date();
+    }).length;
+    due.textContent=count+' item'+(count===1?'':'s');
+  }
+  if(noteCount){
+    noteCount.textContent=notes.length+' note'+(notes.length===1?'':'s');
+  }
+};
+window.openV30ContinueLearning=function(){
+  const history=v30HistoryRows();
+  if(!history.length){
+    if(typeof toast==='function')toast('Open an article first');
+    else alert('Open an article first.');
+    return;
+  }
+  const item=history[0];
+  const posts=(typeof ISP_LOADED_POSTS!=='undefined'&&Array.isArray(ISP_LOADED_POSTS))?ISP_LOADED_POSTS:[];
+  const index=posts.findIndex(function(post){return post.title===item.title});
+  if(index>=0&&typeof openPostReader==='function'){
+    openPostReader(index);
+    return;
+  }
+  if(typeof openDashSection==='function'){
+    openDashSection('readingHistoryModule');
+  }
+};
+
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASHBOARD_V30=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASHBOARD_V30();
+    setTimeout(renderV30SmartDashboard,450);
+  };
+}
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V30=openDashSection;
+  openDashSection=function(id,button){
+    OLD_OPEN_DASH_V30(id,button);
+    setTimeout(renderV30SmartDashboard,80);
+  };
+}
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    const button=document.getElementById('v30TickerToggle');
+    if(button)button.title='Pause ticker';
+    renderV30SmartDashboard();
+  },600);
+});

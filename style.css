@@ -3736,3 +3736,120 @@ body.portal-dark .v294-native-date{
     font-size:12px;
   }
 }
+
+
+/* ======================================================
+   v30 SMOOTH TICKER + SMART DASHBOARD
+   ====================================================== */
+.v294-native-marquee,
+.v294-native-card,
+.v294-native-title,
+.v294-native-date,
+.v294-native-pill{
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  font-kerning:normal;
+}
+.v294-native-card{
+  transform:none!important;
+  contain:layout paint;
+}
+.v294-native-title{
+  letter-spacing:.01px;
+}
+.v30-ticker-toggle{
+  flex:0 0 44px;
+  width:44px;
+  border:0;
+  border-left:1px solid #dbe7f4;
+  background:#0f4f82;
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+}
+.v30-ticker-toggle:hover{
+  background:#0B5ED7;
+}
+.v30-smart-strip{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin:0 0 12px;
+}
+.v30-smart-card{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+  padding:13px 14px;
+  border:1px solid #dbe7f4;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 8px 22px rgba(15,35,65,.06);
+}
+.v30-smart-icon{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#eef6ff;
+  font-size:20px;
+}
+.v30-smart-card small{
+  display:block;
+  margin-bottom:3px;
+  color:#64748b;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.7px;
+}
+.v30-smart-card b{
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  color:#10233f;
+  font-size:13px;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.v30-smart-card button{
+  border:0;
+  border-radius:9px;
+  padding:8px 10px;
+  background:#0B5ED7;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+body.portal-dark .v30-smart-card{
+  background:#111827!important;
+  border-color:#334155!important;
+}
+body.portal-dark .v30-smart-card b{
+  color:#f8fafc!important;
+}
+body.portal-dark .v30-smart-card small{
+  color:#cbd5e1!important;
+}
+@media(max-width:900px){
+  .v30-smart-strip{
+    grid-template-columns:1fr;
+  }
+}
+@media(max-width:600px){
+  .v30-ticker-toggle{
+    width:36px;
+    flex-basis:36px;
+  }
+  .v30-smart-card{
+    grid-template-columns:auto 1fr;
+  }
+  .v30-smart-card button{
+    grid-column:1/-1;
+    width:100%;
+  }
+}
