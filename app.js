@@ -3653,3 +3653,281 @@ window.addEventListener('load',function(){
     renderV30SmartDashboard();
   },600);
 });
+
+
+/* ======================================================
+   v31 ENTERPRISE MOCK TEST ENGINE
+   ====================================================== */
+let V31_TESTS=[];
+let V31_ACTIVE_TEST=null;
+let V31_QUESTIONS=[];
+let V31_CURRENT_INDEX=0;
+let V31_ANSWERS={};
+let V31_REVIEW=new Set();
+let V31_TIMER=null;
+let V31_SECONDS_LEFT=0;
+
+function v31AttemptKey(testId){
+  return 'isp_v31_attempt_'+((currentUser&&currentUser().email)||'guest')+'_'+testId;
+}
+function v31ResultsKey(){
+  return 'isp_v31_results_'+((currentUser&&currentUser().email)||'guest');
+}
+function v31GetLocalResults(){
+  try{return JSON.parse(localStorage.getItem(v31ResultsKey())||'[]')}catch(e){return []}
+}
+function v31SaveLocalResults(rows){
+  localStorage.setItem(v31ResultsKey(),JSON.stringify(rows.slice(0,100)));
+}
+
+window.loadV31Tests=async function(){
+  const box=document.getElementById('v31TestsList');if(!box)return;
+  box.innerHTML='<p class="muted">Loading tests...</p>';
+  const r=await api('listPublishedTests',{token:token()});
+  if(!r.success){box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;return}
+  V31_TESTS=r.tests||[];
+  if(!V31_TESTS.length){box.innerHTML='<p class="muted">No published tests available.</p>';return}
+  box.innerHTML=V31_TESTS.map(t=>`<div class="v31-test-card">
+    <h4>${escapeHtml(t.title)}</h4>
+    <p>${escapeHtml(t.description||'Practice mock test')}</p>
+    <div class="v31-test-meta">
+      <span>${escapeHtml(t.category||'General')}</span>
+      <span>${t.duration} min</span>
+      <span>${t.questionCount} questions</span>
+    </div>
+    <button onclick="startV31Test('${escapeAttr(t.id)}')">Start Test</button>
+  </div>`).join('');
+};
+
+window.startV31Test=async function(testId){
+  const test=V31_TESTS.find(x=>x.id===testId);
+  if(!test)return;
+  showLoader('Loading test...','Preparing questions');
+  const r=await api('getTestQuestions',{token:token(),testId});
+  hideLoader();
+  if(!r.success)return alert(r.message);
+  V31_ACTIVE_TEST=test;
+  V31_QUESTIONS=r.questions||[];
+  if(!V31_QUESTIONS.length)return alert('No questions added to this test.');
+
+  let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(v31AttemptKey(testId))||'null')}catch(e){}
+  V31_ANSWERS=saved?.answers||{};
+  V31_REVIEW=new Set(saved?.review||[]);
+  V31_CURRENT_INDEX=Math.min(saved?.currentIndex||0,V31_QUESTIONS.length-1);
+  V31_SECONDS_LEFT=saved?.secondsLeft||Number(test.duration||10)*60;
+
+  document.getElementById('v31ExamTitle').textContent=test.title;
+  openDashSection('v31ExamModule');
+  renderV31Question();
+  renderV31Palette();
+  startV31Timer();
+};
+
+function saveV31Attempt(){
+  if(!V31_ACTIVE_TEST)return;
+  localStorage.setItem(v31AttemptKey(V31_ACTIVE_TEST.id),JSON.stringify({
+    answers:V31_ANSWERS,
+    review:Array.from(V31_REVIEW),
+    currentIndex:V31_CURRENT_INDEX,
+    secondsLeft:V31_SECONDS_LEFT
+  }));
+}
+function startV31Timer(){
+  clearInterval(V31_TIMER);
+  updateV31TimerText();
+  V31_TIMER=setInterval(()=>{
+    V31_SECONDS_LEFT--;
+    updateV31TimerText();
+    saveV31Attempt();
+    if(V31_SECONDS_LEFT<=0){
+      clearInterval(V31_TIMER);
+      submitV31Test(true);
+    }
+  },1000);
+}
+function updateV31TimerText(){
+  const m=Math.floor(Math.max(0,V31_SECONDS_LEFT)/60);
+  const s=Math.max(0,V31_SECONDS_LEFT)%60;
+  const el=document.getElementById('v31TimerText');
+  if(el)el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function renderV31Question(){
+  const q=V31_QUESTIONS[V31_CURRENT_INDEX];if(!q)return;
+  document.getElementById('v31QuestionNumber').textContent=`Question ${V31_CURRENT_INDEX+1} of ${V31_QUESTIONS.length}`;
+  document.getElementById('v31QuestionText').textContent=q.question;
+  document.getElementById('v31QuestionStatus').textContent=V31_REVIEW.has(q.id)?'Marked for Review':(V31_ANSWERS[q.id]?'Answered':'Not Answered');
+  const options=['A','B','C','D'];
+  document.getElementById('v31OptionsList').innerHTML=options.map(key=>`<label class="v31-option ${V31_ANSWERS[q.id]===key?'selected':''}">
+    <input type="radio" name="v31Option" value="${key}" ${V31_ANSWERS[q.id]===key?'checked':''} onchange="selectV31Answer('${escapeAttr(q.id)}','${key}')">
+    <span><b>${key}.</b> ${escapeHtml(q['option'+key]||'')}</span>
+  </label>`).join('');
+  renderV31Palette();
+}
+window.selectV31Answer=function(questionId,option){
+  V31_ANSWERS[questionId]=option;
+  saveV31Attempt();
+  renderV31Question();
+};
+window.v31PreviousQuestion=function(){if(V31_CURRENT_INDEX>0){V31_CURRENT_INDEX--;renderV31Question();saveV31Attempt()}};
+window.v31NextQuestion=function(){if(V31_CURRENT_INDEX<V31_QUESTIONS.length-1){V31_CURRENT_INDEX++;renderV31Question();saveV31Attempt()}};
+window.v31ClearResponse=function(){
+  const q=V31_QUESTIONS[V31_CURRENT_INDEX];if(!q)return;
+  delete V31_ANSWERS[q.id];saveV31Attempt();renderV31Question();
+};
+window.v31MarkForReview=function(){
+  const q=V31_QUESTIONS[V31_CURRENT_INDEX];if(!q)return;
+  if(V31_REVIEW.has(q.id))V31_REVIEW.delete(q.id);else V31_REVIEW.add(q.id);
+  saveV31Attempt();renderV31Question();
+};
+function renderV31Palette(){
+  const box=document.getElementById('v31QuestionPalette');if(!box)return;
+  box.innerHTML=V31_QUESTIONS.map((q,i)=>{
+    let cls='';
+    if(V31_REVIEW.has(q.id))cls='review';
+    else if(V31_ANSWERS[q.id])cls='answered';
+    if(i===V31_CURRENT_INDEX)cls+=' current';
+    return `<button class="${cls}" onclick="V31_CURRENT_INDEX=${i};renderV31Question();saveV31Attempt()">${i+1}</button>`;
+  }).join('');
+}
+window.submitV31Test=async function(autoSubmit){
+  if(!V31_ACTIVE_TEST)return;
+  if(!autoSubmit&&!confirm('Submit this test now?'))return;
+  clearInterval(V31_TIMER);
+
+  const result=calculateV31Result();
+  localStorage.removeItem(v31AttemptKey(V31_ACTIVE_TEST.id));
+  const rows=v31GetLocalResults();
+  rows.unshift(result);
+  v31SaveLocalResults(rows);
+
+  try{
+    await api('submitTestResult',{token:token(),result});
+  }catch(e){}
+
+  renderV31Result(result);
+  openDashSection('v31ResultModule');
+  renderV31MyResults();
+};
+function calculateV31Result(){
+  let correct=0,wrong=0,unanswered=0;
+  const review=[];
+  V31_QUESTIONS.forEach(q=>{
+    const answer=V31_ANSWERS[q.id]||'';
+    if(!answer)unanswered++;
+    else if(answer===q.correctOption)correct++;
+    else wrong++;
+    review.push({
+      question:q.question,
+      selected:answer,
+      correct:q.correctOption,
+      explanation:q.explanation||'',
+      isCorrect:answer===q.correctOption
+    });
+  });
+  const score=correct*Number(V31_ACTIVE_TEST.positiveMarks||1)-wrong*Number(V31_ACTIVE_TEST.negativeMarks||0);
+  const maxScore=V31_QUESTIONS.length*Number(V31_ACTIVE_TEST.positiveMarks||1);
+  const percentage=maxScore?Math.max(0,Math.round((score/maxScore)*100)):0;
+  return {
+    id:'RES_'+Date.now(),
+    testId:V31_ACTIVE_TEST.id,
+    testTitle:V31_ACTIVE_TEST.title,
+    correct,wrong,unanswered,score:Number(score.toFixed(2)),
+    maxScore:Number(maxScore.toFixed(2)),
+    percentage,
+    passed:score>=Number(V31_ACTIVE_TEST.passingMarks||0),
+    timeTaken:Number(V31_ACTIVE_TEST.duration||10)*60-V31_SECONDS_LEFT,
+    submittedAt:new Date().toISOString(),
+    review
+  };
+}
+function renderV31Result(r){
+  document.getElementById('v31ResultTitle').textContent=r.passed?'Congratulations! Test Passed':'Test Completed';
+  document.getElementById('v31ResultSummary').textContent=`You scored ${r.score} out of ${r.maxScore} (${r.percentage}%).`;
+  document.getElementById('v31ScoreStat').textContent=r.score+'/'+r.maxScore;
+  document.getElementById('v31CorrectStat').textContent=r.correct;
+  document.getElementById('v31WrongStat').textContent=r.wrong;
+  document.getElementById('v31UnansweredStat').textContent=r.unanswered;
+  document.getElementById('v31AnswerReview').innerHTML=r.review.map((x,i)=>`<div class="v31-review-item ${x.isCorrect?'correct':'wrong'}">
+    <b>Q${i+1}. ${escapeHtml(x.question)}</b>
+    <p>Your Answer: ${escapeHtml(x.selected||'Not Answered')} | Correct: ${escapeHtml(x.correct)}</p>
+    ${x.explanation?`<small>${escapeHtml(x.explanation)}</small>`:''}
+  </div>`).join('');
+}
+window.renderV31MyResults=function(){
+  const box=document.getElementById('v31ResultsList');if(!box)return;
+  const rows=v31GetLocalResults();
+  if(!rows.length){box.innerHTML='<p class="muted">No test attempts yet.</p>';return}
+  box.innerHTML=rows.map(r=>`<div class="v31-result-row">
+    <div><b>${escapeHtml(r.testTitle)}</b><small>${escapeHtml(new Date(r.submittedAt).toLocaleString())}</small></div>
+    <strong>${r.score}/${r.maxScore}</strong>
+    <span>${r.percentage}%</span>
+  </div>`).join('');
+};
+
+/* Admin Exam Management */
+let V31_ADMIN_TESTS=[];
+window.loadV31AdminTests=async function(){
+  const r=await api('adminListTests',{token:token()});
+  if(!r.success)return;
+  V31_ADMIN_TESTS=r.tests||[];
+  const select=document.getElementById('v31AdminQuestionTest');
+  if(select)select.innerHTML=V31_ADMIN_TESTS.map(t=>`<option value="${escapeAttr(t.id)}">${escapeHtml(t.title)}</option>`).join('');
+  const box=document.getElementById('v31AdminTestsList');
+  if(box)box.innerHTML=V31_ADMIN_TESTS.length?V31_ADMIN_TESTS.map(t=>`<div class="v31-admin-test-row">
+    <div><b>${escapeHtml(t.title)}</b><small>${escapeHtml(t.category||'')} · ${t.questionCount} questions</small></div>
+    <span>${escapeHtml(t.status)}</span>
+    <button onclick="toggleV31TestPublish('${escapeAttr(t.id)}','${t.status==='Published'?'Draft':'Published'}')">${t.status==='Published'?'Unpublish':'Publish'}</button>
+  </div>`).join(''):'<p class="muted">No tests created.</p>';
+};
+window.createV31AdminTest=async function(){
+  const payload={
+    title:document.getElementById('v31AdminTestTitle')?.value.trim(),
+    category:document.getElementById('v31AdminTestCategory')?.value.trim(),
+    duration:Number(document.getElementById('v31AdminTestDuration')?.value||10),
+    positiveMarks:Number(document.getElementById('v31AdminPositiveMarks')?.value||1),
+    negativeMarks:Number(document.getElementById('v31AdminNegativeMarks')?.value||0),
+    passingMarks:Number(document.getElementById('v31AdminPassingMarks')?.value||0),
+    description:document.getElementById('v31AdminTestDescription')?.value.trim()
+  };
+  if(!payload.title)return showSmall('v31AdminTestMsg','Test title required.',false);
+  const r=await api('adminCreateTest',{token:token(),...payload});
+  showSmall('v31AdminTestMsg',r.message,r.success);
+  if(r.success)loadV31AdminTests();
+};
+window.addV31AdminQuestion=async function(){
+  const payload={
+    testId:document.getElementById('v31AdminQuestionTest')?.value,
+    question:document.getElementById('v31AdminQuestionText')?.value.trim(),
+    optionA:document.getElementById('v31OptionA')?.value.trim(),
+    optionB:document.getElementById('v31OptionB')?.value.trim(),
+    optionC:document.getElementById('v31OptionC')?.value.trim(),
+    optionD:document.getElementById('v31OptionD')?.value.trim(),
+    correctOption:document.getElementById('v31CorrectOption')?.value,
+    explanation:document.getElementById('v31Explanation')?.value.trim()
+  };
+  if(!payload.testId||!payload.question||!payload.optionA||!payload.optionB)return showSmall('v31AdminQuestionMsg','Test, question and options required.',false);
+  const r=await api('adminAddQuestion',{token:token(),...payload});
+  showSmall('v31AdminQuestionMsg',r.message,r.success);
+  if(r.success)loadV31AdminTests();
+};
+window.toggleV31TestPublish=async function(testId,status){
+  const r=await api('adminUpdateTestStatus',{token:token(),testId,status});
+  if(r.success)loadV31AdminTests();else alert(r.message);
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V31=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V31(id,btn);
+    if(id==='mockTestsModule')loadV31Tests();
+    if(id==='myResultsModule')renderV31MyResults();
+  };
+}
+if(typeof openAdminSection==='function'){
+  const OLD_OPEN_ADMIN_V31=openAdminSection;
+  openAdminSection=function(id,btn){
+    OLD_OPEN_ADMIN_V31(id,btn);
+    if(id==='adminExamManager')loadV31AdminTests();
+  };
+}

@@ -1,31 +1,58 @@
-IAS Selection Point v30 - Smooth Ticker + Smart Dashboard
+IAS Selection Point v31 - Enterprise Mock Test Engine
 
-Ticker improvements:
-- Speed reduced from scrollamount 4 to scrollamount 2.
-- Delay increased for smoother, easier-to-read movement.
-- Crisp font rendering and stable card layout.
-- Pause / Play button added.
-- Hover/touch pause retained.
-- Clicking a ticker article opens inside the portal reader.
+Student features:
+- Mock Tests module
+- Published test list
+- Countdown timer
+- Previous / Next
+- Question palette
+- Answered / Unanswered / Mark for Review
+- Clear Response
+- Auto-save answers
+- Resume interrupted test
+- Auto-submit when time ends
+- Instant result
+- Correct / Wrong / Unanswered / Score / Percentage
+- Answer review with explanation
+- My Results section
 
-Smart Dashboard:
-- Continue Learning card.
-- Due revision count.
-- Personal notes count.
-- Quick access buttons.
+Admin features:
+- Exam Management
+- Create test
+- Duration
+- Positive marks
+- Negative marks
+- Passing marks
+- Add MCQ questions
+- Correct option
+- Explanation
+- Publish / Unpublish
+- Question count
 
-GitHub minimum replacement:
+New Google Sheet tabs:
+TESTS
+QUESTIONS
+TEST_ATTEMPTS
+TEST_RESULTS
+
+GitHub upload/replace:
+index.html
 dashboard.html
+admin.html
 style.css
 app.js
 config.js
+logo.jpg
+manifest.webmanifest
 sw.js
-
-For complete version consistency, upload all files from the ZIP.
-
-After upload:
-Open portal with ?v=30.
-If old ticker remains, clear GitHub Pages site data/service-worker cache and reload.
+offline.html
 
 Apps Script:
-Code.gs replacement is optional.
+1. Replace Code.gs
+2. Save
+3. Run initializeSystem once
+4. Deploy > Manage deployments > Edit > New version > Deploy
+5. Refresh Google Sheet and portal
+
+Open:
+https://officialkaitsatnam.github.io/IAS-Selection-Point-/?v=31
