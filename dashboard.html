@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=28" />
+  <link rel="stylesheet" href="style.css?v=29" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v28 PWA + Notes + Revision</div>
+  <div class="version-badge">v29 Enterprise Dashboard</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -70,7 +70,6 @@
         <button onclick="openDashSection('library', this)">📖 My Library</button>
         <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
         <button onclick="openDashSection('notes', this)">📝 Notes</button>
-        <button onclick="openDashSection('notificationsModule', this)">🔔 Notifications</button>
         <button onclick="openDashSection('profile', this)">👤 Profile</button>
         <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
         <button onclick="openDashSection('performanceModule', this)">📊 My Performance</button>
@@ -92,12 +91,11 @@
         </div>
         <div class="header-actions">
           <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
-          <button class="header-bell-btn" id="headerBellBtn" onclick="openDashSection('notificationsModule')">🔔<span id="notificationBadge">0</span></button>
           <button id="installAppBtn" class="install-app-btn" onclick="installPortalApp()" style="display:none;">📲 Install App</button>
           <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
           <div class="admin-chip">Professional Study Member</div>
         </div>
-      </header>
+      </header><div class="v29-news-ticker"><span class="v29-ticker-label">⚡ Latest</span><div class="v29-ticker-window"><div id="v29NewsTicker" class="v29-ticker-track">Loading latest articles...</div></div></div>
 
       <section id="overview" class="dash-section active">
         <div class="stats-grid-pro">
@@ -124,12 +122,6 @@
             <div class="progress-track"><span id="dailyProgressBar"></span></div>
             <p id="dailyProgressText" class="muted">0 articles read today.</p>
           </div>
-          <div class="pro-panel notification-preview">
-            <div class="panel-head">
-              <h3>🔔 Notifications</h3>
-              <button class="mini-btn" onclick="openDashSection('notificationsModule')">View All</button>
-            </div>
-            <div id="notificationPreviewBox" class="notice-preview">No new notification.</div>
           </div>
         </div>
 
@@ -255,7 +247,7 @@
 
       <section id="profile" class="dash-section">
         <div class="pro-panel">
-          <h3>👤 My Profile</h3>
+          <h3>👤 Professional Profile</h3><div class="v29-profile-hero"><div class="v29-avatar-wrap"><img id="v29ProfilePhoto" src="logo.jpg" alt="Profile photo"><label class="v29-photo-button">📷 Change Photo<input id="v29PhotoInput" type="file" accept="image/*" onchange="handleV29ProfilePhoto(event)"></label></div><div class="v29-profile-main"><h2 id="v29ProfileNameDisplay">Member</h2><p id="v29ProfileEmailDisplay"></p><div class="v29-completion-row"><span>Profile Completion</span><b id="v29CompletionText">0%</b></div><div class="v29-completion-track"><span id="v29CompletionBar"></span></div></div></div>
           <div id="profileSummaryCard" class="profile-summary-card">
             <b>Complete your profile</b>
             <span>Target exam, city, subject and WhatsApp number help admin send better updates.</span>
@@ -279,7 +271,7 @@
             <input id="profileGoal" placeholder="Daily study goal" />
             <textarea id="profileBio" placeholder="Short bio / preparation note"></textarea>
           </div>
-          <button class="primary-btn" onclick="saveProfile()">Save Profile</button>
+          <div class="form-grid v29-profile-grid"><input id="v29Dob" type="date" aria-label="Date of birth"><select id="v29Gender"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select><input id="v29State" placeholder="State"><input id="v29District" placeholder="District"><input id="v29Qualification" placeholder="Qualification"><input id="v29Occupation" placeholder="Occupation"><input id="v29Language" placeholder="Preferred language"><input id="v29Address" placeholder="Address"><input id="v29Website" placeholder="Website / social profile"></div><button class="primary-btn" onclick="saveV29ProfessionalProfile()">Save Professional Profile</button>
           <p id="profileMsg" class="small-msg"></p>
         </div>
       </section>
@@ -429,7 +421,7 @@
             </div>
             <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
           </div>
-          <div id="v28NotesList" class="v28-notes-list"></div>
+          <div id="v29 Enterprise Dashboard" class="v29 Enterprise Dashboard"></div>
         </div>
       </section>
 
@@ -448,7 +440,7 @@
             <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
             <button onclick="setRevisionFilter('completed')">Completed</button>
           </div>
-          <div id="v28RevisionList" class="v28-revision-list"></div>
+          <div id="v29 Enterprise Dashboard" class="v29 Enterprise Dashboard"></div>
         </div>
       </section>
 
@@ -488,7 +480,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=28"></script>
-  <script src="app.js?v=28"></script>
+  <script src="config.js?v=29"></script>
+  <script src="app.js?v=29"></script>
 </body>
 </html>
