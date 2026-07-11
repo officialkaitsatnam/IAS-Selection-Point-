@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=311" />
+  <link rel="stylesheet" href="style.css?v=312" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v31.1 Exam Management Stable</div>
+  <div class="version-badge">v31.2 Question Manager + Fast Loading</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -272,7 +272,7 @@
             </div>
             <label>Description</label>
             <textarea id="v31AdminTestDescription" placeholder="Short test instructions or description"></textarea>
-            <button class="primary-btn" onclick="createV31AdminTest()">Create Test</button>
+            <button id="v312CreateTestBtn" class="primary-btn" onclick="createV312AdminTest()">Create Test</button>
             <p id="v31AdminTestMsg" class="small-msg"></p>
           </div>
 
@@ -295,8 +295,12 @@
             </select>
             <label>Explanation</label>
             <textarea id="v31Explanation" placeholder="Explain why the answer is correct"></textarea>
-            <button class="primary-btn" onclick="addV31AdminQuestion()">Add Question</button>
+            <button id="v312AddQuestionBtn" class="primary-btn" onclick="addV312AdminQuestion()">Add Question</button>
             <p id="v31AdminQuestionMsg" class="small-msg"></p>
+            <div id="v312QuestionPreview" class="v312-question-preview">
+              <b>Question Manager</b>
+              <span>Select a test and add questions. The form clears automatically after a successful save.</span>
+            </div>
           </div>
         </div>
 
@@ -425,7 +429,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=311"></script>
-  <script src="app.js?v=311"></script>
+  <script src="config.js?v=312"></script>
+  <script src="app.js?v=312"></script>
 </body>
 </html>

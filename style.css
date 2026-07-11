@@ -4130,3 +4130,71 @@ body.portal-dark #adminExamManager .pro-panel label{
     grid-template-columns:1fr;
   }
 }
+
+
+/* ======================================================
+   v31.2 QUESTION MANAGER + FAST LOADING
+   ====================================================== */
+#v312CreateTestBtn,
+#v312AddQuestionBtn{
+  position:relative;
+  min-height:44px;
+  transition:opacity .15s ease,transform .15s ease;
+}
+#v312CreateTestBtn:disabled,
+#v312AddQuestionBtn:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+  transform:none!important;
+}
+.v312-button-loading::after{
+  content:"";
+  display:inline-block;
+  width:14px;
+  height:14px;
+  margin-left:9px;
+  vertical-align:-2px;
+  border:2px solid currentColor;
+  border-right-color:transparent;
+  border-radius:50%;
+  animation:v312Spin .7s linear infinite;
+}
+@keyframes v312Spin{to{transform:rotate(360deg)}}
+.v312-question-preview{
+  display:grid;
+  gap:3px;
+  margin-top:12px;
+  padding:11px 12px;
+  border:1px solid #dbeafe;
+  border-radius:12px;
+  background:#eff6ff;
+}
+.v312-question-preview b{
+  color:#1d4ed8;
+}
+.v312-question-preview span{
+  color:#475569;
+  font-size:12px;
+  line-height:1.45;
+}
+.v312-fast-toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:70000;
+  max-width:min(390px,calc(100vw - 36px));
+  padding:11px 14px;
+  border-radius:12px;
+  background:#10233f;
+  color:#fff;
+  box-shadow:0 16px 40px rgba(0,0,0,.25);
+  font-weight:850;
+}
+.v312-fast-toast.success{background:#116B36}
+.v312-fast-toast.error{background:#B91C1C}
+body.portal-dark .v312-question-preview{
+  background:#172033!important;
+  border-color:#334155!important;
+}
+body.portal-dark .v312-question-preview b{color:#93c5fd!important}
+body.portal-dark .v312-question-preview span{color:#cbd5e1!important}

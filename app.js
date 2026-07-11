@@ -4044,3 +4044,248 @@ window.loadV31Tests=async function(){
     <button onclick="startV31Test('${escapeAttr(t.id)}')">Start Test</button>
   </div>`).join('');
 };
+
+
+/* ======================================================
+   v31.2 QUESTION MANAGER + FAST REQUEST CONTROLS
+   ====================================================== */
+const V312_PENDING_ACTIONS = new Set();
+
+function v312Toast(message,type='success'){
+  const old=document.querySelector('.v312-fast-toast');
+  if(old)old.remove();
+  const el=document.createElement('div');
+  el.className='v312-fast-toast '+type;
+  el.textContent=message;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2600);
+}
+
+async function v312Api(action,payload={},timeoutMs=15000){
+  let timer;
+  try{
+    return await Promise.race([
+      api(action,payload),
+      new Promise((_,reject)=>{
+        timer=setTimeout(()=>reject(new Error('Request timed out. Please check internet or Apps Script deployment.')),timeoutMs);
+      })
+    ]);
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+function v312SetButton(buttonId,loading,loadingText,normalText){
+  const btn=document.getElementById(buttonId);
+  if(!btn)return;
+  btn.disabled=loading;
+  btn.classList.toggle('v312-button-loading',loading);
+  btn.textContent=loading?loadingText:normalText;
+}
+
+function v312ClearQuestionForm(){
+  ['v31AdminQuestionText','v31OptionA','v31OptionB','v31OptionC','v31OptionD','v31Explanation']
+    .forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.value='';
+    });
+  const correct=document.getElementById('v31CorrectOption');
+  if(correct)correct.value='A';
+  const question=document.getElementById('v31AdminQuestionText');
+  if(question)question.focus();
+}
+
+window.createV312AdminTest=async function(){
+  if(V312_PENDING_ACTIONS.has('createTest'))return;
+  const payload={
+    title:document.getElementById('v31AdminTestTitle')?.value.trim(),
+    category:document.getElementById('v31AdminTestCategory')?.value.trim(),
+    duration:Number(document.getElementById('v31AdminTestDuration')?.value||10),
+    positiveMarks:Number(document.getElementById('v31AdminPositiveMarks')?.value||1),
+    negativeMarks:Number(document.getElementById('v31AdminNegativeMarks')?.value||0),
+    passingMarks:Number(document.getElementById('v31AdminPassingMarks')?.value||0),
+    description:document.getElementById('v31AdminTestDescription')?.value.trim()
+  };
+
+  if(!payload.title){
+    showSmall('v31AdminTestMsg','Test title is required.',false);
+    document.getElementById('v31AdminTestTitle')?.focus();
+    return;
+  }
+  if(payload.duration<1){
+    showSmall('v31AdminTestMsg','Duration must be at least 1 minute.',false);
+    return;
+  }
+
+  V312_PENDING_ACTIONS.add('createTest');
+  v312SetButton('v312CreateTestBtn',true,'Creating...','Create Test');
+  showSmall('v31AdminTestMsg','Creating test...',true);
+
+  try{
+    const r=await v312Api('adminCreateTest',{token:token(),...payload},15000);
+    showSmall('v31AdminTestMsg',r.message,r.success);
+    if(r.success){
+      v312Toast('Test created successfully');
+      document.getElementById('v31AdminTestTitle').value='';
+      document.getElementById('v31AdminTestDescription').value='';
+      await loadV312AdminTestsFast();
+    }
+  }catch(error){
+    showSmall('v31AdminTestMsg',error.message,false);
+    v312Toast(error.message,'error');
+  }finally{
+    V312_PENDING_ACTIONS.delete('createTest');
+    v312SetButton('v312CreateTestBtn',false,'Creating...','Create Test');
+  }
+};
+
+window.addV312AdminQuestion=async function(){
+  if(V312_PENDING_ACTIONS.has('addQuestion'))return;
+
+  const payload={
+    testId:document.getElementById('v31AdminQuestionTest')?.value,
+    question:document.getElementById('v31AdminQuestionText')?.value.trim(),
+    optionA:document.getElementById('v31OptionA')?.value.trim(),
+    optionB:document.getElementById('v31OptionB')?.value.trim(),
+    optionC:document.getElementById('v31OptionC')?.value.trim(),
+    optionD:document.getElementById('v31OptionD')?.value.trim(),
+    correctOption:document.getElementById('v31CorrectOption')?.value||'A',
+    explanation:document.getElementById('v31Explanation')?.value.trim()
+  };
+
+  if(!payload.testId){
+    showSmall('v31AdminQuestionMsg','Create or select a test first.',false);
+    return;
+  }
+  if(!payload.question){
+    showSmall('v31AdminQuestionMsg','Question text is required.',false);
+    document.getElementById('v31AdminQuestionText')?.focus();
+    return;
+  }
+  if(!payload.optionA||!payload.optionB||!payload.optionC||!payload.optionD){
+    showSmall('v31AdminQuestionMsg','All four options are required.',false);
+    return;
+  }
+
+  V312_PENDING_ACTIONS.add('addQuestion');
+  v312SetButton('v312AddQuestionBtn',true,'Saving...','Add Question');
+  showSmall('v31AdminQuestionMsg','Saving question...',true);
+
+  try{
+    const r=await v312Api('adminAddQuestion',{token:token(),...payload},15000);
+    showSmall('v31AdminQuestionMsg',r.message,r.success);
+    if(r.success){
+      v312Toast('Question added successfully');
+      v312ClearQuestionForm();
+      await loadV312AdminTestsFast(payload.testId);
+    }
+  }catch(error){
+    showSmall('v31AdminQuestionMsg',error.message,false);
+    v312Toast(error.message,'error');
+  }finally{
+    V312_PENDING_ACTIONS.delete('addQuestion');
+    v312SetButton('v312AddQuestionBtn',false,'Saving...','Add Question');
+  }
+};
+
+window.loadV312AdminTestsFast=async function(keepSelectedTestId=''){
+  const box=document.getElementById('v31AdminTestsList');
+  if(box&&!box.children.length)box.innerHTML='<p class="muted">Loading tests...</p>';
+
+  try{
+    const r=await v312Api('adminListTests',{token:token()},12000);
+    if(!r.success){
+      if(box)box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+      return;
+    }
+
+    V31_ADMIN_TESTS=r.tests||[];
+    const select=document.getElementById('v31AdminQuestionTest');
+    const previous=keepSelectedTestId||select?.value||'';
+
+    if(select){
+      select.innerHTML=V31_ADMIN_TESTS.length
+        ?V31_ADMIN_TESTS.map(t=>`<option value="${escapeAttr(t.id)}">${escapeHtml(t.title)} (${t.questionCount} questions)</option>`).join('')
+        :'<option value="">Create a test first</option>';
+      if(previous&&V31_ADMIN_TESTS.some(t=>t.id===previous))select.value=previous;
+    }
+
+    if(!box)return;
+    if(!V31_ADMIN_TESTS.length){
+      box.innerHTML='<div class="v311-member-test-help"><b>No tests created yet.</b><span>Create a test above or use Create Demo Test.</span></div>';
+      return;
+    }
+
+    box.innerHTML=V31_ADMIN_TESTS.map(t=>`<div class="v31-admin-test-row">
+      <div>
+        <b>${escapeHtml(t.title)}</b>
+        <small>${escapeHtml(t.category||'General')} · ${t.questionCount} question${t.questionCount===1?'':'s'} · ${t.duration} min</small>
+      </div>
+      <span>${escapeHtml(t.status)}</span>
+      <div class="v31-admin-row-actions">
+        <button onclick="toggleV31TestPublish('${escapeAttr(t.id)}','${t.status==='Published'?'Draft':'Published'}')">${t.status==='Published'?'Unpublish':'Publish'}</button>
+        <button onclick="editV311Test('${escapeAttr(t.id)}')">Edit</button>
+        <button class="danger" onclick="deleteV311Test('${escapeAttr(t.id)}')">Delete</button>
+      </div>
+    </div>`).join('');
+  }catch(error){
+    if(box)box.innerHTML=`<p class="muted">${escapeHtml(error.message)}</p>`;
+    v312Toast(error.message,'error');
+  }
+};
+
+window.loadV31AdminTests=loadV312AdminTestsFast;
+
+/* Faster member-side test loading with timeout and cached fallback */
+window.loadV31Tests=async function(){
+  const box=document.getElementById('v31TestsList');if(!box)return;
+  box.innerHTML='<p class="muted">Loading published tests...</p>';
+
+  try{
+    const r=await v312Api('listPublishedTests',{token:token()},12000);
+    if(!r.success){
+      box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+      return;
+    }
+    V31_TESTS=r.tests||[];
+    try{localStorage.setItem('isp_v312_tests_cache',JSON.stringify(V31_TESTS))}catch(e){}
+
+    if(!V31_TESTS.length){
+      box.innerHTML=`<div class="v311-member-test-help">
+        <b>No published tests available.</b>
+        <span>Admin must create a test, add questions and publish it.</span>
+      </div>`;
+      return;
+    }
+
+    box.innerHTML=V31_TESTS.map(t=>`<div class="v31-test-card">
+      <h4>${escapeHtml(t.title)}</h4>
+      <p>${escapeHtml(t.description||'Practice mock test')}</p>
+      <div class="v31-test-meta">
+        <span>${escapeHtml(t.category||'General')}</span>
+        <span>${t.duration} min</span>
+        <span>${t.questionCount} questions</span>
+      </div>
+      <button onclick="startV31Test('${escapeAttr(t.id)}')">Start Test</button>
+    </div>`).join('');
+  }catch(error){
+    let cached=[];
+    try{cached=JSON.parse(localStorage.getItem('isp_v312_tests_cache')||'[]')}catch(e){}
+    if(cached.length){
+      V31_TESTS=cached;
+      box.innerHTML=cached.map(t=>`<div class="v31-test-card">
+        <h4>${escapeHtml(t.title)}</h4>
+        <p>${escapeHtml(t.description||'Practice mock test')}</p>
+        <div class="v31-test-meta">
+          <span>${escapeHtml(t.category||'General')}</span>
+          <span>${t.duration} min</span>
+          <span>${t.questionCount} questions</span>
+        </div>
+        <button onclick="startV31Test('${escapeAttr(t.id)}')">Start Test</button>
+      </div>`).join('');
+      v312Toast('Showing cached tests. Server response was slow.','error');
+    }else{
+      box.innerHTML=`<p class="muted">${escapeHtml(error.message)}</p>`;
+    }
+  }
+};
