@@ -4526,3 +4526,106 @@ window.startV31Test=window.startV313Test;
     },18000);
   };
 })();
+
+
+/* ======================================================
+   v31.4 FINAL MOCK TEST NAVIGATION + SYNC FIX
+   ====================================================== */
+(function(){
+  let testsRequestId=0;
+
+  async function loadTestsFinal(){
+    const box=document.getElementById('v31TestsList');
+    if(!box)return;
+    const requestId=++testsRequestId;
+    box.innerHTML='<div class="v314-test-loading">Loading published tests...</div>';
+
+    try{
+      const response=await v312Api('listPublishedTests',{token:token()},12000);
+      if(requestId!==testsRequestId)return;
+      if(!response||!response.success){
+        throw new Error(response?.message||'Unable to load mock tests.');
+      }
+
+      V31_TESTS=Array.isArray(response.tests)?response.tests:[];
+      try{localStorage.setItem('isp_v314_tests_cache',JSON.stringify({time:Date.now(),tests:V31_TESTS}))}catch(e){}
+
+      if(!V31_TESTS.length){
+        box.innerHTML=`<div class="v311-member-test-help">
+          <b>No published tests available.</b>
+          <span>Admin must create a test, add questions and publish it.</span>
+        </div>`;
+        return;
+      }
+
+      box.innerHTML=V31_TESTS.map(function(t){
+        const count=Number(t.questionCount||0);
+        return `<div class="v31-test-card">
+          <h4>${escapeHtml(t.title)}</h4>
+          <p>${escapeHtml(t.description||'Practice mock test')}</p>
+          <div class="v31-test-meta">
+            <span>${escapeHtml(t.category||'General')}</span>
+            <span>${Number(t.duration||10)} min</span>
+            <span>${count} question${count===1?'':'s'}</span>
+          </div>
+          <button class="v313-start-test-btn" data-test-id="${escapeAttr(t.id)}" data-no-questions="${count?'0':'1'}"
+            onclick="startV313Test('${escapeAttr(t.id)}')" ${count?'':'disabled'}>
+            ${count?'Start Test':'No Questions Added'}
+          </button>
+          <div id="v313TestError_${escapeAttr(t.id)}"></div>
+        </div>`;
+      }).join('');
+    }catch(error){
+      if(requestId!==testsRequestId)return;
+      let cached=[];
+      try{
+        const c=JSON.parse(localStorage.getItem('isp_v314_tests_cache')||'null');
+        if(c&&Date.now()-c.time<30*60*1000)cached=c.tests||[];
+      }catch(e){}
+      if(cached.length){
+        V31_TESTS=cached;
+        box.innerHTML=cached.map(function(t){
+          const count=Number(t.questionCount||0);
+          return `<div class="v31-test-card">
+            <h4>${escapeHtml(t.title)}</h4><p>${escapeHtml(t.description||'Practice mock test')}</p>
+            <div class="v31-test-meta"><span>${escapeHtml(t.category||'General')}</span><span>${Number(t.duration||10)} min</span><span>${count} questions</span></div>
+            <button class="v313-start-test-btn" data-test-id="${escapeAttr(t.id)}" data-no-questions="${count?'0':'1'}" onclick="startV313Test('${escapeAttr(t.id)}')" ${count?'':'disabled'}>${count?'Start Test':'No Questions Added'}</button>
+            <div id="v313TestError_${escapeAttr(t.id)}"></div>
+          </div>`;
+        }).join('');
+        v312Toast('Server was slow. Cached tests are shown.','error');
+      }else{
+        box.innerHTML=`<div class="v314-retry-box">${escapeHtml(error.message)}<br><button type="button" onclick="window.loadV31Tests()">Retry</button></div>`;
+      }
+    }
+  }
+
+  window.loadV31Tests=loadTestsFinal;
+
+  // Replace the navigation function itself, avoiding the old locked lexical reference.
+  const previousOpenDash=window.openDashSection;
+  window.openDashSection=function(id,btn){
+    previousOpenDash(id,btn);
+    if(id==='mockTestsModule')setTimeout(()=>window.loadV31Tests(),0);
+    if(id==='myResultsModule'&&typeof window.renderV31MyResults==='function')setTimeout(()=>window.renderV31MyResults(),0);
+  };
+  // Update the global identifier used by inline onclick handlers and older wrappers.
+  try{openDashSection=window.openDashSection}catch(e){}
+
+  if(typeof window.openAdminSection==='function'){
+    const previousOpenAdmin=window.openAdminSection;
+    window.openAdminSection=function(id,btn){
+      previousOpenAdmin(id,btn);
+      if(id==='adminExamManager')setTimeout(()=>window.loadV31AdminTests(),0);
+    };
+    try{openAdminSection=window.openAdminSection}catch(e){}
+  }
+
+  // Preload after dashboard is usable.
+  window.addEventListener('load',function(){
+    setTimeout(function(){
+      const sec=document.getElementById('mockTestsModule');
+      if(sec&&sec.classList.contains('active'))window.loadV31Tests();
+    },700);
+  });
+})();

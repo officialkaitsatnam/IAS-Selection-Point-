@@ -4240,3 +4240,23 @@ body.portal-dark .v312-question-preview span{color:#cbd5e1!important}
   padding:7px 10px!important;
   background:#b91c1c!important;
 }
+
+
+/* ======================================================
+   v31.4 FULL MOCK TEST SYNC FIX
+   ====================================================== */
+.v314-test-loading{
+  display:flex;align-items:center;gap:10px;padding:14px;border-radius:13px;
+  background:#f8fbff;border:1px solid #dbeafe;color:#475569;font-weight:850
+}
+.v314-test-loading::before{
+  content:"";width:18px;height:18px;border:3px solid #bfdbfe;
+  border-top-color:#0B5ED7;border-radius:50%;animation:v314Spin .75s linear infinite
+}
+@keyframes v314Spin{to{transform:rotate(360deg)}}
+.v314-retry-box{
+  padding:14px;border:1px solid #fecaca;border-radius:13px;background:#fef2f2;color:#991b1b
+}
+.v314-retry-box button{
+  margin-top:9px;border:0;border-radius:9px;padding:8px 11px;background:#b91c1c;color:#fff;font-weight:900
+}
