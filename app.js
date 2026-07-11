@@ -2976,18 +2976,212 @@ if(typeof loadDashboard==='function'){
   };
 }
 
-/* v29 Notification Bell + News Ticker + Profile 2.0 */
-function toggleV29NotificationDropdown(e){if(e){e.preventDefault();e.stopPropagation()}const p=document.getElementById('v29NotificationDropdown');if(!p)return;p.classList.toggle('active');renderV29BellNotifications()}
-function renderV29BellNotifications(){const b=document.getElementById('v29BellNotificationList');if(!b)return;const r=(typeof getNotifications==='function'?getNotifications():[])||[];b.innerHTML=r.length?r.slice(0,20).map(n=>`<div class="v29-bell-item ${n.read?'':'unread'}"><b>${escapeHtml(n.title||'Notification')}</b><p>${escapeHtml(n.body||'')}</p><small>${escapeHtml(n.date||'')}</small></div>`).join(''):'<div class="v29-bell-item"><p>No notifications yet.</p></div>'}
-document.addEventListener('click',e=>{const p=document.getElementById('v29NotificationDropdown');if(p&&!e.target.closest('.v29-bell-wrap'))p.classList.remove('active')});
-function renderV29NewsTicker(){const b=document.getElementById('v29NewsTicker');if(!b)return;const r=(window.ISP_LOADED_POSTS||[]).slice(0,10);b.innerHTML=r.length?r.map((p,i)=>`<span class="v29-ticker-item" onclick="openPostReader(${i})">📰 ${escapeHtml(p.title||'Article')}</span>`).join(''):'Open a module to load the latest articles.'}
-if(typeof renderLearningPosts==='function'){const O=renderLearningPosts;renderLearningPosts=function(p,l){O(p,l);setTimeout(renderV29NewsTicker,50)}}
-function v29ProfileKey(){return 'isp_v29_profile_'+((currentUser&&currentUser().email)||'guest')}function getV29Profile(){try{return JSON.parse(localStorage.getItem(v29ProfileKey())||'{}')}catch(e){return {}}}function saveV29Profile(p){localStorage.setItem(v29ProfileKey(),JSON.stringify(p))}
-function loadV29ProfessionalProfile(){const p=getV29Profile(),u=currentUser?currentUser():{};const m={v29Dob:'dob',v29Gender:'gender',v29State:'state',v29District:'district',v29Qualification:'qualification',v29Occupation:'occupation',v29Language:'language',v29Address:'address',v29Website:'website'};Object.keys(m).forEach(id=>{const e=document.getElementById(id);if(e)e.value=p[m[id]]||''});const img=document.getElementById('v29ProfilePhoto');if(img)img.src=p.photo||'logo.jpg';const n=document.getElementById('v29ProfileNameDisplay');if(n)n.textContent=u.name||'Member';const em=document.getElementById('v29ProfileEmailDisplay');if(em)em.textContent=u.email||'';updateV29ProfileCompletion()}
-function updateV29ProfileCompletion(){const p=getV29Profile(),ids=['profileName','profileMobile','profileCity','profileExam','profileSubject','profileGoal','profileBio','v29Dob','v29Gender','v29State','v29District','v29Qualification','v29Occupation','v29Language','v29Address'];const f=ids.filter(id=>{const e=document.getElementById(id);return e&&String(e.value||'').trim()}).length+(p.photo?1:0),pct=Math.round(f/(ids.length+1)*100);const t=document.getElementById('v29CompletionText'),b=document.getElementById('v29CompletionBar');if(t)t.textContent=pct+'%';if(b)b.style.width=pct+'%'}
-function handleV29ProfilePhoto(ev){const f=ev.target.files&&ev.target.files[0];if(!f)return;if(f.size>2097152)return alert('Please choose an image smaller than 2 MB.');const r=new FileReader();r.onload=()=>{const p=getV29Profile();p.photo=r.result;saveV29Profile(p);const i=document.getElementById('v29ProfilePhoto');if(i)i.src=r.result;updateV29ProfileCompletion()};r.readAsDataURL(f)}
-async function saveV29ProfessionalProfile(){const p=getV29Profile(),m={dob:'v29Dob',gender:'v29Gender',state:'v29State',district:'v29District',qualification:'v29Qualification',occupation:'v29Occupation',language:'v29Language',address:'v29Address',website:'v29Website'};Object.keys(m).forEach(k=>p[k]=document.getElementById(m[k])?.value.trim()||'');saveV29Profile(p);if(typeof saveProfile==='function'){try{await saveProfile()}catch(e){}}updateV29ProfileCompletion();if(typeof toast==='function')toast('Professional profile saved');try{await api('saveV29Profile',{token:token(),profile:p})}catch(e){}}
-['input','change'].forEach(evt=>document.addEventListener(evt,e=>{if(e.target&&e.target.closest('.v29-profile-grid,.profile-pro-grid'))updateV29ProfileCompletion()}));
-if(typeof renderNotifications==='function'){const O=renderNotifications;renderNotifications=function(){O();renderV29BellNotifications()}}
-if(typeof openDashSection==='function'){const O=openDashSection;openDashSection=function(id,b){O(id,b);if(id==='profile')setTimeout(loadV29ProfessionalProfile,80)}}
-if(typeof loadDashboard==='function'){const O=loadDashboard;loadDashboard=async function(){await O();setTimeout(()=>{renderV29BellNotifications();renderV29NewsTicker();loadV29ProfessionalProfile()},500)}}
+
+/* ======================================================
+   v29.1 STABLE NOTIFICATION, TICKER AND PROFILE
+   ====================================================== */
+let V291_TICKER_INDEX=0;
+
+window.toggleV291Notifications=function(event){
+  if(event){event.preventDefault();event.stopPropagation()}
+  const panel=document.getElementById('v291NotificationDropdown');
+  if(!panel)return;
+  panel.classList.toggle('active');
+  renderV291Notifications();
+};
+
+window.renderV291Notifications=function(){
+  const box=document.getElementById('v291NotificationList');
+  if(!box)return;
+  let rows=[];
+  try{rows=(typeof getNotifications==='function'?getNotifications():[])||[]}catch(e){}
+  if(!rows.length){
+    box.innerHTML='<div class="v291-notification-item"><p>No notifications yet.</p></div>';
+    return;
+  }
+  box.innerHTML=rows.slice(0,25).map(function(n){
+    return `<div class="v291-notification-item ${n.read?'':'unread'}">
+      <b>${escapeHtml(n.title||'Notification')}</b>
+      <p>${escapeHtml(n.body||'')}</p>
+      <small>${escapeHtml(n.date||'')}</small>
+    </div>`;
+  }).join('');
+};
+
+document.addEventListener('click',function(event){
+  const panel=document.getElementById('v291NotificationDropdown');
+  if(panel&&!event.target.closest('.v291-bell-wrap'))panel.classList.remove('active');
+});
+
+function v291TickerPosts(){
+  if(Array.isArray(window.ISP_LATEST_POSTS)&&window.ISP_LATEST_POSTS.length)return window.ISP_LATEST_POSTS;
+  if(typeof ISP_LATEST_POSTS!=='undefined'&&Array.isArray(ISP_LATEST_POSTS)&&ISP_LATEST_POSTS.length)return ISP_LATEST_POSTS;
+  if(typeof ISP_LOADED_POSTS!=='undefined'&&Array.isArray(ISP_LOADED_POSTS))return ISP_LOADED_POSTS;
+  return [];
+}
+window.renderV291Ticker=function(){
+  const box=document.getElementById('v291TickerTrack');
+  if(!box)return;
+  const rows=v291TickerPosts().slice(0,12);
+  if(!rows.length){
+    box.innerHTML='<span>Latest posts will appear here automatically.</span>';
+    return;
+  }
+  box.innerHTML=rows.map(function(post,index){
+    return `<span class="v291-ticker-item" data-v291-index="${index}">${escapeHtml(post.title||'Article')}</span>`;
+  }).join('');
+  V291_TICKER_INDEX=0;
+  box.style.transform='translateX(0)';
+};
+document.addEventListener('click',function(event){
+  const item=event.target.closest('.v291-ticker-item');
+  if(!item)return;
+  const index=Number(item.getAttribute('data-v291-index'));
+  const posts=v291TickerPosts();
+  const post=posts[index];
+  if(!post)return;
+  const loadedIndex=(typeof ISP_LOADED_POSTS!=='undefined')?ISP_LOADED_POSTS.findIndex(x=>x.title===post.title):-1;
+  if(loadedIndex>=0){
+    openPostReader(loadedIndex);
+  }else if(post.link){
+    window.open(post.link,'_blank','noopener');
+  }
+});
+window.moveV291Ticker=function(direction){
+  const box=document.getElementById('v291TickerTrack');
+  const rows=v291TickerPosts().slice(0,12);
+  if(!box||!rows.length)return;
+  V291_TICKER_INDEX=Math.max(0,Math.min(rows.length-1,V291_TICKER_INDEX+direction));
+  box.style.transform=`translateX(-${V291_TICKER_INDEX*260}px)`;
+};
+
+if(typeof loadLatestArticles==='function'){
+  const OLD_LOAD_LATEST_V291=loadLatestArticles;
+  loadLatestArticles=async function(){
+    const result=await OLD_LOAD_LATEST_V291();
+    setTimeout(renderV291Ticker,80);
+    return result;
+  };
+}
+if(typeof renderLearningPosts==='function'){
+  const OLD_RENDER_POSTS_V291=renderLearningPosts;
+  renderLearningPosts=function(posts,listId){
+    OLD_RENDER_POSTS_V291(posts,listId);
+    setTimeout(renderV291Ticker,60);
+  };
+}
+
+function v291ProfileKey(){
+  const u=(typeof currentUser==='function'?currentUser():{})||{};
+  return 'isp_v291_profile_'+(u.email||'guest');
+}
+function getV291Profile(){
+  try{return JSON.parse(localStorage.getItem(v291ProfileKey())||'{}')}catch(e){return {}}
+}
+function saveV291Profile(data){
+  localStorage.setItem(v291ProfileKey(),JSON.stringify(data));
+}
+window.handleV291ProfilePhoto=function(event){
+  const file=event.target.files&&event.target.files[0];
+  if(!file)return;
+  if(file.size>2*1024*1024)return alert('Please choose an image smaller than 2 MB.');
+  const reader=new FileReader();
+  reader.onload=function(){
+    const p=getV291Profile();
+    p.photo=reader.result;
+    saveV291Profile(p);
+    const img=document.getElementById('v291ProfilePhoto');
+    if(img)img.src=reader.result;
+    updateV291ProfileCompletion();
+  };
+  reader.readAsDataURL(file);
+};
+window.loadV291ProfessionalProfile=function(){
+  const p=getV291Profile();
+  const u=(typeof currentUser==='function'?currentUser():{})||{};
+  const map={
+    v291State:'state',v291District:'district',v291Dob:'dob',v291Gender:'gender',
+    v291Qualification:'qualification',v291Occupation:'occupation',
+    v291Language:'language',v291Address:'address',v291Website:'website'
+  };
+  Object.keys(map).forEach(function(id){
+    const el=document.getElementById(id);
+    if(el)el.value=p[map[id]]||'';
+  });
+  const img=document.getElementById('v291ProfilePhoto');
+  if(img)img.src=p.photo||'logo.jpg';
+  const name=document.getElementById('v291ProfileDisplayName');
+  if(name)name.textContent=u.name||document.getElementById('profileName')?.value||'Member';
+  const email=document.getElementById('v291ProfileDisplayEmail');
+  if(email)email.textContent=u.email||'';
+  updateV291ProfileCompletion();
+};
+window.updateV291ProfileCompletion=function(){
+  const p=getV291Profile();
+  const ids=[
+    'profileName','profileMobile','profileCity','v291State','v291District','v291Dob',
+    'v291Gender','profileExam','profileSubject','v291Qualification','v291Occupation',
+    'v291Language','profileGoal','v291Address','profileBio'
+  ];
+  const completed=ids.filter(function(id){
+    const el=document.getElementById(id);
+    return el&&String(el.value||'').trim();
+  }).length+(p.photo?1:0);
+  const percent=Math.round((completed/(ids.length+1))*100);
+  const text=document.getElementById('v291CompletionText');
+  const bar=document.getElementById('v291CompletionBar');
+  if(text)text.textContent=percent+'%';
+  if(bar)bar.style.width=percent+'%';
+};
+window.saveV291ProfessionalProfile=async function(){
+  const p=getV291Profile();
+  const map={
+    state:'v291State',district:'v291District',dob:'v291Dob',gender:'v291Gender',
+    qualification:'v291Qualification',occupation:'v291Occupation',
+    language:'v291Language',address:'v291Address',website:'v291Website'
+  };
+  Object.keys(map).forEach(function(key){
+    p[key]=document.getElementById(map[key])?.value.trim()||'';
+  });
+  saveV291Profile(p);
+  try{
+    if(typeof saveProfile==='function')await saveProfile();
+  }catch(e){}
+  updateV291ProfileCompletion();
+  if(typeof toast==='function')toast('Professional profile saved');
+  try{
+    if(typeof api==='function')await api('saveV291Profile',{token:token(),profile:p});
+  }catch(e){}
+};
+
+['input','change'].forEach(function(type){
+  document.addEventListener(type,function(event){
+    if(event.target&&event.target.closest('.v291-profile-grid'))updateV291ProfileCompletion();
+  });
+});
+
+if(typeof renderNotifications==='function'){
+  const OLD_RENDER_NOTIFICATION_V291=renderNotifications;
+  renderNotifications=function(){
+    OLD_RENDER_NOTIFICATION_V291();
+    renderV291Notifications();
+  };
+}
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V291=openDashSection;
+  openDashSection=function(id,button){
+    OLD_OPEN_DASH_V291(id,button);
+    if(id==='profile')setTimeout(loadV291ProfessionalProfile,60);
+  };
+}
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASHBOARD_V291=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASHBOARD_V291();
+    setTimeout(function(){
+      renderV291Notifications();
+      renderV291Ticker();
+      loadV291ProfessionalProfile();
+    },450);
+  };
+}

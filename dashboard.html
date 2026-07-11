@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=29" />
+  <link rel="stylesheet" href="style.css?v=291" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v29 Enterprise Dashboard</div>
+  <div class="version-badge">v29.1 Stable Ticker + Profile</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -91,11 +91,37 @@
         </div>
         <div class="header-actions">
           <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
+          <div class="v291-bell-wrap">
+            <button class="header-bell-btn" id="headerBellBtn" type="button" onclick="toggleV291Notifications(event)">🔔<span id="notificationBadge">0</span></button>
+            <div id="v291NotificationDropdown" class="v291-notification-dropdown">
+              <div class="v291-notification-head">
+                <div>
+                  <b>Notifications</b>
+                  <small>Admin notices and personal updates</small>
+                </div>
+                <button type="button" onclick="markAllNotificationsRead(); renderV291Notifications();">Mark all read</button>
+              </div>
+              <div id="v291NotificationList" class="v291-notification-list"></div>
+            </div>
+          </div>
           <button id="installAppBtn" class="install-app-btn" onclick="installPortalApp()" style="display:none;">📲 Install App</button>
           <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
           <div class="admin-chip">Professional Study Member</div>
         </div>
-      </header><div class="v29-news-ticker"><span class="v29-ticker-label">⚡ Latest</span><div class="v29-ticker-window"><div id="v29NewsTicker" class="v29-ticker-track">Loading latest articles...</div></div></div>
+      </header>
+
+      <div class="v291-breaking-wrap" aria-label="Latest articles">
+        <div class="v291-breaking-label">⚡ BREAKING NEWS</div>
+        <div class="v291-breaking-window">
+          <div id="v291TickerTrack" class="v291-breaking-track">
+            <span>Latest articles are loading...</span>
+          </div>
+        </div>
+        <div class="v291-ticker-controls">
+          <button type="button" onclick="moveV291Ticker(-1)" aria-label="Previous news">‹</button>
+          <button type="button" onclick="moveV291Ticker(1)" aria-label="Next news">›</button>
+        </div>
+      </div>
 
       <section id="overview" class="dash-section active">
         <div class="stats-grid-pro">
@@ -122,6 +148,15 @@
             <div class="progress-track"><span id="dailyProgressBar"></span></div>
             <p id="dailyProgressText" class="muted">0 articles read today.</p>
           </div>
+          <div class="pro-panel v291-quick-card">
+            <div class="panel-head">
+              <h3>🎯 Quick Access</h3>
+            </div>
+            <div class="v291-quick-actions">
+              <button type="button" onclick="openDashSection('revisionCenterModule')">Revision Center</button>
+              <button type="button" onclick="openDashSection('notesCenterModule')">My Notes</button>
+              <button type="button" onclick="openDashSection('performanceModule')">Performance</button>
+            </div>
           </div>
         </div>
 
@@ -247,15 +282,37 @@
 
       <section id="profile" class="dash-section">
         <div class="pro-panel">
-          <h3>👤 Professional Profile</h3><div class="v29-profile-hero"><div class="v29-avatar-wrap"><img id="v29ProfilePhoto" src="logo.jpg" alt="Profile photo"><label class="v29-photo-button">📷 Change Photo<input id="v29PhotoInput" type="file" accept="image/*" onchange="handleV29ProfilePhoto(event)"></label></div><div class="v29-profile-main"><h2 id="v29ProfileNameDisplay">Member</h2><p id="v29ProfileEmailDisplay"></p><div class="v29-completion-row"><span>Profile Completion</span><b id="v29CompletionText">0%</b></div><div class="v29-completion-track"><span id="v29CompletionBar"></span></div></div></div>
-          <div id="profileSummaryCard" class="profile-summary-card">
-            <b>Complete your profile</b>
-            <span>Target exam, city, subject and WhatsApp number help admin send better updates.</span>
+          <div class="v291-profile-cover">
+            <div class="v291-avatar-box">
+              <img id="v291ProfilePhoto" src="logo.jpg" alt="Member profile photo">
+              <label class="v291-photo-upload">📷 Change Photo
+                <input type="file" accept="image/*" onchange="handleV291ProfilePhoto(event)">
+              </label>
+            </div>
+            <div class="v291-profile-title">
+              <span class="eyebrow">MEMBER PROFILE</span>
+              <h2 id="v291ProfileDisplayName">Member</h2>
+              <p id="v291ProfileDisplayEmail"></p>
+              <div class="v291-completion-label">
+                <span>Profile Completion</span><b id="v291CompletionText">0%</b>
+              </div>
+              <div class="v291-completion-bar"><span id="v291CompletionBar"></span></div>
+            </div>
           </div>
-          <div class="form-grid profile-pro-grid">
+
+          <div class="form-grid profile-pro-grid v291-profile-grid">
             <input id="profileName" placeholder="Full name" />
             <input id="profileMobile" placeholder="Mobile / WhatsApp number" />
-            <input id="profileCity" placeholder="City / District" />
+            <input id="profileCity" placeholder="City" />
+            <input id="v291State" placeholder="State" />
+            <input id="v291District" placeholder="District" />
+            <input id="v291Dob" type="date" aria-label="Date of birth" />
+            <select id="v291Gender">
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
             <select id="profileExam">
               <option value="">Select target exam</option>
               <option value="UPSC">UPSC</option>
@@ -267,11 +324,16 @@
               <option value="Railway">Railway</option>
               <option value="Other">Other</option>
             </select>
-            <input id="profileSubject" placeholder="Main subject / optional subject" />
+            <input id="profileSubject" placeholder="Main / optional subject" />
+            <input id="v291Qualification" placeholder="Qualification" />
+            <input id="v291Occupation" placeholder="Occupation" />
+            <input id="v291Language" placeholder="Preferred language" />
             <input id="profileGoal" placeholder="Daily study goal" />
+            <input id="v291Address" placeholder="Address" />
+            <input id="v291Website" placeholder="Website / social profile" />
             <textarea id="profileBio" placeholder="Short bio / preparation note"></textarea>
           </div>
-          <div class="form-grid v29-profile-grid"><input id="v29Dob" type="date" aria-label="Date of birth"><select id="v29Gender"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select><input id="v29State" placeholder="State"><input id="v29District" placeholder="District"><input id="v29Qualification" placeholder="Qualification"><input id="v29Occupation" placeholder="Occupation"><input id="v29Language" placeholder="Preferred language"><input id="v29Address" placeholder="Address"><input id="v29Website" placeholder="Website / social profile"></div><button class="primary-btn" onclick="saveV29ProfessionalProfile()">Save Professional Profile</button>
+          <button class="primary-btn" onclick="saveV291ProfessionalProfile()">Save Professional Profile</button>
           <p id="profileMsg" class="small-msg"></p>
         </div>
       </section>
@@ -421,7 +483,7 @@
             </div>
             <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
           </div>
-          <div id="v29 Enterprise Dashboard" class="v29 Enterprise Dashboard"></div>
+          <div id="v29.1 Stable Ticker + Profile" class="v29.1 Stable Ticker + Profile"></div>
         </div>
       </section>
 
@@ -440,7 +502,7 @@
             <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
             <button onclick="setRevisionFilter('completed')">Completed</button>
           </div>
-          <div id="v29 Enterprise Dashboard" class="v29 Enterprise Dashboard"></div>
+          <div id="v29.1 Stable Ticker + Profile" class="v29.1 Stable Ticker + Profile"></div>
         </div>
       </section>
 
@@ -480,7 +542,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=29"></script>
-  <script src="app.js?v=29"></script>
+  <script src="config.js?v=291"></script>
+  <script src="app.js?v=291"></script>
 </body>
 </html>
