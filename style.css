@@ -3605,3 +3605,16 @@ body.portal-dark .v292-ticker-date{
     animation-duration:90s!important;
   }
 }
+
+
+/* ======================================================
+   v29.3 JS CONTINUOUS TICKER HOTFIX
+   ====================================================== */
+.v292-auto-track{
+  animation:none!important;
+  transform:translate3d(0,0,0);
+  will-change:transform;
+}
+.v291-breaking-window{
+  touch-action:pan-y;
+}

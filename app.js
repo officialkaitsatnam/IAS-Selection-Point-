@@ -3306,3 +3306,125 @@ if(typeof loadDashboard==='function'){
     setTimeout(v292EnsureLatestTicker,250);
   };
 }
+
+
+/* ======================================================
+   v29.3 ROBUST CONTINUOUS NEWS TICKER ENGINE
+   ====================================================== */
+(function(){
+  let tickerRaf = 0;
+  let tickerLastTime = 0;
+  let tickerOffset = 0;
+  let tickerHalfWidth = 0;
+  let tickerPaused = false;
+  let tickerSpeed = 54; // pixels per second
+
+  function track(){
+    return document.getElementById('v291TickerTrack');
+  }
+
+  function measureTicker(){
+    const el = track();
+    if(!el) return false;
+
+    const groups = el.querySelectorAll('.v292-ticker-group');
+    if(groups.length < 2) return false;
+
+    tickerHalfWidth = groups[0].scrollWidth;
+    if(!tickerHalfWidth || tickerHalfWidth < 10) return false;
+
+    if(tickerOffset >= tickerHalfWidth) tickerOffset = tickerOffset % tickerHalfWidth;
+    el.style.transform = `translate3d(${-tickerOffset}px,0,0)`;
+    return true;
+  }
+
+  function frame(time){
+    const el = track();
+    if(!el){
+      tickerRaf = requestAnimationFrame(frame);
+      return;
+    }
+
+    if(!tickerLastTime) tickerLastTime = time;
+    const delta = Math.min(50, time - tickerLastTime);
+    tickerLastTime = time;
+
+    if(!tickerPaused && tickerHalfWidth > 0){
+      tickerOffset += tickerSpeed * (delta / 1000);
+      if(tickerOffset >= tickerHalfWidth){
+        tickerOffset -= tickerHalfWidth;
+      }
+      el.style.transform = `translate3d(${-tickerOffset}px,0,0)`;
+    }
+
+    tickerRaf = requestAnimationFrame(frame);
+  }
+
+  function startTicker(){
+    cancelAnimationFrame(tickerRaf);
+    tickerLastTime = 0;
+
+    // Wait for images/layout to finish, then measure and start.
+    let attempts = 0;
+    const waitForLayout = function(){
+      attempts++;
+      if(measureTicker() || attempts > 30){
+        tickerRaf = requestAnimationFrame(frame);
+      }else{
+        setTimeout(waitForLayout, 100);
+      }
+    };
+    waitForLayout();
+  }
+
+  function attachPauseEvents(){
+    const win = document.querySelector('.v291-breaking-window');
+    if(!win || win.dataset.v293Bound === '1') return;
+    win.dataset.v293Bound = '1';
+
+    win.addEventListener('mouseenter', ()=>{ tickerPaused = true; });
+    win.addEventListener('mouseleave', ()=>{ tickerPaused = false; });
+    win.addEventListener('touchstart', ()=>{ tickerPaused = true; }, {passive:true});
+    win.addEventListener('touchend', ()=>{ tickerPaused = false; }, {passive:true});
+    win.addEventListener('pointerdown', ()=>{ tickerPaused = true; });
+    win.addEventListener('pointerup', ()=>{ tickerPaused = false; });
+  }
+
+  // Wrap the existing renderer: render cards first, then start JS motion.
+  if(typeof window.renderV291Ticker === 'function'){
+    const oldRender = window.renderV291Ticker;
+    window.renderV291Ticker = function(){
+      oldRender();
+      tickerOffset = 0;
+      attachPauseEvents();
+      setTimeout(startTicker, 80);
+    };
+  }
+
+  // Keep measurements correct after resize/orientation change.
+  window.addEventListener('resize', function(){
+    setTimeout(function(){
+      measureTicker();
+    }, 120);
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    tickerPaused = document.hidden;
+    if(!document.hidden){
+      tickerLastTime = 0;
+      measureTicker();
+    }
+  });
+
+  // Start once the dashboard is ready, including service-worker cached loads.
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      attachPauseEvents();
+      if(track() && track().querySelector('.v292-ticker-group')){
+        startTicker();
+      }else if(typeof window.renderV291Ticker === 'function'){
+        window.renderV291Ticker();
+      }
+    }, 500);
+  });
+})();

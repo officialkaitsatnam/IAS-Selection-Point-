@@ -1,2 +1,2 @@
-// IAS Selection Point API Configuration - v29.2 Auto Image Ticker
+// IAS Selection Point API Configuration - v29.3 Continuous Ticker Fix
 const API_URL = "https://script.google.com/macros/s/AKfycbx1Y4NvVZRoJy_ftslIsT52k6rSSbnJqMGcrbUM91bmcGZKgsPR8C1MmtBnJj055KOw/exec";
