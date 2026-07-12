@@ -5461,3 +5461,148 @@ window.loadV35DashboardOverview=async function(){
   let tests=0;try{const r=typeof v31GetLocalResults==='function'?v31GetLocalResults():[];tests=Array.isArray(r)?r.length:0}catch(e){}set('v35MockTests',tests,'0');
 };
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(loadV35DashboardOverview,700);});
+
+
+/* ======================================================
+   v35.2 PROFILE VIEW / EDIT SYNCHRONIZATION
+   ====================================================== */
+function v352SetText(id,value){
+  const el=document.getElementById(id);
+  if(el)el.textContent=String(value||'').trim()||'Not provided';
+}
+function v352SetField(id,value){
+  const el=document.getElementById(id);
+  if(el && value!==undefined && value!==null)el.value=value;
+}
+function v352PopulateDistricts(stateName,selectedDistrict){
+  const district=document.getElementById('v291District');
+  if(!district)return;
+  district.innerHTML='<option value="">Select district</option>';
+  const rows=(typeof V34_INDIA_STATE_DISTRICTS!=='undefined'&&V34_INDIA_STATE_DISTRICTS[stateName])||[];
+  district.disabled=!rows.length;
+  rows.forEach(name=>{
+    const option=document.createElement('option');
+    option.value=name;
+    option.textContent=name;
+    option.selected=name===selectedDistrict;
+    district.appendChild(option);
+  });
+}
+function v352InitStateDistrict(){
+  const state=document.getElementById('v291State');
+  if(!state||state.dataset.v352Ready==='1')return;
+  state.dataset.v352Ready='1';
+
+  if(typeof V34_INDIA_STATE_DISTRICTS!=='undefined'){
+    Object.keys(V34_INDIA_STATE_DISTRICTS).sort().forEach(name=>{
+      if([...state.options].some(o=>o.value===name))return;
+      const option=document.createElement('option');
+      option.value=name;
+      option.textContent=name;
+      state.appendChild(option);
+    });
+  }
+  state.addEventListener('change',()=>v352PopulateDistricts(state.value,''));
+}
+window.loadV352Profile=async function(){
+  v352InitStateDistrict();
+
+  const user=(typeof currentUser==='function'&&currentUser())||{};
+  const local=(typeof getV291Profile==='function'&&getV291Profile())||{};
+  let registration={};
+  let baseProfile={};
+
+  try{
+    const r=await api('getRegistrationProfile',{token:token()});
+    if(r?.success)registration=r.profile||{};
+  }catch(e){}
+  try{
+    const p=await api('getProfile',{token:token()});
+    if(p?.success)baseProfile=p.profile||{};
+  }catch(e){}
+
+  const merged={
+    name:baseProfile.name||registration.name||user.name||'',
+    email:user.email||registration.email||'',
+    mobile:baseProfile.mobile||registration.mobile||'',
+    qualification:local.qualification||registration.qualification||'',
+    targetExam:baseProfile.exam||registration.targetExam||'',
+    state:local.state||registration.state||'',
+    district:local.district||registration.district||'',
+    subject:baseProfile.subject||registration.subject||'',
+    dob:local.dob||'',
+    gender:local.gender||'',
+    occupation:local.occupation||'',
+    bio:baseProfile.bio||'',
+    photo:local.photo||'logo.jpg'
+  };
+
+  // Read-only profile.
+  const photo=document.getElementById('v352ViewPhoto');
+  if(photo)photo.src=merged.photo;
+  v352SetText('v352ViewName',merged.name);
+  v352SetText('v352ViewEmail',merged.email);
+  v352SetText('v352ViewMobile',merged.mobile);
+  v352SetText('v352ViewQualification',merged.qualification);
+  v352SetText('v352ViewExam',merged.targetExam);
+  v352SetText('v352ViewState',merged.state);
+  v352SetText('v352ViewDistrict',merged.district);
+  v352SetText('v352ViewSubject',merged.subject);
+  v352SetText('v352ViewDob',merged.dob);
+  v352SetText('v352ViewGender',merged.gender);
+  v352SetText('v352ViewOccupation',merged.occupation);
+  v352SetText('v352ViewBio',merged.bio);
+
+  // Editable profile.
+  const editPhoto=document.getElementById('v291ProfilePhoto');
+  if(editPhoto)editPhoto.src=merged.photo;
+  v352SetField('profileName',merged.name);
+  v352SetField('profileMobile',merged.mobile);
+  v352SetField('v291Qualification',merged.qualification);
+  v352SetField('profileExam',merged.targetExam);
+  v352SetField('profileSubject',merged.subject);
+  v352SetField('v291Dob',merged.dob);
+  v352SetField('v291Gender',merged.gender);
+  v352SetField('v291Occupation',merged.occupation);
+  v352SetField('profileBio',merged.bio);
+  v352SetField('v291State',merged.state);
+  v352PopulateDistricts(merged.state,merged.district);
+};
+window.saveV352Profile=async function(){
+  const state=document.getElementById('v291State')?.value||'';
+  const district=document.getElementById('v291District')?.value||'';
+  const local=(typeof getV291Profile==='function'&&getV291Profile())||{};
+
+  local.state=state;
+  local.district=district;
+  local.dob=document.getElementById('v291Dob')?.value||'';
+  local.gender=document.getElementById('v291Gender')?.value||'';
+  local.qualification=document.getElementById('v291Qualification')?.value||'';
+  local.occupation=document.getElementById('v291Occupation')?.value||'';
+
+  if(typeof saveV291Profile==='function')saveV291Profile(local);
+
+  try{
+    if(typeof saveProfile==='function')await saveProfile();
+    if(typeof api==='function'){
+      await api('saveV291Profile',{token:token(),profile:local});
+    }
+    if(typeof toast==='function')toast('Profile updated successfully');
+    await loadV352Profile();
+    openV35ProfileSection('profileView');
+  }catch(error){
+    const msg=document.getElementById('profileMsg');
+    if(msg)msg.textContent=error.message||'Profile could not be saved.';
+  }
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V352=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V352(id,btn);
+    if(id==='profileView'||id==='profileEdit')setTimeout(loadV352Profile,70);
+  };
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  v352InitStateDistrict();
+});

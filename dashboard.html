@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=351" rel="stylesheet"/>
+<link href="style.css?v=352" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v35.1 Dashboard Cleanup Fix</div>
+<div class="version-badge">v35.2 Profile View/Edit + Compact UI</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -65,23 +65,14 @@
 <button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button>
 <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
 <button onclick="openDashSection('library', this)">📖 My Library</button>
-
 <button onclick="openDashSection('notes', this)">📝 Notes</button>
-
 <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
-
-
 <button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests</button>
 <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
-
 <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
-
-
 <button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
 <button onclick="openDashSection('supportModule', this)">🎫 Help &amp; Support</button>
-
 </nav>
-
 </aside>
 <main class="portal-main">
 <header class="portal-header learning-header">
@@ -104,9 +95,6 @@
 <div class="v291-notification-list" id="v291NotificationList"></div>
 </div>
 </div>
-
-
-
 <div class="v35-profile-menu-wrap">
 <button class="v35-profile-trigger" id="v35ProfileTrigger" onclick="toggleV35ProfileMenu(event)" type="button">
 <img alt="Profile photo" id="v35HeaderAvatar" src="logo.jpg"/>
@@ -118,8 +106,8 @@
 <div><b id="v35MenuName">Member</b><small id="v35MenuEmail"></small><span>● Active</span></div>
 </div>
 <div class="v35-profile-menu-links">
-<button onclick="openV35ProfileSection('profile')">👤 View Profile</button>
-<button onclick="openV35ProfileSection('profile')">✏️ Edit Profile</button>
+<button onclick="openV35ProfileSection('profileView')">👤 View Profile</button>
+<button onclick="openV35ProfileSection('profileEdit')">✏️ Edit Profile</button>
 <button onclick="openV35ProfileSection('achievementsModule')">🏅 My Achievements</button>
 <button onclick="openV35ProfileSection('xpLeaderboardModule')">⭐ XP &amp; Level</button>
 <button onclick="openV35ProfileSection('readingHistoryModule')">📖 Reading History</button>
@@ -127,13 +115,12 @@
 <button onclick="openV35ProfileSection('notesCenterModule')">📝 My Notes</button>
 <button onclick="openV35ProfileSection('performanceModule')">📊 Performance</button>
 <button onclick="openV35ProfileSection('security')">🛡️ Account &amp; Security</button>
-<button onclick="toggleTheme(); closeV35ProfileMenu()">🌙 Theme</button>
+<button onclick="togglePortalTheme(); closeV35ProfileMenu()">🌙 Theme</button>
 <button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
 <button class="logout" onclick="logout()">🚪 Logout</button>
 </div>
 </div>
 </div></div>
-
 </header>
 <div aria-label="Latest articles" class="v291-breaking-wrap">
 <div class="v291-breaking-label">⚡ BREAKING NEWS</div>
@@ -142,9 +129,8 @@
 <span id="v294TickerContent">Latest articles are loading...</span>
 </marquee>
 </div>
-<button class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix" onclick="toggleV30Ticker()" type="button">⏸</button>
+<button class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI" onclick="toggleV30Ticker()" type="button">⏸</button>
 </div>
-
 <section class="dash-section active" id="overview">
 <div class="stats-grid-pro">
 <div class="stat-card blue"><span>📚</span><h3>5</h3><p>Knowledge Center</p></div>
@@ -292,31 +278,84 @@
 <div class="post-list" id="readingHistory"></div>
 </div>
 </section>
-<section class="dash-section" id="profile">
-<div class="pro-panel">
-<div class="v291-profile-cover">
-<div class="v291-avatar-box">
+
+<section class="dash-section" id="profileView">
+<div class="pro-panel v352-profile-panel">
+<div class="v352-profile-view-head">
+<img alt="Member profile photo" id="v352ViewPhoto" src="logo.jpg"/>
+<div>
+<span class="eyebrow">MEMBER PROFILE</span>
+<h2 id="v352ViewName">Member</h2>
+<p id="v352ViewEmail"></p>
+<span class="v352-active-pill">● Active Member</span>
+</div>
+<button class="mini-btn" onclick="openV35ProfileSection('profileEdit')" type="button">Edit Profile</button>
+</div>
+<div class="v352-profile-details">
+<div><small>Mobile Number</small><b id="v352ViewMobile">Not provided</b></div>
+<div><small>Qualification</small><b id="v352ViewQualification">Not provided</b></div>
+<div><small>Target Examination</small><b id="v352ViewExam">Not provided</b></div>
+<div><small>State</small><b id="v352ViewState">Not provided</b></div>
+<div><small>District</small><b id="v352ViewDistrict">Not provided</b></div>
+<div><small>Preferred Subject</small><b id="v352ViewSubject">Not provided</b></div>
+<div><small>Date of Birth</small><b id="v352ViewDob">Not provided</b></div>
+<div><small>Gender</small><b id="v352ViewGender">Not provided</b></div>
+<div><small>Occupation</small><b id="v352ViewOccupation">Not provided</b></div>
+<div class="wide"><small>Preparation Note</small><b id="v352ViewBio">Not provided</b></div>
+</div>
+</div>
+</section>
+<section class="dash-section" id="profileEdit">
+<div class="pro-panel v352-profile-panel">
+<div class="panel-head">
+<div>
+<h3>Edit Profile</h3>
+<p class="muted">Update only the information that is relevant to your preparation.</p>
+</div>
+<button class="mini-btn" onclick="openV35ProfileSection('profileView')" type="button">View Profile</button>
+</div>
+<div class="v352-edit-photo">
 <img alt="Member profile photo" id="v291ProfilePhoto" src="logo.jpg"/>
-<label class="v291-photo-upload">📷 Change Photo
-                <input accept="image/*" onchange="handleV291ProfilePhoto(event)" type="file"/>
+<label class="v291-photo-upload">Change Photo
+        <input accept="image/*" onchange="handleV291ProfilePhoto(event)" type="file"/>
 </label>
 </div>
-<div class="v291-profile-title">
-<span class="eyebrow">MEMBER PROFILE</span>
-<h2 id="v291ProfileDisplayName">Member</h2>
-<p id="v291ProfileDisplayEmail"></p>
-<div class="v291-completion-label">
-<span>Profile Completion</span><b id="v291CompletionText">0%</b>
-</div>
-<div class="v291-completion-bar"><span id="v291CompletionBar"></span></div>
-</div>
-</div>
-<div class="form-grid profile-pro-grid v291-profile-grid">
-<input id="profileName" placeholder="Full name">
+<div class="form-grid profile-pro-grid v291-profile-grid v352-profile-edit-grid">
+<input id="profileName" placeholder="Full name"/>
 <input id="profileMobile" placeholder="Mobile / WhatsApp number"/>
-<input id="profileCity" placeholder="City"/>
-<input id="v291State" placeholder="State"/>
-<input id="v291District" placeholder="District"/>
+<select id="v291Qualification">
+<option value="">Select qualification</option>
+<option value="10th">10th</option>
+<option value="12th">12th</option>
+<option value="Diploma">Diploma</option>
+<option value="Graduate">Graduate</option>
+<option value="Post Graduate">Post Graduate</option>
+<option value="B.Ed.">B.Ed.</option>
+<option value="M.Ed.">M.Ed.</option>
+<option value="Ph.D.">Ph.D.</option>
+<option value="Other">Other</option>
+</select>
+<select id="profileExam">
+<option value="">Select target examination</option>
+<option value="UPSC">UPSC</option>
+<option value="HPSC">HPSC</option>
+<option value="HSSC">HSSC</option>
+<option value="Haryana CET (Group C)">Haryana CET (Group C)</option>
+<option value="Haryana CET (Group D)">Haryana CET (Group D)</option>
+<option value="Haryana Police">Haryana Police</option>
+<option value="UGC NET (Political Science)">UGC NET (Political Science)</option>
+<option value="SSC">SSC</option>
+<option value="Banking">Banking</option>
+<option value="Railway">Railway</option>
+<option value="Other">Other</option>
+</select>
+<select id="v291State">
+<option value="">Select state / union territory</option>
+</select>
+<select disabled="" id="v291District">
+<option value="">Select district</option>
+</select>
+<input id="profileSubject" placeholder="Preferred / optional subject"/>
 <input aria-label="Date of birth" id="v291Dob" type="date"/>
 <select id="v291Gender">
 <option value="">Select gender</option>
@@ -324,30 +363,14 @@
 <option value="Female">Female</option>
 <option value="Other">Other</option>
 </select>
-<select id="profileExam">
-<option value="">Select target exam</option>
-<option value="UPSC">UPSC</option>
-<option value="UGC NET">UGC NET</option>
-<option value="HPSC">HPSC</option>
-<option value="State PCS">State PCS</option>
-<option value="SSC">SSC</option>
-<option value="Banking">Banking</option>
-<option value="Railway">Railway</option>
-<option value="Other">Other</option>
-</select>
-<input id="profileSubject" placeholder="Main / optional subject"/>
-<input id="v291Qualification" placeholder="Qualification"/>
 <input id="v291Occupation" placeholder="Occupation"/>
-<input id="v291Language" placeholder="Preferred language"/>
-<input id="profileGoal" placeholder="Daily study goal"/>
-<input id="v291Address" placeholder="Address"/>
-<input id="v291Website" placeholder="Website / social profile"/>
-<textarea id="profileBio" placeholder="Short bio / preparation note"></textarea>
-</input></div>
-<button class="primary-btn" onclick="saveV291ProfessionalProfile()">Save Professional Profile</button>
+<textarea id="profileBio" placeholder="Short preparation note"></textarea>
+</div>
+<button class="primary-btn" onclick="saveV352Profile()" type="button">Save Profile</button>
 <p class="small-msg" id="profileMsg"></p>
 </div>
 </section>
+
 <section class="dash-section" id="notes">
 <div class="pro-panel">
 <h3>📝 My Notes</h3>
@@ -482,7 +505,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -500,7 +523,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -512,7 +535,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"><p class="muted">Loading tests...</p></div>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -523,60 +546,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"><p class="muted">No attempts yet.</p></div>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v35.1 Dashboard Cleanup Fix">
-<div class="v35.1 Dashboard Cleanup Fix">
-<header class="v35.1 Dashboard Cleanup Fix">
+<section class="dash-section" id="v35.2 Profile View/Edit + Compact UI">
+<div class="v35.2 Profile View/Edit + Compact UI">
+<header class="v35.2 Profile View/Edit + Compact UI">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v35.1 Dashboard Cleanup Fix">Mock Test</h2>
+<h2 id="v35.2 Profile View/Edit + Compact UI">Mock Test</h2>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix">⏱ <span id="v35.1 Dashboard Cleanup Fix">00:00</span></div>
+<div class="v35.2 Profile View/Edit + Compact UI">⏱ <span id="v35.2 Profile View/Edit + Compact UI">00:00</span></div>
 </header>
-<div class="v35.1 Dashboard Cleanup Fix">
-<main class="v35.1 Dashboard Cleanup Fix">
-<div class="v35.1 Dashboard Cleanup Fix">
-<span id="v35.1 Dashboard Cleanup Fix">Question 1</span>
-<span id="v35.1 Dashboard Cleanup Fix">Not Answered</span>
+<div class="v35.2 Profile View/Edit + Compact UI">
+<main class="v35.2 Profile View/Edit + Compact UI">
+<div class="v35.2 Profile View/Edit + Compact UI">
+<span id="v35.2 Profile View/Edit + Compact UI">Question 1</span>
+<span id="v35.2 Profile View/Edit + Compact UI">Not Answered</span>
 </div>
-<h3 id="v35.1 Dashboard Cleanup Fix"></h3>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
-<div class="v35.1 Dashboard Cleanup Fix">
-<button onclick="v35.1 Dashboard Cleanup Fix">← Previous</button>
-<button onclick="v35.1 Dashboard Cleanup Fix">Clear Response</button>
-<button onclick="v35.1 Dashboard Cleanup Fix">Mark for Review</button>
-<button onclick="v35.1 Dashboard Cleanup Fix">Next →</button>
+<h3 id="v35.2 Profile View/Edit + Compact UI"></h3>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"></div>
+<div class="v35.2 Profile View/Edit + Compact UI">
+<button onclick="v35.2 Profile View/Edit + Compact UI">← Previous</button>
+<button onclick="v35.2 Profile View/Edit + Compact UI">Clear Response</button>
+<button onclick="v35.2 Profile View/Edit + Compact UI">Mark for Review</button>
+<button onclick="v35.2 Profile View/Edit + Compact UI">Next →</button>
 </div>
 </main>
-<aside class="v35.1 Dashboard Cleanup Fix">
+<aside class="v35.2 Profile View/Edit + Compact UI">
 <h4>Question Palette</h4>
-<div class="v35.1 Dashboard Cleanup Fix">
+<div class="v35.2 Profile View/Edit + Compact UI">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
-<button class="v35.1 Dashboard Cleanup Fix" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"></div>
+<button class="v35.2 Profile View/Edit + Compact UI" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v35.1 Dashboard Cleanup Fix">
+<section class="dash-section" id="v35.2 Profile View/Edit + Compact UI">
 <div class="pro-panel">
-<div class="v35.1 Dashboard Cleanup Fix">
+<div class="v35.2 Profile View/Edit + Compact UI">
 <span>🏆</span>
-<h2 id="v35.1 Dashboard Cleanup Fix">Test Completed</h2>
-<p id="v35.1 Dashboard Cleanup Fix"></p>
+<h2 id="v35.2 Profile View/Edit + Compact UI">Test Completed</h2>
+<p id="v35.2 Profile View/Edit + Compact UI"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v35.2 Profile View/Edit + Compact UI">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v35.2 Profile View/Edit + Compact UI">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v35.2 Profile View/Edit + Compact UI">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v35.2 Profile View/Edit + Compact UI">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+<div class="v35.2 Profile View/Edit + Compact UI" id="v35.2 Profile View/Edit + Compact UI"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -680,12 +703,12 @@
 </section>
 <footer class="portal-footer">
 <div class="footer-brand">
-<img alt="IAS Selection Point" src="logo.jpg">
+<img alt="IAS Selection Point" src="logo.jpg"/>
 <div>
 <b>IAS Selection Point</b>
 <span>Let's make your imagination true.</span>
 </div>
-</img></div>
+</div>
 <div class="footer-links footer-pipe-links">
 <button onclick="openFooterPage('about')">About Us</button>
 <span>|</span>
@@ -703,7 +726,7 @@
 </footer>
 </main>
 </div>
-<script src="config.js?v=351"></script>
-<script src="app.js?v=351"></script>
+<script src="config.js?v=352"></script>
+<script src="app.js?v=352"></script>
 </body>
 </html>
