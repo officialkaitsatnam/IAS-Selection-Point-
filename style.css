@@ -4942,3 +4942,10 @@ body.portal-dark .v352-profile-details b{
   opacity:.65;
   cursor:not-allowed;
 }
+
+
+/* v35.2.2 profile sync feedback */
+#profileMsg.success{
+  display:block;
+  margin-top:10px;
+}

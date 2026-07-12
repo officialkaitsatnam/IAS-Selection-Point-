@@ -1,12 +1,12 @@
-const CACHE_NAME = 'ias-selection-point-v3521';
+const CACHE_NAME = 'ias-selection-point-v3522';
 const CORE = [
   './',
   './index.html',
   './dashboard.html',
   './admin.html',
-  './style.css?v=3521',
-  './app.js?v=3521',
-  './config.js?v=3521',
+  './style.css?v=3522',
+  './app.js?v=3522',
+  './config.js?v=3522',
   './logo.jpg',
   './offline.html'
 ];

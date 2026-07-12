@@ -5613,7 +5613,12 @@ window.saveV352Profile=async function(){
     // because the old function expects fields removed in v35.2.
     const profileResponse=await api('saveProfile',{
       token:token(),
-      profile:payload
+      name:payload.name,
+      mobile:payload.mobile,
+      city:extended.district,
+      exam:payload.exam,
+      subject:payload.subject,
+      bio:payload.bio
     });
 
     if(!profileResponse?.success){
