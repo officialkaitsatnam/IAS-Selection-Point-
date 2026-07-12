@@ -4927,3 +4927,18 @@ body.portal-dark .v352-profile-details b{
     grid-template-columns:1fr;
   }
 }
+
+
+/* v35.2.1 profile save feedback */
+#profileMsg.success{
+  color:#15803d;
+  font-weight:600!important;
+}
+#profileMsg.error{
+  color:#b91c1c;
+  font-weight:600!important;
+}
+#profileEdit .primary-btn:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}

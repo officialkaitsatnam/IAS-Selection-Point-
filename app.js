@@ -5569,30 +5569,103 @@ window.loadV352Profile=async function(){
   v352PopulateDistricts(merged.state,merged.district);
 };
 window.saveV352Profile=async function(){
-  const state=document.getElementById('v291State')?.value||'';
-  const district=document.getElementById('v291District')?.value||'';
-  const local=(typeof getV291Profile==='function'&&getV291Profile())||{};
+  const getValue=(id)=>document.getElementById(id)?.value?.trim?.()||'';
 
-  local.state=state;
-  local.district=district;
-  local.dob=document.getElementById('v291Dob')?.value||'';
-  local.gender=document.getElementById('v291Gender')?.value||'';
-  local.qualification=document.getElementById('v291Qualification')?.value||'';
-  local.occupation=document.getElementById('v291Occupation')?.value||'';
+  const payload={
+    name:getValue('profileName'),
+    mobile:getValue('profileMobile'),
+    exam:getValue('profileExam'),
+    subject:getValue('profileSubject'),
+    bio:getValue('profileBio')
+  };
 
-  if(typeof saveV291Profile==='function')saveV291Profile(local);
+  const extended={
+    state:getValue('v291State'),
+    district:getValue('v291District'),
+    dob:getValue('v291Dob'),
+    gender:getValue('v291Gender'),
+    qualification:getValue('v291Qualification'),
+    occupation:getValue('v291Occupation'),
+    photo:document.getElementById('v291ProfilePhoto')?.src||''
+  };
+
+  if(!payload.name){
+    const msg=document.getElementById('profileMsg');
+    if(msg)msg.textContent='Full name is required.';
+    return;
+  }
+
+  if(!extended.state||!extended.district){
+    const msg=document.getElementById('profileMsg');
+    if(msg)msg.textContent='Please select your State and District.';
+    return;
+  }
+
+  const button=document.querySelector('#profileEdit .primary-btn');
+  if(button){
+    button.disabled=true;
+    button.dataset.oldText=button.textContent;
+    button.textContent='Saving...';
+  }
 
   try{
-    if(typeof saveProfile==='function')await saveProfile();
-    if(typeof api==='function'){
-      await api('saveV291Profile',{token:token(),profile:local});
+    // Save main profile directly instead of calling the old saveProfile(),
+    // because the old function expects fields removed in v35.2.
+    const profileResponse=await api('saveProfile',{
+      token:token(),
+      profile:payload
+    });
+
+    if(!profileResponse?.success){
+      throw new Error(profileResponse?.message||'Profile could not be saved.');
     }
+
+    // Preserve v29.1 local data and extended profile fields.
+    const local=(typeof getV291Profile==='function'&&getV291Profile())||{};
+    Object.assign(local,extended);
+
+    try{
+      if(typeof saveV291Profile==='function'){
+        saveV291Profile(local);
+      }else{
+        const user=(typeof currentUser==='function'&&currentUser())||{};
+        localStorage.setItem(
+          'isp_v291_profile_'+(user.email||'guest'),
+          JSON.stringify(local)
+        );
+      }
+    }catch(e){}
+
+    // Save extended fields to backend when the route exists.
+    try{
+      await api('saveV291Profile',{
+        token:token(),
+        profile:local
+      });
+    }catch(e){
+      // Main profile is already saved; keep extended values locally.
+    }
+
+    const msg=document.getElementById('profileMsg');
+    if(msg){
+      msg.textContent='Profile updated successfully.';
+      msg.className='small-msg success';
+    }
+
     if(typeof toast==='function')toast('Profile updated successfully');
     await loadV352Profile();
     openV35ProfileSection('profileView');
   }catch(error){
     const msg=document.getElementById('profileMsg');
-    if(msg)msg.textContent=error.message||'Profile could not be saved.';
+    if(msg){
+      msg.textContent=error?.message||'Profile could not be saved.';
+      msg.className='small-msg error';
+    }
+  }finally{
+    if(button){
+      button.disabled=false;
+      button.textContent=button.dataset.oldText||'Save Profile';
+    }
   }
 };
 
