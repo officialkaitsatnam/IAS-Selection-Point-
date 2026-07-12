@@ -4711,3 +4711,8 @@ body.portal-dark .v33-leader-row b{color:#f8fafc!important}
   .v33-leader-row{grid-template-columns:40px 1fr auto}
   .v33-leader-row .v33-streak-cell{grid-column:2}
 }
+
+.v34-registration-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v34-registration-grid input,.v34-registration-grid select{width:100%;min-height:46px;padding:11px 12px;border:1px solid #dbe7f4;border-radius:12px;background:#fff;color:#10233f;font:inherit;font-weight:750;box-sizing:border-box}
+.v34-registration-grid input:focus,.v34-registration-grid select:focus{border-color:#0B5ED7;outline:3px solid rgba(11,94,215,.1)}
+@media(max-width:650px){.v34-registration-grid{grid-template-columns:1fr}}
