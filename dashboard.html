@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=32" />
+  <link rel="stylesheet" href="style.css?v=33" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v32 HSSC Dynamic Module + Email Review</div>
+  <div class="version-badge">v33 Daily Quiz + XP + Install App</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -76,6 +76,8 @@
         <button onclick="openDashSection('performanceModule', this)">📊 My Performance</button>
         <button onclick="openDashSection('achievementsModule', this)">🏆 Achievements</button>
         <button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests</button>
+        <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
+        <button onclick="openDashSection('xpLeaderboardModule', this)">🏆 XP Leaderboard</button>
         <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
         <button onclick="openDashSection('readingHistoryModule', this)">🕒 Reading History</button>
         <button onclick="openDashSection('notesCenterModule', this)">📝 My Notes</button>
@@ -131,31 +133,31 @@
             <span id="v294TickerContent">Latest articles are loading...</span>
           </marquee>
         </div>
-        <button id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review" type="button" onclick="toggleV30Ticker()">⏸</button>
+        <button id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App" type="button" onclick="toggleV30Ticker()">⏸</button>
       </div>
 
-      <section id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review">
-        <div class="v32 HSSC Dynamic Module + Email Review">
-          <span class="v32 HSSC Dynamic Module + Email Review">📖</span>
+      <section id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App">
+        <div class="v33 Daily Quiz + XP + Install App">
+          <span class="v33 Daily Quiz + XP + Install App">📖</span>
           <div>
             <small>CONTINUE LEARNING</small>
-            <b id="v32 HSSC Dynamic Module + Email Review">Open an article to begin</b>
+            <b id="v33 Daily Quiz + XP + Install App">Open an article to begin</b>
           </div>
           <button type="button" onclick="openV30ContinueLearning()">Resume</button>
         </div>
-        <div class="v32 HSSC Dynamic Module + Email Review">
-          <span class="v32 HSSC Dynamic Module + Email Review">🎯</span>
+        <div class="v33 Daily Quiz + XP + Install App">
+          <span class="v33 Daily Quiz + XP + Install App">🎯</span>
           <div>
             <small>REVISION DUE</small>
-            <b id="v32 HSSC Dynamic Module + Email Review">0 items</b>
+            <b id="v33 Daily Quiz + XP + Install App">0 items</b>
           </div>
           <button type="button" onclick="openDashSection('revisionCenterModule')">Review</button>
         </div>
-        <div class="v32 HSSC Dynamic Module + Email Review">
-          <span class="v32 HSSC Dynamic Module + Email Review">📝</span>
+        <div class="v33 Daily Quiz + XP + Install App">
+          <span class="v33 Daily Quiz + XP + Install App">📝</span>
           <div>
             <small>PERSONAL NOTES</small>
-            <b id="v32 HSSC Dynamic Module + Email Review">0 notes</b>
+            <b id="v33 Daily Quiz + XP + Install App">0 notes</b>
           </div>
           <button type="button" onclick="openDashSection('notesCenterModule')">Open</button>
         </div>
@@ -523,7 +525,7 @@
             </div>
             <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
           </div>
-          <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"></div>
+          <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"></div>
         </div>
       </section>
 
@@ -542,7 +544,7 @@
             <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
             <button onclick="setRevisionFilter('completed')">Completed</button>
           </div>
-          <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"></div>
+          <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"></div>
         </div>
       </section>
 
@@ -555,7 +557,7 @@
             </div>
             <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
           </div>
-          <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"><p class="muted">Loading tests...</p></div>
+          <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"><p class="muted">Loading tests...</p></div>
         </div>
       </section>
 
@@ -567,65 +569,65 @@
               <p class="muted">Review previous attempts and performance.</p>
             </div>
           </div>
-          <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"><p class="muted">No attempts yet.</p></div>
+          <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"><p class="muted">No attempts yet.</p></div>
         </div>
       </section>
 
-      <section id="v32 HSSC Dynamic Module + Email Review" class="dash-section">
-        <div class="v32 HSSC Dynamic Module + Email Review">
-          <header class="v32 HSSC Dynamic Module + Email Review">
+      <section id="v33 Daily Quiz + XP + Install App" class="dash-section">
+        <div class="v33 Daily Quiz + XP + Install App">
+          <header class="v33 Daily Quiz + XP + Install App">
             <div>
               <span class="eyebrow">LIVE MOCK TEST</span>
-              <h2 id="v32 HSSC Dynamic Module + Email Review">Mock Test</h2>
+              <h2 id="v33 Daily Quiz + XP + Install App">Mock Test</h2>
             </div>
-            <div class="v32 HSSC Dynamic Module + Email Review">⏱ <span id="v32 HSSC Dynamic Module + Email Review">00:00</span></div>
+            <div class="v33 Daily Quiz + XP + Install App">⏱ <span id="v33 Daily Quiz + XP + Install App">00:00</span></div>
           </header>
 
-          <div class="v32 HSSC Dynamic Module + Email Review">
-            <main class="v32 HSSC Dynamic Module + Email Review">
-              <div class="v32 HSSC Dynamic Module + Email Review">
-                <span id="v32 HSSC Dynamic Module + Email Review">Question 1</span>
-                <span id="v32 HSSC Dynamic Module + Email Review">Not Answered</span>
+          <div class="v33 Daily Quiz + XP + Install App">
+            <main class="v33 Daily Quiz + XP + Install App">
+              <div class="v33 Daily Quiz + XP + Install App">
+                <span id="v33 Daily Quiz + XP + Install App">Question 1</span>
+                <span id="v33 Daily Quiz + XP + Install App">Not Answered</span>
               </div>
-              <h3 id="v32 HSSC Dynamic Module + Email Review"></h3>
-              <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"></div>
+              <h3 id="v33 Daily Quiz + XP + Install App"></h3>
+              <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"></div>
 
-              <div class="v32 HSSC Dynamic Module + Email Review">
-                <button onclick="v32 HSSC Dynamic Module + Email Review">← Previous</button>
-                <button onclick="v32 HSSC Dynamic Module + Email Review">Clear Response</button>
-                <button onclick="v32 HSSC Dynamic Module + Email Review">Mark for Review</button>
-                <button onclick="v32 HSSC Dynamic Module + Email Review">Next →</button>
+              <div class="v33 Daily Quiz + XP + Install App">
+                <button onclick="v33 Daily Quiz + XP + Install App">← Previous</button>
+                <button onclick="v33 Daily Quiz + XP + Install App">Clear Response</button>
+                <button onclick="v33 Daily Quiz + XP + Install App">Mark for Review</button>
+                <button onclick="v33 Daily Quiz + XP + Install App">Next →</button>
               </div>
             </main>
 
-            <aside class="v32 HSSC Dynamic Module + Email Review">
+            <aside class="v33 Daily Quiz + XP + Install App">
               <h4>Question Palette</h4>
-              <div class="v32 HSSC Dynamic Module + Email Review">
+              <div class="v33 Daily Quiz + XP + Install App">
                 <span><i class="answered"></i> Answered</span>
                 <span><i class="review"></i> Review</span>
                 <span><i class="unanswered"></i> Unanswered</span>
               </div>
-              <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"></div>
-              <button class="v32 HSSC Dynamic Module + Email Review" onclick="submitV31Test(false)">Submit Test</button>
+              <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"></div>
+              <button class="v33 Daily Quiz + XP + Install App" onclick="submitV31Test(false)">Submit Test</button>
             </aside>
           </div>
         </div>
       </section>
 
-      <section id="v32 HSSC Dynamic Module + Email Review" class="dash-section">
+      <section id="v33 Daily Quiz + XP + Install App" class="dash-section">
         <div class="pro-panel">
-          <div class="v32 HSSC Dynamic Module + Email Review">
+          <div class="v33 Daily Quiz + XP + Install App">
             <span>🏆</span>
-            <h2 id="v32 HSSC Dynamic Module + Email Review">Test Completed</h2>
-            <p id="v32 HSSC Dynamic Module + Email Review"></p>
+            <h2 id="v33 Daily Quiz + XP + Install App">Test Completed</h2>
+            <p id="v33 Daily Quiz + XP + Install App"></p>
           </div>
           <div class="stats-grid-pro">
-            <div class="stat-card blue"><span>🎯</span><h3 id="v32 HSSC Dynamic Module + Email Review">0</h3><p>Score</p></div>
-            <div class="stat-card green"><span>✅</span><h3 id="v32 HSSC Dynamic Module + Email Review">0</h3><p>Correct</p></div>
-            <div class="stat-card orange"><span>❌</span><h3 id="v32 HSSC Dynamic Module + Email Review">0</h3><p>Wrong</p></div>
-            <div class="stat-card purple"><span>⏭</span><h3 id="v32 HSSC Dynamic Module + Email Review">0</h3><p>Unanswered</p></div>
+            <div class="stat-card blue"><span>🎯</span><h3 id="v33 Daily Quiz + XP + Install App">0</h3><p>Score</p></div>
+            <div class="stat-card green"><span>✅</span><h3 id="v33 Daily Quiz + XP + Install App">0</h3><p>Correct</p></div>
+            <div class="stat-card orange"><span>❌</span><h3 id="v33 Daily Quiz + XP + Install App">0</h3><p>Wrong</p></div>
+            <div class="stat-card purple"><span>⏭</span><h3 id="v33 Daily Quiz + XP + Install App">0</h3><p>Unanswered</p></div>
           </div>
-          <div id="v32 HSSC Dynamic Module + Email Review" class="v32 HSSC Dynamic Module + Email Review"></div>
+          <div id="v33 Daily Quiz + XP + Install App" class="v33 Daily Quiz + XP + Install App"></div>
           <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
         </div>
       </section>
@@ -668,6 +670,67 @@
         </div>
       </section>
 
+      <section id="dailyQuizModule" class="dash-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>🎯 Daily Quiz Challenge</h3>
+              <p class="muted">10 questions every day. Earn XP and maintain your streak.</p>
+            </div>
+            <button class="mini-btn" onclick="loadV33DailyQuiz()">Refresh</button>
+          </div>
+
+          <div id="v33QuizIntro" class="v33-quiz-intro">
+            <div>
+              <span>🧠</span>
+              <div>
+                <h2>Today's Challenge</h2>
+                <p>Questions are selected automatically from the portal question bank.</p>
+              </div>
+            </div>
+            <button type="button" onclick="startV33DailyQuiz()">Start Daily Quiz</button>
+          </div>
+
+          <div id="v33QuizUnavailable" class="v33-quiz-message"></div>
+
+          <div id="v33QuizPlayer" class="v33-quiz-player" hidden>
+            <header>
+              <div>
+                <small>DAILY QUIZ</small>
+                <h3 id="v33QuizQuestionNumber">Question 1 of 10</h3>
+              </div>
+              <div class="v33-quiz-timer">⏱ <span id="v33QuizTimer">10:00</span></div>
+            </header>
+            <div class="v33-quiz-progress"><span id="v33QuizProgressBar"></span></div>
+            <h3 id="v33QuizQuestionText"></h3>
+            <div id="v33QuizOptions" class="v33-quiz-options"></div>
+            <div class="v33-quiz-actions">
+              <button type="button" onclick="v33QuizPrevious()">← Previous</button>
+              <button type="button" onclick="v33QuizNext()">Next →</button>
+              <button type="button" class="submit" onclick="submitV33DailyQuiz(false)">Submit Quiz</button>
+            </div>
+          </div>
+
+          <div id="v33QuizResult" class="v33-quiz-result" hidden></div>
+        </div>
+      </section>
+
+      <section id="xpLeaderboardModule" class="dash-section">
+        <div class="pro-panel">
+          <div class="panel-head">
+            <div>
+              <h3>🏆 XP Leaderboard</h3>
+              <p class="muted">Top learners based on Daily Quiz XP.</p>
+            </div>
+            <button class="mini-btn" onclick="loadV33Leaderboard()">Refresh</button>
+          </div>
+          <div id="v33MyRankCard" class="v33-my-rank-card"></div>
+          <div id="v33LeaderboardList" class="v33-leaderboard-list">
+            <p class="muted">Loading leaderboard...</p>
+          </div>
+        </div>
+      </section>
+
       <section id="security" class="dash-section">
         <div class="pro-panel">
           <h3>🔐 Change Password</h3>
@@ -704,7 +767,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=32"></script>
-  <script src="app.js?v=32"></script>
+  <script src="config.js?v=33"></script>
+  <script src="app.js?v=33"></script>
 </body>
 </html>

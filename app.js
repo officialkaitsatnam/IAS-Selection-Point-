@@ -3001,7 +3001,7 @@ window.addEventListener('appinstalled',function(){
 });
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=28').catch(function(err){
+    navigator.serviceWorker.register('sw.js?v=33').catch(function(err){
       console.warn('Service worker registration failed',err);
     });
   });
@@ -5190,3 +5190,227 @@ window.loadV32HsscCategory=async function(label,title){const area=document.getEl
 window.openV32HsscPost=function(i){if(typeof ISP_LOADED_POSTS!=='undefined')ISP_LOADED_POSTS=V32_HSSC_POSTS.slice();if(typeof openPostReader==='function')openPostReader(i)};
 window.runV32EmailHealthCheck=async function(){const b=document.getElementById('v32EmailHealthResult');if(!b)return;b.innerHTML='<p class="muted">Checking email system...</p>';try{const r=await api('emailSystemHealth',{token:token()});const c=r.ready?'v32-health-ok':'v32-health-warn';b.innerHTML=`<div class="${c}">MailApp Ready: ${r.ready?'Yes':'No'}<br>Daily Quota Remaining: ${r.remainingQuota}<br>Recent Failed Emails: ${r.recentFailed}<br>${escapeHtml(r.note||'')}</div>`}catch(e){b.innerHTML=`<div class="v32-health-warn">${escapeHtml(e.message)}</div>`}};
 if(typeof openDashSection==='function'){const O=openDashSection;openDashSection=function(id,btn){O(id,btn);if(id==='hsscModule')setTimeout(loadV32HsscOverview,80)}}
+
+
+/* ======================================================
+   v33 INSTALL APP + DAILY QUIZ + XP LEADERBOARD
+   ====================================================== */
+let V33_INSTALL_PROMPT=null;
+let V33_DAILY_QUIZ=[];
+let V33_QUIZ_INDEX=0;
+let V33_QUIZ_ANSWERS={};
+let V33_QUIZ_SECONDS=600;
+let V33_QUIZ_TIMER=null;
+let V33_QUIZ_DATE='';
+
+window.addEventListener('beforeinstallprompt',function(event){
+  event.preventDefault();
+  V33_INSTALL_PROMPT=event;
+  const legacy=document.getElementById('installAppBtn');
+  if(legacy)legacy.style.display='inline-flex';
+});
+
+window.installV33App=async function(){
+  if(window.matchMedia('(display-mode: standalone)').matches){
+    if(typeof toast==='function')toast('App is already installed');
+    return;
+  }
+  const prompt=V33_INSTALL_PROMPT||window.V28_INSTALL_PROMPT;
+  if(prompt){
+    prompt.prompt();
+    const choice=await prompt.userChoice;
+    if(choice.outcome==='accepted'&&typeof toast==='function')toast('IAS Selection Point app installed');
+    V33_INSTALL_PROMPT=null;
+    window.V28_INSTALL_PROMPT=null;
+    return;
+  }
+  alert('Chrome menu (⋮) open karein aur “Install app” ya “Add to Home screen” select karein.');
+};
+
+function v33LevelFromXp(xp){
+  xp=Number(xp||0);
+  if(xp>=2000)return 'Master';
+  if(xp>=1000)return 'Expert';
+  if(xp>=500)return 'Advanced';
+  if(xp>=200)return 'Learner';
+  return 'Beginner';
+}
+
+window.loadV33UserStats=async function(){
+  try{
+    const r=await api('getMyGamification',{token:token()});
+    if(!r.success)return;
+    const xp=document.getElementById('v33MyXp');
+    const streak=document.getElementById('v33MyStreak');
+    const level=document.getElementById('v33MyLevel');
+    if(xp)xp.textContent=(r.xp||0)+' XP';
+    if(streak)streak.textContent=(r.streak||0)+' Days';
+    if(level)level.textContent=r.level||v33LevelFromXp(r.xp);
+  }catch(e){}
+};
+
+window.loadV33DailyQuiz=async function(){
+  const message=document.getElementById('v33QuizUnavailable');
+  const intro=document.getElementById('v33QuizIntro');
+  if(message)message.innerHTML='<p class="muted">Checking today’s quiz...</p>';
+  try{
+    const r=await api('getDailyQuiz',{token:token()});
+    if(!r.success){
+      if(message)message.innerHTML=`<div class="v32-empty-category">${escapeHtml(r.message)}</div>`;
+      return;
+    }
+    V33_DAILY_QUIZ=r.questions||[];
+    V33_QUIZ_DATE=r.quizDate||'';
+    if(!V33_DAILY_QUIZ.length){
+      if(message)message.innerHTML='<div class="v32-empty-category"><b>Daily Quiz is not available yet.</b><br>Admin Question Bank me questions add karte hi quiz automatically ready ho jayega.</div>';
+      if(intro)intro.querySelector('button').disabled=true;
+      return;
+    }
+    if(message)message.innerHTML=`<div class="v32-health-ok">Today’s quiz is ready: ${V33_DAILY_QUIZ.length} questions.</div>`;
+    if(intro)intro.querySelector('button').disabled=false;
+  }catch(error){
+    if(message)message.innerHTML=`<div class="v32-health-warn">${escapeHtml(error.message)}</div>`;
+  }
+};
+
+window.startV33DailyQuiz=async function(){
+  if(!V33_DAILY_QUIZ.length)await loadV33DailyQuiz();
+  if(!V33_DAILY_QUIZ.length)return;
+
+  V33_QUIZ_INDEX=0;
+  V33_QUIZ_ANSWERS={};
+  V33_QUIZ_SECONDS=600;
+
+  document.getElementById('v33QuizIntro').hidden=true;
+  document.getElementById('v33QuizUnavailable').hidden=true;
+  document.getElementById('v33QuizResult').hidden=true;
+  document.getElementById('v33QuizPlayer').hidden=false;
+
+  renderV33QuizQuestion();
+  clearInterval(V33_QUIZ_TIMER);
+  updateV33QuizTimer();
+  V33_QUIZ_TIMER=setInterval(function(){
+    V33_QUIZ_SECONDS--;
+    updateV33QuizTimer();
+    if(V33_QUIZ_SECONDS<=0){
+      clearInterval(V33_QUIZ_TIMER);
+      submitV33DailyQuiz(true);
+    }
+  },1000);
+};
+
+function updateV33QuizTimer(){
+  const m=Math.floor(Math.max(0,V33_QUIZ_SECONDS)/60);
+  const s=Math.max(0,V33_QUIZ_SECONDS)%60;
+  const el=document.getElementById('v33QuizTimer');
+  if(el)el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+function renderV33QuizQuestion(){
+  const q=V33_DAILY_QUIZ[V33_QUIZ_INDEX];if(!q)return;
+  document.getElementById('v33QuizQuestionNumber').textContent=`Question ${V33_QUIZ_INDEX+1} of ${V33_DAILY_QUIZ.length}`;
+  document.getElementById('v33QuizQuestionText').textContent=q.question;
+  document.getElementById('v33QuizProgressBar').style.width=((V33_QUIZ_INDEX+1)/V33_DAILY_QUIZ.length*100)+'%';
+  document.getElementById('v33QuizOptions').innerHTML=['A','B','C','D'].map(key=>`
+    <label class="v33-quiz-option ${V33_QUIZ_ANSWERS[q.id]===key?'selected':''}">
+      <input type="radio" name="v33DailyOption" value="${key}"
+             ${V33_QUIZ_ANSWERS[q.id]===key?'checked':''}
+             onchange="selectV33QuizAnswer('${escapeAttr(q.id)}','${key}')">
+      <span><b>${key}.</b> ${escapeHtml(q['option'+key]||'')}</span>
+    </label>`).join('');
+}
+window.selectV33QuizAnswer=function(id,answer){
+  V33_QUIZ_ANSWERS[id]=answer;
+  renderV33QuizQuestion();
+};
+window.v33QuizPrevious=function(){
+  if(V33_QUIZ_INDEX>0){V33_QUIZ_INDEX--;renderV33QuizQuestion()}
+};
+window.v33QuizNext=function(){
+  if(V33_QUIZ_INDEX<V33_DAILY_QUIZ.length-1){V33_QUIZ_INDEX++;renderV33QuizQuestion()}
+};
+
+window.submitV33DailyQuiz=async function(autoSubmit){
+  if(!autoSubmit&&!confirm('Submit today’s quiz?'))return;
+  clearInterval(V33_QUIZ_TIMER);
+  showLoader('Submitting quiz...','Calculating result and XP');
+
+  try{
+    const r=await api('submitDailyQuiz',{
+      token:token(),
+      quizDate:V33_QUIZ_DATE,
+      answers:V33_QUIZ_ANSWERS,
+      timeTaken:600-V33_QUIZ_SECONDS
+    });
+    if(!r.success){
+      alert(r.message);
+      return;
+    }
+
+    document.getElementById('v33QuizPlayer').hidden=true;
+    const result=document.getElementById('v33QuizResult');
+    result.hidden=false;
+    result.innerHTML=`
+      <div style="font-size:46px">🎉</div>
+      <h2>Daily Quiz Completed!</h2>
+      <p>${escapeHtml(r.message||'Your result has been saved.')}</p>
+      <div class="v33-result-stats">
+        <div><b>${r.correct||0}</b><span>Correct</span></div>
+        <div><b>${r.wrong||0}</b><span>Wrong</span></div>
+        <div><b>${r.percentage||0}%</b><span>Score</span></div>
+        <div><b>+${r.xpEarned||0}</b><span>XP Earned</span></div>
+      </div>
+      <p><b>Total XP:</b> ${r.totalXp||0} · <b>Streak:</b> ${r.streak||0} days · <b>Level:</b> ${escapeHtml(r.level||'Beginner')}</p>
+      <button class="primary-btn" onclick="openDashSection('xpLeaderboardModule')">View Leaderboard</button>`;
+    loadV33UserStats();
+  }finally{
+    hideLoader();
+  }
+};
+
+window.loadV33Leaderboard=async function(){
+  const list=document.getElementById('v33LeaderboardList');
+  const mine=document.getElementById('v33MyRankCard');
+  if(list)list.innerHTML='<p class="muted">Loading leaderboard...</p>';
+
+  try{
+    const r=await api('getXpLeaderboard',{token:token()});
+    if(!r.success){
+      if(list)list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+      return;
+    }
+
+    if(mine){
+      mine.innerHTML=`<b>Your Rank: #${r.myRank||'-'}</b><br>
+      ${r.myXp||0} XP · ${r.myStreak||0} day streak · ${escapeHtml(r.myLevel||'Beginner')}`;
+    }
+
+    if(list){
+      list.innerHTML=(r.leaderboard||[]).length?(r.leaderboard||[]).map((x,i)=>`
+        <div class="v33-leader-row">
+          <div class="v33-rank-number">${i+1}</div>
+          <div><b>${escapeHtml(x.name||x.email)}</b><small>${escapeHtml(x.level||'Beginner')}</small></div>
+          <span class="v33-xp-pill">${x.xp||0} XP</span>
+          <span class="v33-streak-cell">🔥 ${x.streak||0}</span>
+        </div>`).join(''):'<p class="muted">No leaderboard entries yet.</p>';
+    }
+  }catch(error){
+    if(list)list.innerHTML=`<p class="muted">${escapeHtml(error.message)}</p>`;
+  }
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V33=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V33(id,btn);
+    if(id==='dailyQuizModule')setTimeout(loadV33DailyQuiz,60);
+    if(id==='xpLeaderboardModule')setTimeout(loadV33Leaderboard,60);
+  };
+}
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASH_V33=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASH_V33();
+    setTimeout(loadV33UserStats,600);
+  };
+}
