@@ -59,11 +59,57 @@ async function api(action,data={}){
 async function signupUser(e){
   e.preventDefault();
   const btn=e.submitter;
+  const password=qs('signupPassword')?.value||'';
+  const confirmPassword=qs('signupConfirmPassword')?.value||'';
+
+  if(password!==confirmPassword){
+    showMsg('Passwords do not match.',false);
+    const match=qs('signupPasswordMatch');
+    if(match){
+      match.textContent='Passwords do not match';
+      match.className='v318-password-match error';
+    }
+    qs('signupConfirmPassword')?.focus();
+    return;
+  }
+
+  if(password.length<6){
+    showMsg('Password must contain at least 6 characters.',false);
+    return;
+  }
+
   setButtonLoading(btn,true,'Creating account');
-  showLoader('Creating account...','Please wait');
-  const r=await api('signup',{name:qs('signupName').value,email:qs('signupEmail').value,mobile:qs('signupMobile').value,password:qs('signupPassword').value});
-  hideLoader();setButtonLoading(btn,false);showMsg(r.message,r.success);
-  if(r.success)showForm('login');
+  showLoader('Creating account...','Setting up your member account and emails');
+
+  try{
+    const r=await api('signup',{
+      name:qs('signupName').value,
+      email:qs('signupEmail').value,
+      mobile:qs('signupMobile').value,
+      password,
+      confirmPassword
+    });
+
+    showMsg(r.message,r.success);
+
+    if(r.success){
+      if(r.emailWarning){
+        toast('Account created. Email delivery is pending/failed.');
+      }else{
+        toast('Account created and welcome email sent');
+      }
+      showForm('login');
+      e.target.reset();
+      const match=qs('signupPasswordMatch');
+      if(match){
+        match.textContent='';
+        match.className='v318-password-match';
+      }
+    }
+  }finally{
+    hideLoader();
+    setButtonLoading(btn,false);
+  }
 }
 async function loginUser(e){
   e.preventDefault();
@@ -5066,3 +5112,72 @@ if(typeof loadDashboard==='function'){
     setTimeout(checkV317ReadingMilestones,700);
   };
 }
+
+
+/* ======================================================
+   v31.8 CONFIRM PASSWORD + EMAIL REPORT UI
+   ====================================================== */
+(function(){
+  function updateSignupPasswordMatch(){
+    const password=document.getElementById('signupPassword');
+    const confirm=document.getElementById('signupConfirmPassword');
+    const message=document.getElementById('signupPasswordMatch');
+    if(!password||!confirm||!message)return;
+
+    if(!confirm.value){
+      message.textContent='';
+      message.className='v318-password-match';
+      return;
+    }
+
+    const match=password.value===confirm.value;
+    message.textContent=match?'Passwords match':'Passwords do not match';
+    message.className='v318-password-match '+(match?'ok':'error');
+  }
+
+  document.addEventListener('input',function(event){
+    if(event.target?.id==='signupPassword'||event.target?.id==='signupConfirmPassword'){
+      updateSignupPasswordMatch();
+    }
+  });
+
+  window.loadV318EmailReport=async function(){
+    const stats=document.getElementById('v318EmailDeliveryStats');
+    const list=document.getElementById('v318EmailDeliveryList');
+    if(!stats||!list)return;
+
+    list.innerHTML='<p class="muted">Loading email delivery history...</p>';
+
+    try{
+      const r=await api('adminEmailDeliveryReport',{token:token()});
+      if(!r.success){
+        list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+        return;
+      }
+
+      stats.innerHTML=`
+        <div class="v318-email-stat"><small>TOTAL EMAILS</small><b>${r.total||0}</b></div>
+        <div class="v318-email-stat"><small>SENT</small><b>${r.sent||0}</b></div>
+        <div class="v318-email-stat"><small>FAILED</small><b>${r.failed||0}</b></div>
+        <div class="v318-email-stat"><small>WELCOME EMAILS</small><b>${r.welcome||0}</b></div>`;
+
+      list.innerHTML=(r.rows||[]).length?(r.rows||[]).map(row=>`
+        <div class="v318-email-row">
+          <div><b>${escapeHtml(row.to||'')}</b><small>${escapeHtml(row.type||'System')}</small></div>
+          <div><b>${escapeHtml(row.subject||'')}</b><small>${escapeHtml(row.error||'')}</small></div>
+          <span class="v318-email-status ${String(row.status).toLowerCase()==='sent'?'sent':'failed'}">${escapeHtml(row.status||'Unknown')}</span>
+          <small>${escapeHtml(row.sentAt||'')}</small>
+        </div>`).join(''):'<p class="muted">No email records yet.</p>';
+    }catch(error){
+      list.innerHTML=`<p class="muted">${escapeHtml(error.message)}</p>`;
+    }
+  };
+
+  if(typeof openAdminSection==='function'){
+    const OLD_OPEN_ADMIN_318=openAdminSection;
+    openAdminSection=function(id,btn){
+      OLD_OPEN_ADMIN_318(id,btn);
+      if(id==='adminEmailCenter')setTimeout(loadV318EmailReport,80);
+    };
+  }
+})();

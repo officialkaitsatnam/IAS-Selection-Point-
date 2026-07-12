@@ -4497,3 +4497,102 @@ body.portal-dark .v317-timeline-row b{
     grid-column:2;
   }
 }
+
+
+/* ======================================================
+   v31.8 ENTERPRISE EMAIL + CONFIRM PASSWORD
+   ====================================================== */
+.v318-password-match{
+  min-height:18px;
+  margin-top:-5px;
+  margin-bottom:5px;
+  font-size:11px;
+  font-weight:850;
+}
+.v318-password-match.ok{color:#15803d}
+.v318-password-match.error{color:#b91c1c}
+.v318-email-divider{
+  border:0;
+  border-top:1px solid #e2e8f0;
+  margin:22px 0;
+}
+.v318-email-stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:12px 0 15px;
+}
+.v318-email-stat{
+  padding:14px;
+  border:1px solid #e2eefc;
+  border-radius:15px;
+  background:#fff;
+}
+.v318-email-stat small{
+  display:block;
+  margin-bottom:5px;
+  color:#64748b;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.5px;
+}
+.v318-email-stat b{
+  color:#10233f;
+  font-size:23px;
+}
+.v318-email-list{
+  display:grid;
+  gap:8px;
+}
+.v318-email-row{
+  display:grid;
+  grid-template-columns:minmax(0,1.5fr) minmax(0,2fr) auto auto;
+  gap:10px;
+  align-items:center;
+  padding:11px 12px;
+  border:1px solid #e2eefc;
+  border-radius:13px;
+  background:#fff;
+}
+.v318-email-row b{
+  display:block;
+  color:#10233f;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.v318-email-row small{
+  color:#64748b;
+}
+.v318-email-status{
+  display:inline-flex;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:950;
+}
+.v318-email-status.sent{
+  background:#e9f8ef;
+  color:#116b36;
+}
+.v318-email-status.failed{
+  background:#fdecec;
+  color:#b91c1c;
+}
+body.portal-dark .v318-email-stat,
+body.portal-dark .v318-email-row{
+  background:#111827!important;
+  border-color:#334155!important;
+}
+body.portal-dark .v318-email-stat b,
+body.portal-dark .v318-email-row b{
+  color:#f8fafc!important;
+}
+@media(max-width:900px){
+  .v318-email-stats{grid-template-columns:repeat(2,1fr)}
+  .v318-email-row{grid-template-columns:1fr auto}
+  .v318-email-row>div:nth-child(2){grid-column:1/-1}
+}
+@media(max-width:600px){
+  .v318-email-stats{grid-template-columns:1fr}
+}
