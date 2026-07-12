@@ -5460,14 +5460,4 @@ window.loadV35DashboardOverview=async function(){
   let articles=0;try{articles=typeof v317HistoryCount==='function'?v317HistoryCount():0}catch(e){}set('v35ArticlesRead',articles,'0');
   let tests=0;try{const r=typeof v31GetLocalResults==='function'?v31GetLocalResults():[];tests=Array.isArray(r)?r.length:0}catch(e){}set('v35MockTests',tests,'0');
 };
-document.addEventListener('DOMContentLoaded',()=>{
-  const remove=['Profile','Achievements','XP Leaderboard','My Performance','Reading History','Bookmarks','My Notes','Security','Install App','Logout'];
-  document.querySelectorAll('.sidebar button,.side-menu button').forEach(btn=>{
-    const t=btn.textContent.trim();if(remove.some(x=>t.includes(x)))btn.style.display='none';
-  });
-  document.querySelectorAll('body *').forEach(el=>{
-    const t=el.textContent?.trim();
-    if(['CONTINUE LEARNING','REVISION DUE','PERSONAL NOTES'].includes(t)){const p=el.closest('div,section,article');if(p)p.style.display='none'}
-  });
-  setTimeout(loadV35DashboardOverview,700);
-});
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(loadV35DashboardOverview,700);});

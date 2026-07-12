@@ -1,800 +1,709 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=35" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#0B2A55">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="logo.jpg">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Learning Portal | IAS Selection Point</title>
+<link href="style.css?v=351" rel="stylesheet"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<meta content="#0B2A55" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v35 Professional Dashboard + Profile Dropdown</div>
-
-  <div id="loaderOverlay" class="loader-overlay">
-    <div class="loader-box">
-      <div class="spinner"></div>
-      <h3 id="loaderTitle">Loading...</h3>
-      <p id="loaderText">Opening your learning portal</p>
-    </div>
-  </div>
-
-  <div class="reader-modal" id="readerModal">
-    <div class="reader-top">
-      <button onclick="closeReader()">← Back</button>
-      <h3 id="readerTitle">Article</h3>
-      <div class="reader-controls">
-        <button onclick="changeReaderFont(-1)">A-</button>
-        <button onclick="changeReaderFont(1)">A+</button>
-        <button onclick="toggleReaderDark()">Dark</button>
-        <button onclick="readerFullScreen()">Full Screen</button>
-      </div>
-    </div>
-    <div class="reading-progress"><span id="readingProgress"></span></div>
-    <div class="reader-actionbar">
-      <button onclick="saveCurrentArticle()">🔖 Save</button>
-      <button onclick="shareCurrentArticle()">📤 Share</button>
-      <button onclick="copyCurrentArticleLink()">🔗 Copy Link</button>
-    </div>
-    <article id="readerBody" class="reader-body"></article>
-  </div>
-
-  <div class="footer-page-modal" id="footerPageModal">
-    <div class="footer-page-card">
-      <div class="footer-page-header">
-        <button onclick="closeFooterPage()">← Back</button>
-        <h3 id="footerPageTitle">Page</h3>
-      </div>
-      <div id="footerPageContent" class="footer-page-content"></div>
-    </div>
-  </div>
-
-  <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open menu">☰</button>
-  <div id="mobileSidebarBackdrop" class="mobile-sidebar-backdrop"></div>
-  <div class="portal-shell">
-    <aside class="sidebar-pro">
-      <div class="side-brand full-logo-brand">
-        <img src="logo.jpg" alt="IAS Selection Point Logo" />
-        <p class="brand-slogan">Let's make your imagination true.</p>
-      </div>
-
-      <nav class="side-nav">
-        <button class="active" onclick="openDashSection('overview', this)">🏠 Dashboard</button>
-        <button onclick="openDashSection('knowledgeModule', this)">📚 Knowledge Center</button>
-        <button onclick="openDashSection('upscModule', this)">🎯 UPSC</button>
-        <button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button>
-        <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
-        <button onclick="openDashSection('library', this)">📖 My Library</button>
-        <button onclick="openDashSection('bookmarks', this)">🔖 Bookmarks</button>
-        <button onclick="openDashSection('notes', this)">📝 Notes</button>
-        <button onclick="openDashSection('profile', this)">👤 Profile</button>
-        <button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
-        <button onclick="openDashSection('performanceModule', this)">📊 My Performance</button>
-        <button onclick="openDashSection('achievementsModule', this)">🏆 Achievements</button>
-        <button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests</button>
-        <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
-        <button onclick="openDashSection('xpLeaderboardModule', this)">🏆 XP Leaderboard</button>
-        <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
-        <button onclick="openDashSection('readingHistoryModule', this)">🕒 Reading History</button>
-        <button onclick="openDashSection('notesCenterModule', this)">📝 My Notes</button>
-        <button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
-        <button onclick="openDashSection('supportModule', this)">🎫 Help & Support</button>
-        <button onclick="openDashSection('security', this)">🔐 Security</button>
-      </nav>
-
-      <button class="side-logout" onclick="logout()">Logout</button>
-    </aside>
-
-    <main class="portal-main">
-      <header class="portal-header learning-header">
-        <div>
-          <h1>Welcome, <span id="memberName">Member</span> 👋</h1>
-          <p><span id="memberEmail"></span> · <span id="memberStatus"></span></p>
-        </div>
-        <div class="header-actions">
-          <input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..." />
-          <div class="v291-bell-wrap">
-            <button class="header-bell-btn" id="headerBellBtn" type="button" onclick="toggleV291Notifications(event)">🔔<span id="notificationBadge">0</span></button>
-            <div id="v291NotificationDropdown" class="v291-notification-dropdown">
-              <div class="v291-notification-head">
-                <div>
-                  <b>Notifications</b>
-                  <small>Admin notices and personal updates</small>
-                </div>
-                <button type="button" onclick="markAllNotificationsRead(); renderV291Notifications();">Mark all read</button>
-              </div>
-              <div id="v291NotificationList" class="v291-notification-list"></div>
-            </div>
-          </div>
-          <button id="installAppBtn" class="install-app-btn" onclick="installPortalApp()" style="display:none;">📲 Install App</button>
-          <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
-          <div class="admin-chip">Professional Study Member</div>
-        </div>
-      
-<div class="v35-profile-menu-wrap">
-  <button id="v35ProfileTrigger" class="v35-profile-trigger" type="button" onclick="toggleV35ProfileMenu(event)">
-    <img id="v35HeaderAvatar" src="logo.jpg" alt="Profile photo">
-    <span><b id="v35HeaderName">Member</b><small>Professional Study Member</small></span><i>⌄</i>
-  </button>
-  <div id="v35ProfileMenu" class="v35-profile-menu" hidden>
-    <div class="v35-profile-menu-head">
-      <img id="v35MenuAvatar" src="logo.jpg" alt="Profile photo">
-      <div><b id="v35MenuName">Member</b><small id="v35MenuEmail"></small><span>● Active</span></div>
-    </div>
-    <div class="v35-profile-menu-links">
-      <button onclick="openV35ProfileSection('profile')">👤 View Profile</button>
-      <button onclick="openV35ProfileSection('profile')">✏️ Edit Profile</button>
-      <button onclick="openV35ProfileSection('achievementsModule')">🏅 My Achievements</button>
-      <button onclick="openV35ProfileSection('xpLeaderboardModule')">⭐ XP & Level</button>
-      <button onclick="openV35ProfileSection('readingHistory')">📖 Reading History</button>
-      <button onclick="openV35ProfileSection('bookmarksModule')">🔖 Bookmarks</button>
-      <button onclick="openV35ProfileSection('myNotesModule')">📝 My Notes</button>
-      <button onclick="openV35ProfileSection('performanceModule')">📊 Performance</button>
-      <button onclick="openV35ProfileSection('security')">🛡️ Account & Security</button>
-      <button onclick="toggleTheme(); closeV35ProfileMenu()">🌙 Theme</button>
-      <button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
-      <button class="logout" onclick="logout()">🚪 Logout</button>
-    </div>
-  </div>
+<div class="version-badge">v35.1 Dashboard Cleanup Fix</div>
+<div class="loader-overlay" id="loaderOverlay">
+<div class="loader-box">
+<div class="spinner"></div>
+<h3 id="loaderTitle">Loading...</h3>
+<p id="loaderText">Opening your learning portal</p>
 </div>
+</div>
+<div class="reader-modal" id="readerModal">
+<div class="reader-top">
+<button onclick="closeReader()">← Back</button>
+<h3 id="readerTitle">Article</h3>
+<div class="reader-controls">
+<button onclick="changeReaderFont(-1)">A-</button>
+<button onclick="changeReaderFont(1)">A+</button>
+<button onclick="toggleReaderDark()">Dark</button>
+<button onclick="readerFullScreen()">Full Screen</button>
+</div>
+</div>
+<div class="reading-progress"><span id="readingProgress"></span></div>
+<div class="reader-actionbar">
+<button onclick="saveCurrentArticle()">🔖 Save</button>
+<button onclick="shareCurrentArticle()">📤 Share</button>
+<button onclick="copyCurrentArticleLink()">🔗 Copy Link</button>
+</div>
+<article class="reader-body" id="readerBody"></article>
+</div>
+<div class="footer-page-modal" id="footerPageModal">
+<div class="footer-page-card">
+<div class="footer-page-header">
+<button onclick="closeFooterPage()">← Back</button>
+<h3 id="footerPageTitle">Page</h3>
+</div>
+<div class="footer-page-content" id="footerPageContent"></div>
+</div>
+</div>
+<button aria-label="Open menu" class="mobile-menu-button" id="mobileMenuButton" type="button">☰</button>
+<div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop"></div>
+<div class="portal-shell">
+<aside class="sidebar-pro">
+<div class="side-brand full-logo-brand">
+<img alt="IAS Selection Point Logo" src="logo.jpg"/>
+<p class="brand-slogan">Let's make your imagination true.</p>
+</div>
+<nav class="side-nav">
+<button class="active" onclick="openDashSection('overview', this)">🏠 Dashboard</button>
+<button onclick="openDashSection('knowledgeModule', this)">📚 Knowledge Center</button>
+<button onclick="openDashSection('upscModule', this)">🎯 UPSC</button>
+<button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button>
+<button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
+<button onclick="openDashSection('library', this)">📖 My Library</button>
+
+<button onclick="openDashSection('notes', this)">📝 Notes</button>
+
+<button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
+
+
+<button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests</button>
+<button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
+
+<button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
+
+
+<button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
+<button onclick="openDashSection('supportModule', this)">🎫 Help &amp; Support</button>
+
+</nav>
+
+</aside>
+<main class="portal-main">
+<header class="portal-header learning-header">
+<div>
+<h1>Welcome, <span id="memberName">Member</span> 👋</h1>
+<p><span id="memberEmail"></span> · <span id="memberStatus"></span></p>
+</div>
+<div class="header-actions">
+<input id="globalSearch" oninput="runGlobalSearch()" placeholder="Search articles..."/>
+<div class="v291-bell-wrap">
+<button class="header-bell-btn" id="headerBellBtn" onclick="toggleV291Notifications(event)" type="button">🔔<span id="notificationBadge">0</span></button>
+<div class="v291-notification-dropdown" id="v291NotificationDropdown">
+<div class="v291-notification-head">
+<div>
+<b>Notifications</b>
+<small>Admin notices and personal updates</small>
+</div>
+<button onclick="markAllNotificationsRead(); renderV291Notifications();" type="button">Mark all read</button>
+</div>
+<div class="v291-notification-list" id="v291NotificationList"></div>
+</div>
+</div>
+
+
+
+<div class="v35-profile-menu-wrap">
+<button class="v35-profile-trigger" id="v35ProfileTrigger" onclick="toggleV35ProfileMenu(event)" type="button">
+<img alt="Profile photo" id="v35HeaderAvatar" src="logo.jpg"/>
+<span><b id="v35HeaderName">Member</b><small>Professional Study Member</small></span><i>⌄</i>
+</button>
+<div class="v35-profile-menu" hidden="" id="v35ProfileMenu">
+<div class="v35-profile-menu-head">
+<img alt="Profile photo" id="v35MenuAvatar" src="logo.jpg"/>
+<div><b id="v35MenuName">Member</b><small id="v35MenuEmail"></small><span>● Active</span></div>
+</div>
+<div class="v35-profile-menu-links">
+<button onclick="openV35ProfileSection('profile')">👤 View Profile</button>
+<button onclick="openV35ProfileSection('profile')">✏️ Edit Profile</button>
+<button onclick="openV35ProfileSection('achievementsModule')">🏅 My Achievements</button>
+<button onclick="openV35ProfileSection('xpLeaderboardModule')">⭐ XP &amp; Level</button>
+<button onclick="openV35ProfileSection('readingHistoryModule')">📖 Reading History</button>
+<button onclick="openV35ProfileSection('bookmarks')">🔖 Bookmarks</button>
+<button onclick="openV35ProfileSection('notesCenterModule')">📝 My Notes</button>
+<button onclick="openV35ProfileSection('performanceModule')">📊 Performance</button>
+<button onclick="openV35ProfileSection('security')">🛡️ Account &amp; Security</button>
+<button onclick="toggleTheme(); closeV35ProfileMenu()">🌙 Theme</button>
+<button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
+<button class="logout" onclick="logout()">🚪 Logout</button>
+</div>
+</div>
+</div></div>
+
 </header>
+<div aria-label="Latest articles" class="v291-breaking-wrap">
+<div class="v291-breaking-label">⚡ BREAKING NEWS</div>
+<div class="v291-breaking-window">
+<marquee behavior="scroll" class="v294-native-marquee" direction="left" id="v294TickerMarquee" onmouseenter="this.stop()" onmouseleave="this.start()" ontouchend="this.start()" ontouchstart="this.stop()" scrollamount="2" scrolldelay="35" truespeed="">
+<span id="v294TickerContent">Latest articles are loading...</span>
+</marquee>
+</div>
+<button class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix" onclick="toggleV30Ticker()" type="button">⏸</button>
+</div>
 
-      <div class="v291-breaking-wrap" aria-label="Latest articles">
-        <div class="v291-breaking-label">⚡ BREAKING NEWS</div>
-        <div class="v291-breaking-window">
-          <marquee id="v294TickerMarquee"
-                   class="v294-native-marquee"
-                   behavior="scroll"
-                   direction="left"
-                   scrollamount="2"
-                   scrolldelay="35"
-                   truespeed
-                   onmouseenter="this.stop()"
-                   onmouseleave="this.start()"
-                   ontouchstart="this.stop()"
-                   ontouchend="this.start()">
-            <span id="v294TickerContent">Latest articles are loading...</span>
-          </marquee>
-        </div>
-        <button id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown" type="button" onclick="toggleV30Ticker()">⏸</button>
-      </div>
-
-      <section id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown">
-        <div class="v35 Professional Dashboard + Profile Dropdown">
-          <span class="v35 Professional Dashboard + Profile Dropdown">📖</span>
-          <div>
-            <small>CONTINUE LEARNING</small>
-            <b id="v35 Professional Dashboard + Profile Dropdown">Open an article to begin</b>
-          </div>
-          <button type="button" onclick="openV30ContinueLearning()">Resume</button>
-        </div>
-        <div class="v35 Professional Dashboard + Profile Dropdown">
-          <span class="v35 Professional Dashboard + Profile Dropdown">🎯</span>
-          <div>
-            <small>REVISION DUE</small>
-            <b id="v35 Professional Dashboard + Profile Dropdown">0 items</b>
-          </div>
-          <button type="button" onclick="openDashSection('revisionCenterModule')">Review</button>
-        </div>
-        <div class="v35 Professional Dashboard + Profile Dropdown">
-          <span class="v35 Professional Dashboard + Profile Dropdown">📝</span>
-          <div>
-            <small>PERSONAL NOTES</small>
-            <b id="v35 Professional Dashboard + Profile Dropdown">0 notes</b>
-          </div>
-          <button type="button" onclick="openDashSection('notesCenterModule')">Open</button>
-        </div>
-      </section>
-
-      <section id="overview" class="dash-section active">
-        <div class="stats-grid-pro">
-          <div class="stat-card blue"><span>📚</span><h3>5</h3><p>Knowledge Center</p></div>
-          <div class="stat-card green"><span>🎯</span><h3>8</h3><p>UPSC Sections</p></div>
-          <div class="stat-card purple"><span>🎓</span><h3>10</h3><p>UGC Political Science</p></div>
-          <div class="stat-card orange"><span>⚡</span><h3>Fast</h3><p>Cached Reader</p></div>
-        </div>
-
-        <div class="pro-panel search-results-panel" id="searchResultsPanel" style="display:none;">
-          <div class="panel-head">
-            <h3>🔍 Search Results</h3>
-            <button class="mini-btn" onclick="clearGlobalSearch()">Clear</button>
-          </div>
-          <div id="globalSearchResults" class="post-list"></div>
-        </div>
-
-        <div class="two-col compact-two">
-          <div class="pro-panel progress-panel">
-            <div class="panel-head">
-              <h3>📊 Daily Study Progress</h3>
-              <button class="mini-btn" onclick="resetDailyProgress()">Reset</button>
-            </div>
-            <div class="progress-track"><span id="dailyProgressBar"></span></div>
-            <p id="dailyProgressText" class="muted">0 articles read today.</p>
-          </div>
-          <div class="pro-panel v291-quick-card">
-            <div class="panel-head">
-              <h3>🎯 Quick Access</h3>
-            </div>
-            <div class="v291-quick-actions">
-              <button type="button" onclick="openDashSection('revisionCenterModule')">Revision Center</button>
-              <button type="button" onclick="openDashSection('notesCenterModule')">My Notes</button>
-              <button type="button" onclick="openDashSection('performanceModule')">Performance</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <div class="panel-head">
-              <h3>🕒 Recently Read</h3>
-              <button class="mini-btn" onclick="openDashSection('library')">History</button>
-            </div>
-            <div id="recentlyReadBox" class="recent-mini-box">No recent article yet.</div>
-          </div>
-          <div class="pro-panel">
-            <h3>📈 Reading Statistics</h3>
-            <div class="mini-stats">
-              <span><b id="statToday">0</b><small>Today</small></span>
-              <span><b id="statSaved">0</b><small>Saved</small></span>
-              <span><b id="statFav">0</b><small>Favourites</small></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="three-col">
-          <div class="pro-panel module-card knowledge-card" onclick="openDashSection('knowledgeModule')">
-            <h3>📚 Knowledge Center</h3>
-            <p>Current Affairs, News Articles, Current Content, News Cutting and GK.</p>
-            <button class="primary-btn">Open Module</button>
-          </div>
-          <div class="pro-panel module-card upsc-card" onclick="openDashSection('upscModule')">
-            <h3>🎯 UPSC</h3>
-            <p>GS Papers, Essay, Optional Papers and Interview preparation.</p>
-            <button class="primary-btn">Open Module</button>
-          </div>
-          <div class="pro-panel module-card ugc-card" onclick="openDashSection('ugcModule')">
-            <h3>🎓 UGC</h3>
-            <p>Political Science sub-module with complete category reader.</p>
-            <button class="primary-btn">Open Module</button>
-          </div>
-        </div>
-
-        <div class="two-col">
-          <div class="pro-panel">
-            <div class="panel-head">
-              <h3>🔥 Latest Articles</h3>
-              <button class="mini-btn" onclick="loadLatestArticles()">Refresh</button>
-            </div>
-            <div id="latestArticles" class="post-list">
-              <p class="muted">Latest articles will load automatically.</p>
-            </div>
-          </div>
-          <div class="pro-panel">
-            <h3 class="hide-continue-title">📌 Continue Reading</h3>
-            <div id="continueReading" class="continue-box">No article opened yet.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="knowledgeModule" class="dash-section">
-        <div class="pro-panel">
-          <h3>📚 Knowledge Center</h3>
-          <p class="muted">Select a category. Articles will open inside the portal.</p>
-          <div id="knowledgeGrid" class="private-cat-grid"></div>
-        </div>
-        <div class="pro-panel">
-          <div class="panel-head">
-            <h3 id="knowledgePostTitle">Select a category</h3>
-            <input id="knowledgeSearch" oninput="filterLoadedPosts()" placeholder="Search articles..." />
-          </div>
-          <div id="knowledgePostList" class="post-list"><p class="muted">Select a Knowledge Center category.</p></div>
-        </div>
-      </section>
-
-      <section id="upscModule" class="dash-section">
-        <div class="pro-panel">
-          <h3>🎯 UPSC</h3>
-          <p class="muted">GS, Essay, Optional Subject and Interview sections.</p>
-          <h4 class="module-subtitle">General Studies</h4>
-          <div id="upscGrid" class="private-cat-grid"></div>
-          <h4 class="module-subtitle">Optional Subject</h4>
-          <div id="optionalGrid" class="private-cat-grid"></div>
-        </div>
-        <div class="pro-panel">
-          <div class="panel-head">
-            <h3 id="upscPostTitle">Select a category</h3>
-            <input id="upscSearch" oninput="filterLoadedPosts()" placeholder="Search articles..." />
-          </div>
-          <div id="upscPostList" class="post-list"><p class="muted">Select a UPSC category.</p></div>
-        </div>
-      </section>
-
-      <section id="hsscModule" class="dash-section"><div class="pro-panel"><div class="panel-head"><div><h3>🟢 HSSC & Haryana Exams</h3><p class="muted">Dynamic categories linked with Blogger labels.</p></div><button class="mini-btn" onclick="loadV32HsscOverview()">Refresh</button></div><div class="v32-hssc-intro"><div><span class="v32-hssc-logo">HR</span><div><h2>Haryana Exam Preparation</h2><p>Haryana CET, HSSC and Haryana GK content in one place.</p></div></div></div><div id="v32HsscCategoryGrid" class="v32-hssc-grid"></div><div id="v32HsscPostArea" class="v32-hssc-post-area"><p class="muted">Choose a category to load articles.</p></div></div></section>
-
-      <section id="ugcModule" class="dash-section">
-        <div class="pro-panel">
-          <h3>🎓 UGC</h3>
-          <p class="muted">Sub-module: Political Science</p>
-          <h4 class="module-subtitle">Political Science</h4>
-          <div id="politicalScienceGrid" class="private-cat-grid"></div>
-        </div>
-        <div class="pro-panel">
-          <div class="panel-head">
-            <h3 id="ugcPostTitle">Select a category</h3>
-            <input id="ugcSearch" oninput="filterLoadedPosts()" placeholder="Search articles..." />
-          </div>
-          <div id="ugcPostList" class="post-list"><p class="muted">Select a Political Science category.</p></div>
-        </div>
-      </section>
-
-      <section id="notificationsModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <h3>🔔 Notification Center</h3>
-            <button class="mini-btn" onclick="markAllNotificationsRead()">Mark all as read</button>
-          </div>
-          <div id="notificationsList" class="post-list"></div>
-        </div>
-      </section>
-
-      <section id="library" class="dash-section">
-        <div class="pro-panel">
-          <h3>📖 My Library</h3>
-          <p class="muted">Recently opened articles will appear here.</p>
-          <div id="readingHistory" class="post-list"></div>
-        </div>
-      </section>
-
-      <section id="profile" class="dash-section">
-        <div class="pro-panel">
-          <div class="v291-profile-cover">
-            <div class="v291-avatar-box">
-              <img id="v291ProfilePhoto" src="logo.jpg" alt="Member profile photo">
-              <label class="v291-photo-upload">📷 Change Photo
-                <input type="file" accept="image/*" onchange="handleV291ProfilePhoto(event)">
-              </label>
-            </div>
-            <div class="v291-profile-title">
-              <span class="eyebrow">MEMBER PROFILE</span>
-              <h2 id="v291ProfileDisplayName">Member</h2>
-              <p id="v291ProfileDisplayEmail"></p>
-              <div class="v291-completion-label">
-                <span>Profile Completion</span><b id="v291CompletionText">0%</b>
-              </div>
-              <div class="v291-completion-bar"><span id="v291CompletionBar"></span></div>
-            </div>
-          </div>
-
-          <div class="form-grid profile-pro-grid v291-profile-grid">
-            <input id="profileName" placeholder="Full name" />
-            <input id="profileMobile" placeholder="Mobile / WhatsApp number" />
-            <input id="profileCity" placeholder="City" />
-            <input id="v291State" placeholder="State" />
-            <input id="v291District" placeholder="District" />
-            <input id="v291Dob" type="date" aria-label="Date of birth" />
-            <select id="v291Gender">
-              <option value="">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-            <select id="profileExam">
-              <option value="">Select target exam</option>
-              <option value="UPSC">UPSC</option>
-              <option value="UGC NET">UGC NET</option>
-              <option value="HPSC">HPSC</option>
-              <option value="State PCS">State PCS</option>
-              <option value="SSC">SSC</option>
-              <option value="Banking">Banking</option>
-              <option value="Railway">Railway</option>
-              <option value="Other">Other</option>
-            </select>
-            <input id="profileSubject" placeholder="Main / optional subject" />
-            <input id="v291Qualification" placeholder="Qualification" />
-            <input id="v291Occupation" placeholder="Occupation" />
-            <input id="v291Language" placeholder="Preferred language" />
-            <input id="profileGoal" placeholder="Daily study goal" />
-            <input id="v291Address" placeholder="Address" />
-            <input id="v291Website" placeholder="Website / social profile" />
-            <textarea id="profileBio" placeholder="Short bio / preparation note"></textarea>
-          </div>
-          <button class="primary-btn" onclick="saveV291ProfessionalProfile()">Save Professional Profile</button>
-          <p id="profileMsg" class="small-msg"></p>
-        </div>
-      </section>
-
-      <section id="notes" class="dash-section">
-        <div class="pro-panel">
-          <h3>📝 My Notes</h3>
-          <input id="noteTitle" placeholder="Note title" />
-          <textarea id="noteBody" placeholder="Write your study note..."></textarea>
-          <button class="primary-btn" onclick="addNote()">Add Note</button>
-          <div id="notesList" class="list-box"></div>
-        </div>
-      </section>
-
-      <section id="bookmarks" class="dash-section">
-        <div class="pro-panel">
-          <h3>🔖 My Bookmarks</h3>
-          <input id="bookmarkTitle" placeholder="Bookmark title" />
-          <input id="bookmarkUrl" placeholder="Article URL or note" />
-          <button class="primary-btn" onclick="addBookmark()">Save Bookmark</button>
-          <div id="bookmarksList" class="list-box"></div>
-        </div>
-      </section>
-
-      <section id="studyToolsModule" class="dash-section">
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <h3>⏱️ Study Timer</h3>
-            <p class="muted">Use Pomodoro style focused study sessions.</p>
-            <div class="timer-card">
-              <div id="pomodoroTime">25:00</div>
-              <div class="timer-actions">
-                <button class="primary-btn" onclick="startPomodoro()">Start</button>
-                <button class="mini-btn" onclick="pausePomodoro()">Pause</button>
-                <button class="mini-btn" onclick="resetPomodoro()">Reset</button>
-              </div>
-            </div>
-          </div>
-          <div class="pro-panel">
-            <h3>🎯 Quick Study Actions</h3>
-            <div class="quick-actions">
-              <button onclick="openDashSection('knowledgeModule')">Knowledge Center</button>
-              <button onclick="openDashSection('upscModule')">UPSC</button>
-              <button onclick="openDashSection('ugcModule')">UGC</button>
-              <button onclick="openDashSection('notes')">Notes</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="supportModule" class="dash-section">
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <h3>🎫 Create Support Ticket</h3>
-            <select id="ticketCategory">
-              <option value="Technical Issue">Technical Issue</option>
-              <option value="Login Problem">Login Problem</option>
-              <option value="Content Issue">Content Issue</option>
-              <option value="Account Issue">Account Issue</option>
-              <option value="Feedback">Feedback</option>
-              <option value="Feature Request">Feature Request</option>
-            </select>
-            <input id="ticketSubject" placeholder="Ticket subject" />
-            <textarea id="ticketMessage" placeholder="Describe your issue clearly..."></textarea>
-            <button class="primary-btn" onclick="createSupportTicket()">Submit Ticket</button>
-            <p id="ticketMsg" class="small-msg"></p>
-          </div>
-          <div class="pro-panel">
-            <h3>📋 My Tickets</h3>
-            <div id="myTicketsList" class="ticket-list"><p class="muted">Your tickets will appear here.</p></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="performanceModule" class="dash-section">
-        <div class="performance-hero">
-          <div>
-            <span class="eyebrow">STUDENT PERFORMANCE</span>
-            <h2>Track Your Learning Journey</h2>
-            <p>Build consistency, complete daily goals and unlock achievement badges.</p>
-          </div>
-          <div class="streak-orb">
-            <strong id="currentStreak">0</strong>
-            <span>Day Streak 🔥</span>
-          </div>
-        </div>
-
-        <div class="stats-grid-pro performance-stats">
-          <div class="stat-card blue"><span>📖</span><h3 id="totalReadStat">0</h3><p>Total Articles Read</p></div>
-          <div class="stat-card green"><span>✅</span><h3 id="weeklyReadStat">0</h3><p>Read This Week</p></div>
-          <div class="stat-card purple"><span>🏆</span><h3 id="badgeCountStat">0</h3><p>Badges Earned</p></div>
-          <div class="stat-card orange"><span>🎯</span><h3 id="goalPercentStat">0%</h3><p>Goal Completion</p></div>
-        </div>
-
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <div class="panel-head">
-              <div>
-                <h3>📅 Reading Calendar</h3>
-                <p class="muted">Last 28 days activity</p>
-              </div>
-            </div>
-            <div id="readingCalendar" class="reading-calendar"></div>
-          </div>
-
-          <div class="pro-panel">
-            <h3>🏅 Achievements</h3>
-            <div id="achievementGrid" class="achievement-grid"></div>
-          </div>
-        </div>
-
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <h3>📈 Weekly Progress</h3>
-            <div id="weeklyProgressChart" class="weekly-bars"></div>
-          </div>
-
-          <div class="pro-panel">
-            <h3>🎯 Study Goal</h3>
-            <div class="goal-ring-wrap">
-              <div class="goal-ring" id="goalRing"><span id="goalRingText">0%</span></div>
-              <div>
-                <b id="goalDescription">0 of 5 articles completed today</b>
-                <p class="muted">Complete 5 articles daily to maintain your streak.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="readingHistoryModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div><h3>🕒 Reading History</h3><p class="muted">Recently opened articles and saved reading position.</p></div>
-            <button class="mini-btn" onclick="clearReadingHistory()">Clear History</button>
-          </div>
-          <div id="readingHistoryList" class="history-list"></div>
-        </div>
-      </section>
-
-      <section id="notesCenterModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>📝 My Notes</h3>
-              <p class="muted">Personal notes saved from articles.</p>
-            </div>
-            <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
-          </div>
-          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
-        </div>
-      </section>
-
-      <section id="revisionCenterModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🎯 Revision Center</h3>
-              <p class="muted">Review articles scheduled for revision.</p>
-            </div>
-            <span class="revision-due-badge" id="revisionDueBadge">0 due</span>
-          </div>
-          <div class="revision-filter-row">
-            <button onclick="setRevisionFilter('all')">All</button>
-            <button onclick="setRevisionFilter('due')">Due</button>
-            <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
-            <button onclick="setRevisionFilter('completed')">Completed</button>
-          </div>
-          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
-        </div>
-      </section>
-
-      <section id="mockTestsModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>📝 Mock Tests</h3>
-              <p class="muted">Practice competitive exam tests with timer and instant results.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
-          </div>
-          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"><p class="muted">Loading tests...</p></div>
-        </div>
-      </section>
-
-      <section id="myResultsModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>📊 My Test Results</h3>
-              <p class="muted">Review previous attempts and performance.</p>
-            </div>
-          </div>
-          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"><p class="muted">No attempts yet.</p></div>
-        </div>
-      </section>
-
-      <section id="v35 Professional Dashboard + Profile Dropdown" class="dash-section">
-        <div class="v35 Professional Dashboard + Profile Dropdown">
-          <header class="v35 Professional Dashboard + Profile Dropdown">
-            <div>
-              <span class="eyebrow">LIVE MOCK TEST</span>
-              <h2 id="v35 Professional Dashboard + Profile Dropdown">Mock Test</h2>
-            </div>
-            <div class="v35 Professional Dashboard + Profile Dropdown">⏱ <span id="v35 Professional Dashboard + Profile Dropdown">00:00</span></div>
-          </header>
-
-          <div class="v35 Professional Dashboard + Profile Dropdown">
-            <main class="v35 Professional Dashboard + Profile Dropdown">
-              <div class="v35 Professional Dashboard + Profile Dropdown">
-                <span id="v35 Professional Dashboard + Profile Dropdown">Question 1</span>
-                <span id="v35 Professional Dashboard + Profile Dropdown">Not Answered</span>
-              </div>
-              <h3 id="v35 Professional Dashboard + Profile Dropdown"></h3>
-              <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
-
-              <div class="v35 Professional Dashboard + Profile Dropdown">
-                <button onclick="v35 Professional Dashboard + Profile Dropdown">← Previous</button>
-                <button onclick="v35 Professional Dashboard + Profile Dropdown">Clear Response</button>
-                <button onclick="v35 Professional Dashboard + Profile Dropdown">Mark for Review</button>
-                <button onclick="v35 Professional Dashboard + Profile Dropdown">Next →</button>
-              </div>
-            </main>
-
-            <aside class="v35 Professional Dashboard + Profile Dropdown">
-              <h4>Question Palette</h4>
-              <div class="v35 Professional Dashboard + Profile Dropdown">
-                <span><i class="answered"></i> Answered</span>
-                <span><i class="review"></i> Review</span>
-                <span><i class="unanswered"></i> Unanswered</span>
-              </div>
-              <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
-              <button class="v35 Professional Dashboard + Profile Dropdown" onclick="submitV31Test(false)">Submit Test</button>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      <section id="v35 Professional Dashboard + Profile Dropdown" class="dash-section">
-        <div class="pro-panel">
-          <div class="v35 Professional Dashboard + Profile Dropdown">
-            <span>🏆</span>
-            <h2 id="v35 Professional Dashboard + Profile Dropdown">Test Completed</h2>
-            <p id="v35 Professional Dashboard + Profile Dropdown"></p>
-          </div>
-          <div class="stats-grid-pro">
-            <div class="stat-card blue"><span>🎯</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Score</p></div>
-            <div class="stat-card green"><span>✅</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Correct</p></div>
-            <div class="stat-card orange"><span>❌</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Wrong</p></div>
-            <div class="stat-card purple"><span>⏭</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Unanswered</p></div>
-          </div>
-          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
-          <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
-        </div>
-      </section>
-
-      <section id="achievementsModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🏆 My Achievements</h3>
-              <p class="muted">Reading milestones, badges and reward progress.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV317Achievements()">Refresh</button>
-          </div>
-
-          <div class="v317-achievement-summary">
-            <div>
-              <small>TOTAL BADGES</small>
-              <b id="v317TotalBadges">0</b>
-            </div>
-            <div>
-              <small>ARTICLES READ</small>
-              <b id="v317ArticlesRead">0</b>
-            </div>
-            <div>
-              <small>NEXT MILESTONE</small>
-              <b id="v317NextMilestone">10</b>
-            </div>
-          </div>
-
-          <div class="v317-progress-wrap">
-            <div class="v317-progress-head">
-              <span>Reading Progress</span>
-              <b id="v317ProgressText">0 / 10</b>
-            </div>
-            <div class="v317-progress-track"><span id="v317ProgressBar"></span></div>
-          </div>
-
-          <div id="v317BadgeGrid" class="v317-badge-grid"></div>
-          <div id="v317AchievementTimeline" class="v317-achievement-timeline"></div>
-        </div>
-      </section>
-
-      <section id="dailyQuizModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🎯 Daily Quiz Challenge</h3>
-              <p class="muted">10 questions every day. Earn XP and maintain your streak.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV33DailyQuiz()">Refresh</button>
-          </div>
-
-          <div id="v33QuizIntro" class="v33-quiz-intro">
-            <div>
-              <span>🧠</span>
-              <div>
-                <h2>Today's Challenge</h2>
-                <p>Questions are selected automatically from the portal question bank.</p>
-              </div>
-            </div>
-            <button type="button" onclick="startV33DailyQuiz()">Start Daily Quiz</button>
-          </div>
-
-          <div id="v33QuizUnavailable" class="v33-quiz-message"></div>
-
-          <div id="v33QuizPlayer" class="v33-quiz-player" hidden>
-            <header>
-              <div>
-                <small>DAILY QUIZ</small>
-                <h3 id="v33QuizQuestionNumber">Question 1 of 10</h3>
-              </div>
-              <div class="v33-quiz-timer">⏱ <span id="v33QuizTimer">10:00</span></div>
-            </header>
-            <div class="v33-quiz-progress"><span id="v33QuizProgressBar"></span></div>
-            <h3 id="v33QuizQuestionText"></h3>
-            <div id="v33QuizOptions" class="v33-quiz-options"></div>
-            <div class="v33-quiz-actions">
-              <button type="button" onclick="v33QuizPrevious()">← Previous</button>
-              <button type="button" onclick="v33QuizNext()">Next →</button>
-              <button type="button" class="submit" onclick="submitV33DailyQuiz(false)">Submit Quiz</button>
-            </div>
-          </div>
-
-          <div id="v33QuizResult" class="v33-quiz-result" hidden></div>
-        </div>
-      </section>
-
-      <section id="xpLeaderboardModule" class="dash-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🏆 XP Leaderboard</h3>
-              <p class="muted">Top learners based on Daily Quiz XP.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV33Leaderboard()">Refresh</button>
-          </div>
-          <div id="v33MyRankCard" class="v33-my-rank-card"></div>
-          <div id="v33LeaderboardList" class="v33-leaderboard-list">
-            <p class="muted">Loading leaderboard...</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="security" class="dash-section">
-        <div class="pro-panel">
-          <h3>🔐 Change Password</h3>
-          <input id="oldPassword" type="password" placeholder="Old password" />
-          <input id="newPassword" type="password" placeholder="New password" />
-          <button class="primary-btn" onclick="changePassword()">Change Password</button>
-          <p id="securityMsg" class="small-msg"></p>
-        </div>
-      </section>
-      <footer class="portal-footer">
-        <div class="footer-brand">
-          <img src="logo.jpg" alt="IAS Selection Point" />
-          <div>
-            <b>IAS Selection Point</b>
-            <span>Let's make your imagination true.</span>
-          </div>
-        </div>
-        <div class="footer-links footer-pipe-links">
-          <button onclick="openFooterPage('about')">About Us</button>
-          <span>|</span>
-          <button onclick="openFooterPage('contact')">Contact Us</button>
-          <span>|</span>
-          <button onclick="openFooterPage('cookies')">Cookies Policy</button>
-          <span>|</span>
-          <button onclick="openFooterPage('privacy')">Privacy Policy</button>
-          <span>|</span>
-          <button onclick="openFooterPage('terms')">Terms & Conditions</button>
-          <span>|</span>
-          <button onclick="openFooterPage('disclaimer')">Disclaimer</button>
-        </div>
-        <div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
-      </footer>
-
-    </main>
-  </div>
-
-  <script src="config.js?v=35"></script>
-  <script src="app.js?v=35"></script>
+<section class="dash-section active" id="overview">
+<div class="stats-grid-pro">
+<div class="stat-card blue"><span>📚</span><h3>5</h3><p>Knowledge Center</p></div>
+<div class="stat-card green"><span>🎯</span><h3>8</h3><p>UPSC Sections</p></div>
+<div class="stat-card purple"><span>🎓</span><h3>10</h3><p>UGC Political Science</p></div>
+<div class="stat-card orange"><span>⚡</span><h3>Fast</h3><p>Cached Reader</p></div>
+</div>
+<div class="pro-panel search-results-panel" id="searchResultsPanel" style="display:none;">
+<div class="panel-head">
+<h3>🔍 Search Results</h3>
+<button class="mini-btn" onclick="clearGlobalSearch()">Clear</button>
+</div>
+<div class="post-list" id="globalSearchResults"></div>
+</div>
+<div class="two-col compact-two">
+<div class="pro-panel progress-panel">
+<div class="panel-head">
+<h3>📊 Daily Study Progress</h3>
+<button class="mini-btn" onclick="resetDailyProgress()">Reset</button>
+</div>
+<div class="progress-track"><span id="dailyProgressBar"></span></div>
+<p class="muted" id="dailyProgressText">0 articles read today.</p>
+</div>
+<div class="pro-panel v291-quick-card">
+<div class="panel-head">
+<h3>🎯 Quick Access</h3>
+</div>
+<div class="v291-quick-actions">
+<button onclick="openDashSection('revisionCenterModule')" type="button">Revision Center</button>
+<button onclick="openDashSection('notesCenterModule')" type="button">My Notes</button>
+<button onclick="openDashSection('performanceModule')" type="button">Performance</button>
+</div>
+</div>
+</div>
+<div class="two-col compact-two">
+<div class="pro-panel">
+<div class="panel-head">
+<h3>🕒 Recently Read</h3>
+<button class="mini-btn" onclick="openDashSection('library')">History</button>
+</div>
+<div class="recent-mini-box" id="recentlyReadBox">No recent article yet.</div>
+</div>
+<div class="pro-panel">
+<h3>📈 Reading Statistics</h3>
+<div class="mini-stats">
+<span><b id="statToday">0</b><small>Today</small></span>
+<span><b id="statSaved">0</b><small>Saved</small></span>
+<span><b id="statFav">0</b><small>Favourites</small></span>
+</div>
+</div>
+</div>
+<div class="three-col">
+<div class="pro-panel module-card knowledge-card" onclick="openDashSection('knowledgeModule')">
+<h3>📚 Knowledge Center</h3>
+<p>Current Affairs, News Articles, Current Content, News Cutting and GK.</p>
+<button class="primary-btn">Open Module</button>
+</div>
+<div class="pro-panel module-card upsc-card" onclick="openDashSection('upscModule')">
+<h3>🎯 UPSC</h3>
+<p>GS Papers, Essay, Optional Papers and Interview preparation.</p>
+<button class="primary-btn">Open Module</button>
+</div>
+<div class="pro-panel module-card ugc-card" onclick="openDashSection('ugcModule')">
+<h3>🎓 UGC</h3>
+<p>Political Science sub-module with complete category reader.</p>
+<button class="primary-btn">Open Module</button>
+</div>
+</div>
+<div class="two-col">
+<div class="pro-panel">
+<div class="panel-head">
+<h3>🔥 Latest Articles</h3>
+<button class="mini-btn" onclick="loadLatestArticles()">Refresh</button>
+</div>
+<div class="post-list" id="latestArticles">
+<p class="muted">Latest articles will load automatically.</p>
+</div>
+</div>
+<div class="pro-panel">
+<h3 class="hide-continue-title">📌 Continue Reading</h3>
+<div class="continue-box" id="continueReading">No article opened yet.</div>
+</div>
+</div>
+</section>
+<section class="dash-section" id="knowledgeModule">
+<div class="pro-panel">
+<h3>📚 Knowledge Center</h3>
+<p class="muted">Select a category. Articles will open inside the portal.</p>
+<div class="private-cat-grid" id="knowledgeGrid"></div>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<h3 id="knowledgePostTitle">Select a category</h3>
+<input id="knowledgeSearch" oninput="filterLoadedPosts()" placeholder="Search articles..."/>
+</div>
+<div class="post-list" id="knowledgePostList"><p class="muted">Select a Knowledge Center category.</p></div>
+</div>
+</section>
+<section class="dash-section" id="upscModule">
+<div class="pro-panel">
+<h3>🎯 UPSC</h3>
+<p class="muted">GS, Essay, Optional Subject and Interview sections.</p>
+<h4 class="module-subtitle">General Studies</h4>
+<div class="private-cat-grid" id="upscGrid"></div>
+<h4 class="module-subtitle">Optional Subject</h4>
+<div class="private-cat-grid" id="optionalGrid"></div>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<h3 id="upscPostTitle">Select a category</h3>
+<input id="upscSearch" oninput="filterLoadedPosts()" placeholder="Search articles..."/>
+</div>
+<div class="post-list" id="upscPostList"><p class="muted">Select a UPSC category.</p></div>
+</div>
+</section>
+<section class="dash-section" id="hsscModule"><div class="pro-panel"><div class="panel-head"><div><h3>🟢 HSSC &amp; Haryana Exams</h3><p class="muted">Dynamic categories linked with Blogger labels.</p></div><button class="mini-btn" onclick="loadV32HsscOverview()">Refresh</button></div><div class="v32-hssc-intro"><div><span class="v32-hssc-logo">HR</span><div><h2>Haryana Exam Preparation</h2><p>Haryana CET, HSSC and Haryana GK content in one place.</p></div></div></div><div class="v32-hssc-grid" id="v32HsscCategoryGrid"></div><div class="v32-hssc-post-area" id="v32HsscPostArea"><p class="muted">Choose a category to load articles.</p></div></div></section>
+<section class="dash-section" id="ugcModule">
+<div class="pro-panel">
+<h3>🎓 UGC</h3>
+<p class="muted">Sub-module: Political Science</p>
+<h4 class="module-subtitle">Political Science</h4>
+<div class="private-cat-grid" id="politicalScienceGrid"></div>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<h3 id="ugcPostTitle">Select a category</h3>
+<input id="ugcSearch" oninput="filterLoadedPosts()" placeholder="Search articles..."/>
+</div>
+<div class="post-list" id="ugcPostList"><p class="muted">Select a Political Science category.</p></div>
+</div>
+</section>
+<section class="dash-section" id="notificationsModule">
+<div class="pro-panel">
+<div class="panel-head">
+<h3>🔔 Notification Center</h3>
+<button class="mini-btn" onclick="markAllNotificationsRead()">Mark all as read</button>
+</div>
+<div class="post-list" id="notificationsList"></div>
+</div>
+</section>
+<section class="dash-section" id="library">
+<div class="pro-panel">
+<h3>📖 My Library</h3>
+<p class="muted">Recently opened articles will appear here.</p>
+<div class="post-list" id="readingHistory"></div>
+</div>
+</section>
+<section class="dash-section" id="profile">
+<div class="pro-panel">
+<div class="v291-profile-cover">
+<div class="v291-avatar-box">
+<img alt="Member profile photo" id="v291ProfilePhoto" src="logo.jpg"/>
+<label class="v291-photo-upload">📷 Change Photo
+                <input accept="image/*" onchange="handleV291ProfilePhoto(event)" type="file"/>
+</label>
+</div>
+<div class="v291-profile-title">
+<span class="eyebrow">MEMBER PROFILE</span>
+<h2 id="v291ProfileDisplayName">Member</h2>
+<p id="v291ProfileDisplayEmail"></p>
+<div class="v291-completion-label">
+<span>Profile Completion</span><b id="v291CompletionText">0%</b>
+</div>
+<div class="v291-completion-bar"><span id="v291CompletionBar"></span></div>
+</div>
+</div>
+<div class="form-grid profile-pro-grid v291-profile-grid">
+<input id="profileName" placeholder="Full name">
+<input id="profileMobile" placeholder="Mobile / WhatsApp number"/>
+<input id="profileCity" placeholder="City"/>
+<input id="v291State" placeholder="State"/>
+<input id="v291District" placeholder="District"/>
+<input aria-label="Date of birth" id="v291Dob" type="date"/>
+<select id="v291Gender">
+<option value="">Select gender</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+<option value="Other">Other</option>
+</select>
+<select id="profileExam">
+<option value="">Select target exam</option>
+<option value="UPSC">UPSC</option>
+<option value="UGC NET">UGC NET</option>
+<option value="HPSC">HPSC</option>
+<option value="State PCS">State PCS</option>
+<option value="SSC">SSC</option>
+<option value="Banking">Banking</option>
+<option value="Railway">Railway</option>
+<option value="Other">Other</option>
+</select>
+<input id="profileSubject" placeholder="Main / optional subject"/>
+<input id="v291Qualification" placeholder="Qualification"/>
+<input id="v291Occupation" placeholder="Occupation"/>
+<input id="v291Language" placeholder="Preferred language"/>
+<input id="profileGoal" placeholder="Daily study goal"/>
+<input id="v291Address" placeholder="Address"/>
+<input id="v291Website" placeholder="Website / social profile"/>
+<textarea id="profileBio" placeholder="Short bio / preparation note"></textarea>
+</input></div>
+<button class="primary-btn" onclick="saveV291ProfessionalProfile()">Save Professional Profile</button>
+<p class="small-msg" id="profileMsg"></p>
+</div>
+</section>
+<section class="dash-section" id="notes">
+<div class="pro-panel">
+<h3>📝 My Notes</h3>
+<input id="noteTitle" placeholder="Note title"/>
+<textarea id="noteBody" placeholder="Write your study note..."></textarea>
+<button class="primary-btn" onclick="addNote()">Add Note</button>
+<div class="list-box" id="notesList"></div>
+</div>
+</section>
+<section class="dash-section" id="bookmarks">
+<div class="pro-panel">
+<h3>🔖 My Bookmarks</h3>
+<input id="bookmarkTitle" placeholder="Bookmark title"/>
+<input id="bookmarkUrl" placeholder="Article URL or note"/>
+<button class="primary-btn" onclick="addBookmark()">Save Bookmark</button>
+<div class="list-box" id="bookmarksList"></div>
+</div>
+</section>
+<section class="dash-section" id="studyToolsModule">
+<div class="two-col compact-two">
+<div class="pro-panel">
+<h3>⏱️ Study Timer</h3>
+<p class="muted">Use Pomodoro style focused study sessions.</p>
+<div class="timer-card">
+<div id="pomodoroTime">25:00</div>
+<div class="timer-actions">
+<button class="primary-btn" onclick="startPomodoro()">Start</button>
+<button class="mini-btn" onclick="pausePomodoro()">Pause</button>
+<button class="mini-btn" onclick="resetPomodoro()">Reset</button>
+</div>
+</div>
+</div>
+<div class="pro-panel">
+<h3>🎯 Quick Study Actions</h3>
+<div class="quick-actions">
+<button onclick="openDashSection('knowledgeModule')">Knowledge Center</button>
+<button onclick="openDashSection('upscModule')">UPSC</button>
+<button onclick="openDashSection('ugcModule')">UGC</button>
+<button onclick="openDashSection('notes')">Notes</button>
+</div>
+</div>
+</div>
+</section>
+<section class="dash-section" id="supportModule">
+<div class="two-col compact-two">
+<div class="pro-panel">
+<h3>🎫 Create Support Ticket</h3>
+<select id="ticketCategory">
+<option value="Technical Issue">Technical Issue</option>
+<option value="Login Problem">Login Problem</option>
+<option value="Content Issue">Content Issue</option>
+<option value="Account Issue">Account Issue</option>
+<option value="Feedback">Feedback</option>
+<option value="Feature Request">Feature Request</option>
+</select>
+<input id="ticketSubject" placeholder="Ticket subject"/>
+<textarea id="ticketMessage" placeholder="Describe your issue clearly..."></textarea>
+<button class="primary-btn" onclick="createSupportTicket()">Submit Ticket</button>
+<p class="small-msg" id="ticketMsg"></p>
+</div>
+<div class="pro-panel">
+<h3>📋 My Tickets</h3>
+<div class="ticket-list" id="myTicketsList"><p class="muted">Your tickets will appear here.</p></div>
+</div>
+</div>
+</section>
+<section class="dash-section" id="performanceModule">
+<div class="performance-hero">
+<div>
+<span class="eyebrow">STUDENT PERFORMANCE</span>
+<h2>Track Your Learning Journey</h2>
+<p>Build consistency, complete daily goals and unlock achievement badges.</p>
+</div>
+<div class="streak-orb">
+<strong id="currentStreak">0</strong>
+<span>Day Streak 🔥</span>
+</div>
+</div>
+<div class="stats-grid-pro performance-stats">
+<div class="stat-card blue"><span>📖</span><h3 id="totalReadStat">0</h3><p>Total Articles Read</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="weeklyReadStat">0</h3><p>Read This Week</p></div>
+<div class="stat-card purple"><span>🏆</span><h3 id="badgeCountStat">0</h3><p>Badges Earned</p></div>
+<div class="stat-card orange"><span>🎯</span><h3 id="goalPercentStat">0%</h3><p>Goal Completion</p></div>
+</div>
+<div class="two-col compact-two">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>📅 Reading Calendar</h3>
+<p class="muted">Last 28 days activity</p>
+</div>
+</div>
+<div class="reading-calendar" id="readingCalendar"></div>
+</div>
+<div class="pro-panel">
+<h3>🏅 Achievements</h3>
+<div class="achievement-grid" id="achievementGrid"></div>
+</div>
+</div>
+<div class="two-col compact-two">
+<div class="pro-panel">
+<h3>📈 Weekly Progress</h3>
+<div class="weekly-bars" id="weeklyProgressChart"></div>
+</div>
+<div class="pro-panel">
+<h3>🎯 Study Goal</h3>
+<div class="goal-ring-wrap">
+<div class="goal-ring" id="goalRing"><span id="goalRingText">0%</span></div>
+<div>
+<b id="goalDescription">0 of 5 articles completed today</b>
+<p class="muted">Complete 5 articles daily to maintain your streak.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="dash-section" id="readingHistoryModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div><h3>🕒 Reading History</h3><p class="muted">Recently opened articles and saved reading position.</p></div>
+<button class="mini-btn" onclick="clearReadingHistory()">Clear History</button>
+</div>
+<div class="history-list" id="readingHistoryList"></div>
+</div>
+</section>
+<section class="dash-section" id="notesCenterModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>📝 My Notes</h3>
+<p class="muted">Personal notes saved from articles.</p>
+</div>
+<input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+</div>
+</section>
+<section class="dash-section" id="revisionCenterModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🎯 Revision Center</h3>
+<p class="muted">Review articles scheduled for revision.</p>
+</div>
+<span class="revision-due-badge" id="revisionDueBadge">0 due</span>
+</div>
+<div class="revision-filter-row">
+<button onclick="setRevisionFilter('all')">All</button>
+<button onclick="setRevisionFilter('due')">Due</button>
+<button onclick="setRevisionFilter('upcoming')">Upcoming</button>
+<button onclick="setRevisionFilter('completed')">Completed</button>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+</div>
+</section>
+<section class="dash-section" id="mockTestsModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>📝 Mock Tests</h3>
+<p class="muted">Practice competitive exam tests with timer and instant results.</p>
+</div>
+<button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"><p class="muted">Loading tests...</p></div>
+</div>
+</section>
+<section class="dash-section" id="myResultsModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>📊 My Test Results</h3>
+<p class="muted">Review previous attempts and performance.</p>
+</div>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"><p class="muted">No attempts yet.</p></div>
+</div>
+</section>
+<section class="dash-section" id="v35.1 Dashboard Cleanup Fix">
+<div class="v35.1 Dashboard Cleanup Fix">
+<header class="v35.1 Dashboard Cleanup Fix">
+<div>
+<span class="eyebrow">LIVE MOCK TEST</span>
+<h2 id="v35.1 Dashboard Cleanup Fix">Mock Test</h2>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix">⏱ <span id="v35.1 Dashboard Cleanup Fix">00:00</span></div>
+</header>
+<div class="v35.1 Dashboard Cleanup Fix">
+<main class="v35.1 Dashboard Cleanup Fix">
+<div class="v35.1 Dashboard Cleanup Fix">
+<span id="v35.1 Dashboard Cleanup Fix">Question 1</span>
+<span id="v35.1 Dashboard Cleanup Fix">Not Answered</span>
+</div>
+<h3 id="v35.1 Dashboard Cleanup Fix"></h3>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+<div class="v35.1 Dashboard Cleanup Fix">
+<button onclick="v35.1 Dashboard Cleanup Fix">← Previous</button>
+<button onclick="v35.1 Dashboard Cleanup Fix">Clear Response</button>
+<button onclick="v35.1 Dashboard Cleanup Fix">Mark for Review</button>
+<button onclick="v35.1 Dashboard Cleanup Fix">Next →</button>
+</div>
+</main>
+<aside class="v35.1 Dashboard Cleanup Fix">
+<h4>Question Palette</h4>
+<div class="v35.1 Dashboard Cleanup Fix">
+<span><i class="answered"></i> Answered</span>
+<span><i class="review"></i> Review</span>
+<span><i class="unanswered"></i> Unanswered</span>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+<button class="v35.1 Dashboard Cleanup Fix" onclick="submitV31Test(false)">Submit Test</button>
+</aside>
+</div>
+</div>
+</section>
+<section class="dash-section" id="v35.1 Dashboard Cleanup Fix">
+<div class="pro-panel">
+<div class="v35.1 Dashboard Cleanup Fix">
+<span>🏆</span>
+<h2 id="v35.1 Dashboard Cleanup Fix">Test Completed</h2>
+<p id="v35.1 Dashboard Cleanup Fix"></p>
+</div>
+<div class="stats-grid-pro">
+<div class="stat-card blue"><span>🎯</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v35.1 Dashboard Cleanup Fix">0</h3><p>Unanswered</p></div>
+</div>
+<div class="v35.1 Dashboard Cleanup Fix" id="v35.1 Dashboard Cleanup Fix"></div>
+<button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
+</div>
+</section>
+<section class="dash-section" id="achievementsModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🏆 My Achievements</h3>
+<p class="muted">Reading milestones, badges and reward progress.</p>
+</div>
+<button class="mini-btn" onclick="loadV317Achievements()">Refresh</button>
+</div>
+<div class="v317-achievement-summary">
+<div>
+<small>TOTAL BADGES</small>
+<b id="v317TotalBadges">0</b>
+</div>
+<div>
+<small>ARTICLES READ</small>
+<b id="v317ArticlesRead">0</b>
+</div>
+<div>
+<small>NEXT MILESTONE</small>
+<b id="v317NextMilestone">10</b>
+</div>
+</div>
+<div class="v317-progress-wrap">
+<div class="v317-progress-head">
+<span>Reading Progress</span>
+<b id="v317ProgressText">0 / 10</b>
+</div>
+<div class="v317-progress-track"><span id="v317ProgressBar"></span></div>
+</div>
+<div class="v317-badge-grid" id="v317BadgeGrid"></div>
+<div class="v317-achievement-timeline" id="v317AchievementTimeline"></div>
+</div>
+</section>
+<section class="dash-section" id="dailyQuizModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🎯 Daily Quiz Challenge</h3>
+<p class="muted">10 questions every day. Earn XP and maintain your streak.</p>
+</div>
+<button class="mini-btn" onclick="loadV33DailyQuiz()">Refresh</button>
+</div>
+<div class="v33-quiz-intro" id="v33QuizIntro">
+<div>
+<span>🧠</span>
+<div>
+<h2>Today's Challenge</h2>
+<p>Questions are selected automatically from the portal question bank.</p>
+</div>
+</div>
+<button onclick="startV33DailyQuiz()" type="button">Start Daily Quiz</button>
+</div>
+<div class="v33-quiz-message" id="v33QuizUnavailable"></div>
+<div class="v33-quiz-player" hidden="" id="v33QuizPlayer">
+<header>
+<div>
+<small>DAILY QUIZ</small>
+<h3 id="v33QuizQuestionNumber">Question 1 of 10</h3>
+</div>
+<div class="v33-quiz-timer">⏱ <span id="v33QuizTimer">10:00</span></div>
+</header>
+<div class="v33-quiz-progress"><span id="v33QuizProgressBar"></span></div>
+<h3 id="v33QuizQuestionText"></h3>
+<div class="v33-quiz-options" id="v33QuizOptions"></div>
+<div class="v33-quiz-actions">
+<button onclick="v33QuizPrevious()" type="button">← Previous</button>
+<button onclick="v33QuizNext()" type="button">Next →</button>
+<button class="submit" onclick="submitV33DailyQuiz(false)" type="button">Submit Quiz</button>
+</div>
+</div>
+<div class="v33-quiz-result" hidden="" id="v33QuizResult"></div>
+</div>
+</section>
+<section class="dash-section" id="xpLeaderboardModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🏆 XP Leaderboard</h3>
+<p class="muted">Top learners based on Daily Quiz XP.</p>
+</div>
+<button class="mini-btn" onclick="loadV33Leaderboard()">Refresh</button>
+</div>
+<div class="v33-my-rank-card" id="v33MyRankCard"></div>
+<div class="v33-leaderboard-list" id="v33LeaderboardList">
+<p class="muted">Loading leaderboard...</p>
+</div>
+</div>
+</section>
+<section class="dash-section" id="security">
+<div class="pro-panel">
+<h3>🔐 Change Password</h3>
+<input id="oldPassword" placeholder="Old password" type="password"/>
+<input id="newPassword" placeholder="New password" type="password"/>
+<button class="primary-btn" onclick="changePassword()">Change Password</button>
+<p class="small-msg" id="securityMsg"></p>
+</div>
+</section>
+<footer class="portal-footer">
+<div class="footer-brand">
+<img alt="IAS Selection Point" src="logo.jpg">
+<div>
+<b>IAS Selection Point</b>
+<span>Let's make your imagination true.</span>
+</div>
+</img></div>
+<div class="footer-links footer-pipe-links">
+<button onclick="openFooterPage('about')">About Us</button>
+<span>|</span>
+<button onclick="openFooterPage('contact')">Contact Us</button>
+<span>|</span>
+<button onclick="openFooterPage('cookies')">Cookies Policy</button>
+<span>|</span>
+<button onclick="openFooterPage('privacy')">Privacy Policy</button>
+<span>|</span>
+<button onclick="openFooterPage('terms')">Terms &amp; Conditions</button>
+<span>|</span>
+<button onclick="openFooterPage('disclaimer')">Disclaimer</button>
+</div>
+<div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
+</footer>
+</main>
+</div>
+<script src="config.js?v=351"></script>
+<script src="app.js?v=351"></script>
 </body>
 </html>
