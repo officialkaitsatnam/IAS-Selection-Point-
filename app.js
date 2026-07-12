@@ -5439,3 +5439,35 @@ const V34_INDIA_STATE_DISTRICTS={"Andaman and Nicobar Islands": ["Nicobar", "Nor
     });
   });
 })();
+
+window.toggleV35ProfileMenu=function(e){e?.stopPropagation();const m=document.getElementById('v35ProfileMenu');if(m)m.hidden=!m.hidden};
+window.closeV35ProfileMenu=function(){const m=document.getElementById('v35ProfileMenu');if(m)m.hidden=true};
+document.addEventListener('click',e=>{const w=document.querySelector('.v35-profile-menu-wrap');if(w&&!w.contains(e.target))closeV35ProfileMenu()});
+window.openV35ProfileSection=function(id){closeV35ProfileMenu();if(typeof openDashSection==='function')openDashSection(id)};
+window.loadV35DashboardOverview=async function(){
+  const user=(typeof currentUser==='function'&&currentUser())||{};
+  const name=user.name||user.Name||user.email?.split('@')[0]||'Member';
+  const email=user.email||user.Email||'';
+  ['v35HeaderName','v35MenuName'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=name});
+  const em=document.getElementById('v35MenuEmail');if(em)em.textContent=email;
+  let reg={},game={xp:0,streak:0,level:'Beginner'};
+  try{const r=await api('getRegistrationProfile',{token:token()});if(r?.success)reg=r.profile||{}}catch(e){}
+  try{const g=await api('getMyGamification',{token:token()});if(g?.success)game=g}catch(e){}
+  const set=(id,v,f)=>{const e=document.getElementById(id);if(e)e.textContent=v||f||''};
+  set('v35TargetExam',reg.targetExam,'Target Examination');set('v35Qualification',reg.qualification,'Qualification');
+  set('v35Location',[reg.state,reg.district].filter(Boolean).join(', '),'Location');set('v35CurrentLevel',game.level,'Beginner');
+  set('v35Xp',game.xp||0,'0');set('v35Streak',game.streak||0,'0');
+  let articles=0;try{articles=typeof v317HistoryCount==='function'?v317HistoryCount():0}catch(e){}set('v35ArticlesRead',articles,'0');
+  let tests=0;try{const r=typeof v31GetLocalResults==='function'?v31GetLocalResults():[];tests=Array.isArray(r)?r.length:0}catch(e){}set('v35MockTests',tests,'0');
+};
+document.addEventListener('DOMContentLoaded',()=>{
+  const remove=['Profile','Achievements','XP Leaderboard','My Performance','Reading History','Bookmarks','My Notes','Security','Install App','Logout'];
+  document.querySelectorAll('.sidebar button,.side-menu button').forEach(btn=>{
+    const t=btn.textContent.trim();if(remove.some(x=>t.includes(x)))btn.style.display='none';
+  });
+  document.querySelectorAll('body *').forEach(el=>{
+    const t=el.textContent?.trim();
+    if(['CONTINUE LEARNING','REVISION DUE','PERSONAL NOTES'].includes(t)){const p=el.closest('div,section,article');if(p)p.style.display='none'}
+  });
+  setTimeout(loadV35DashboardOverview,700);
+});

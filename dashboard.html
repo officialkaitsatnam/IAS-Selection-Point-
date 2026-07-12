@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Learning Portal | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=34" />
+  <link rel="stylesheet" href="style.css?v=35" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadDashboard()">
-  <div class="version-badge">v34 Professional Registration & India Location</div>
+  <div class="version-badge">v35 Professional Dashboard + Profile Dropdown</div>
 
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
@@ -114,7 +114,34 @@
           <button class="theme-toggle-btn" onclick="togglePortalTheme()">🌙 Theme</button>
           <div class="admin-chip">Professional Study Member</div>
         </div>
-      </header>
+      
+<div class="v35-profile-menu-wrap">
+  <button id="v35ProfileTrigger" class="v35-profile-trigger" type="button" onclick="toggleV35ProfileMenu(event)">
+    <img id="v35HeaderAvatar" src="logo.jpg" alt="Profile photo">
+    <span><b id="v35HeaderName">Member</b><small>Professional Study Member</small></span><i>⌄</i>
+  </button>
+  <div id="v35ProfileMenu" class="v35-profile-menu" hidden>
+    <div class="v35-profile-menu-head">
+      <img id="v35MenuAvatar" src="logo.jpg" alt="Profile photo">
+      <div><b id="v35MenuName">Member</b><small id="v35MenuEmail"></small><span>● Active</span></div>
+    </div>
+    <div class="v35-profile-menu-links">
+      <button onclick="openV35ProfileSection('profile')">👤 View Profile</button>
+      <button onclick="openV35ProfileSection('profile')">✏️ Edit Profile</button>
+      <button onclick="openV35ProfileSection('achievementsModule')">🏅 My Achievements</button>
+      <button onclick="openV35ProfileSection('xpLeaderboardModule')">⭐ XP & Level</button>
+      <button onclick="openV35ProfileSection('readingHistory')">📖 Reading History</button>
+      <button onclick="openV35ProfileSection('bookmarksModule')">🔖 Bookmarks</button>
+      <button onclick="openV35ProfileSection('myNotesModule')">📝 My Notes</button>
+      <button onclick="openV35ProfileSection('performanceModule')">📊 Performance</button>
+      <button onclick="openV35ProfileSection('security')">🛡️ Account & Security</button>
+      <button onclick="toggleTheme(); closeV35ProfileMenu()">🌙 Theme</button>
+      <button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
+      <button class="logout" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+</div>
+</header>
 
       <div class="v291-breaking-wrap" aria-label="Latest articles">
         <div class="v291-breaking-label">⚡ BREAKING NEWS</div>
@@ -133,31 +160,31 @@
             <span id="v294TickerContent">Latest articles are loading...</span>
           </marquee>
         </div>
-        <button id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location" type="button" onclick="toggleV30Ticker()">⏸</button>
+        <button id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown" type="button" onclick="toggleV30Ticker()">⏸</button>
       </div>
 
-      <section id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location">
-        <div class="v34 Professional Registration & India Location">
-          <span class="v34 Professional Registration & India Location">📖</span>
+      <section id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown">
+        <div class="v35 Professional Dashboard + Profile Dropdown">
+          <span class="v35 Professional Dashboard + Profile Dropdown">📖</span>
           <div>
             <small>CONTINUE LEARNING</small>
-            <b id="v34 Professional Registration & India Location">Open an article to begin</b>
+            <b id="v35 Professional Dashboard + Profile Dropdown">Open an article to begin</b>
           </div>
           <button type="button" onclick="openV30ContinueLearning()">Resume</button>
         </div>
-        <div class="v34 Professional Registration & India Location">
-          <span class="v34 Professional Registration & India Location">🎯</span>
+        <div class="v35 Professional Dashboard + Profile Dropdown">
+          <span class="v35 Professional Dashboard + Profile Dropdown">🎯</span>
           <div>
             <small>REVISION DUE</small>
-            <b id="v34 Professional Registration & India Location">0 items</b>
+            <b id="v35 Professional Dashboard + Profile Dropdown">0 items</b>
           </div>
           <button type="button" onclick="openDashSection('revisionCenterModule')">Review</button>
         </div>
-        <div class="v34 Professional Registration & India Location">
-          <span class="v34 Professional Registration & India Location">📝</span>
+        <div class="v35 Professional Dashboard + Profile Dropdown">
+          <span class="v35 Professional Dashboard + Profile Dropdown">📝</span>
           <div>
             <small>PERSONAL NOTES</small>
-            <b id="v34 Professional Registration & India Location">0 notes</b>
+            <b id="v35 Professional Dashboard + Profile Dropdown">0 notes</b>
           </div>
           <button type="button" onclick="openDashSection('notesCenterModule')">Open</button>
         </div>
@@ -525,7 +552,7 @@
             </div>
             <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..." />
           </div>
-          <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"></div>
+          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
         </div>
       </section>
 
@@ -544,7 +571,7 @@
             <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
             <button onclick="setRevisionFilter('completed')">Completed</button>
           </div>
-          <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"></div>
+          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
         </div>
       </section>
 
@@ -557,7 +584,7 @@
             </div>
             <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
           </div>
-          <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"><p class="muted">Loading tests...</p></div>
+          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"><p class="muted">Loading tests...</p></div>
         </div>
       </section>
 
@@ -569,65 +596,65 @@
               <p class="muted">Review previous attempts and performance.</p>
             </div>
           </div>
-          <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"><p class="muted">No attempts yet.</p></div>
+          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"><p class="muted">No attempts yet.</p></div>
         </div>
       </section>
 
-      <section id="v34 Professional Registration & India Location" class="dash-section">
-        <div class="v34 Professional Registration & India Location">
-          <header class="v34 Professional Registration & India Location">
+      <section id="v35 Professional Dashboard + Profile Dropdown" class="dash-section">
+        <div class="v35 Professional Dashboard + Profile Dropdown">
+          <header class="v35 Professional Dashboard + Profile Dropdown">
             <div>
               <span class="eyebrow">LIVE MOCK TEST</span>
-              <h2 id="v34 Professional Registration & India Location">Mock Test</h2>
+              <h2 id="v35 Professional Dashboard + Profile Dropdown">Mock Test</h2>
             </div>
-            <div class="v34 Professional Registration & India Location">⏱ <span id="v34 Professional Registration & India Location">00:00</span></div>
+            <div class="v35 Professional Dashboard + Profile Dropdown">⏱ <span id="v35 Professional Dashboard + Profile Dropdown">00:00</span></div>
           </header>
 
-          <div class="v34 Professional Registration & India Location">
-            <main class="v34 Professional Registration & India Location">
-              <div class="v34 Professional Registration & India Location">
-                <span id="v34 Professional Registration & India Location">Question 1</span>
-                <span id="v34 Professional Registration & India Location">Not Answered</span>
+          <div class="v35 Professional Dashboard + Profile Dropdown">
+            <main class="v35 Professional Dashboard + Profile Dropdown">
+              <div class="v35 Professional Dashboard + Profile Dropdown">
+                <span id="v35 Professional Dashboard + Profile Dropdown">Question 1</span>
+                <span id="v35 Professional Dashboard + Profile Dropdown">Not Answered</span>
               </div>
-              <h3 id="v34 Professional Registration & India Location"></h3>
-              <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"></div>
+              <h3 id="v35 Professional Dashboard + Profile Dropdown"></h3>
+              <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
 
-              <div class="v34 Professional Registration & India Location">
-                <button onclick="v34 Professional Registration & India Location">← Previous</button>
-                <button onclick="v34 Professional Registration & India Location">Clear Response</button>
-                <button onclick="v34 Professional Registration & India Location">Mark for Review</button>
-                <button onclick="v34 Professional Registration & India Location">Next →</button>
+              <div class="v35 Professional Dashboard + Profile Dropdown">
+                <button onclick="v35 Professional Dashboard + Profile Dropdown">← Previous</button>
+                <button onclick="v35 Professional Dashboard + Profile Dropdown">Clear Response</button>
+                <button onclick="v35 Professional Dashboard + Profile Dropdown">Mark for Review</button>
+                <button onclick="v35 Professional Dashboard + Profile Dropdown">Next →</button>
               </div>
             </main>
 
-            <aside class="v34 Professional Registration & India Location">
+            <aside class="v35 Professional Dashboard + Profile Dropdown">
               <h4>Question Palette</h4>
-              <div class="v34 Professional Registration & India Location">
+              <div class="v35 Professional Dashboard + Profile Dropdown">
                 <span><i class="answered"></i> Answered</span>
                 <span><i class="review"></i> Review</span>
                 <span><i class="unanswered"></i> Unanswered</span>
               </div>
-              <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"></div>
-              <button class="v34 Professional Registration & India Location" onclick="submitV31Test(false)">Submit Test</button>
+              <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
+              <button class="v35 Professional Dashboard + Profile Dropdown" onclick="submitV31Test(false)">Submit Test</button>
             </aside>
           </div>
         </div>
       </section>
 
-      <section id="v34 Professional Registration & India Location" class="dash-section">
+      <section id="v35 Professional Dashboard + Profile Dropdown" class="dash-section">
         <div class="pro-panel">
-          <div class="v34 Professional Registration & India Location">
+          <div class="v35 Professional Dashboard + Profile Dropdown">
             <span>🏆</span>
-            <h2 id="v34 Professional Registration & India Location">Test Completed</h2>
-            <p id="v34 Professional Registration & India Location"></p>
+            <h2 id="v35 Professional Dashboard + Profile Dropdown">Test Completed</h2>
+            <p id="v35 Professional Dashboard + Profile Dropdown"></p>
           </div>
           <div class="stats-grid-pro">
-            <div class="stat-card blue"><span>🎯</span><h3 id="v34 Professional Registration & India Location">0</h3><p>Score</p></div>
-            <div class="stat-card green"><span>✅</span><h3 id="v34 Professional Registration & India Location">0</h3><p>Correct</p></div>
-            <div class="stat-card orange"><span>❌</span><h3 id="v34 Professional Registration & India Location">0</h3><p>Wrong</p></div>
-            <div class="stat-card purple"><span>⏭</span><h3 id="v34 Professional Registration & India Location">0</h3><p>Unanswered</p></div>
+            <div class="stat-card blue"><span>🎯</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Score</p></div>
+            <div class="stat-card green"><span>✅</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Correct</p></div>
+            <div class="stat-card orange"><span>❌</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Wrong</p></div>
+            <div class="stat-card purple"><span>⏭</span><h3 id="v35 Professional Dashboard + Profile Dropdown">0</h3><p>Unanswered</p></div>
           </div>
-          <div id="v34 Professional Registration & India Location" class="v34 Professional Registration & India Location"></div>
+          <div id="v35 Professional Dashboard + Profile Dropdown" class="v35 Professional Dashboard + Profile Dropdown"></div>
           <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
         </div>
       </section>
@@ -767,7 +794,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=34"></script>
-  <script src="app.js?v=34"></script>
+  <script src="config.js?v=35"></script>
+  <script src="app.js?v=35"></script>
 </body>
 </html>
