@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=318" />
+  <link rel="stylesheet" href="style.css?v=32" />
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0B2A55">
   <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v31.8 Enterprise Email + Confirm Password</div>
+  <div class="version-badge">v32 HSSC Dynamic Module + Email Review</div>
   <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-box">
       <div class="spinner"></div>
@@ -397,7 +397,7 @@
             <button class="mini-btn" onclick="loadV318EmailReport()">Refresh</button>
           </div>
           <div id="v318EmailDeliveryStats" class="v318-email-stats"></div>
-          <div id="v318EmailDeliveryList" class="v318-email-list">
+          <div id="v32EmailHealthCard" class="v32-email-health-card"><div><span>📬</span><div><h4>Email System Health</h4><p>Check MailApp authorization, quota and recent failures.</p></div></div><button type="button" onclick="runV32EmailHealthCheck()">Run Check</button></div><div id="v32EmailHealthResult" class="v32-email-health-result"></div><div id="v318EmailDeliveryList" class="v318-email-list">
             <p class="muted">Open Email Center to load delivery history.</p>
           </div>
         </div>
@@ -456,7 +456,7 @@
     </main>
   </div>
 
-  <script src="config.js?v=318"></script>
-  <script src="app.js?v=318"></script>
+  <script src="config.js?v=32"></script>
+  <script src="app.js?v=32"></script>
 </body>
 </html>
