@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Admin | IAS Selection Point</title>
-<link href="style.css?v=37" rel="stylesheet"/>
+<link href="style.css?v=38" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadAdmin()">
-<div class="version-badge">v37 Smart Dashboard + Latest Jobs Hub</div>
+<div class="version-badge">v38 Version Manager + Release Notifications</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -54,7 +54,7 @@
 <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
 <button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
 <button onclick="location.href='dashboard.html'">👤 Member View</button>
-</nav>
+<button id="v38VersionManagerNav" onclick="openAdminSection('versionManagerModule', this)">🚀 Version Manager</button></nav>
 <button class="side-logout" onclick="logout()">Logout</button>
 </aside>
 <main class="portal-main">
@@ -243,9 +243,9 @@
 <div class="pro-panel">
 <h3>1️⃣ Create Mock Test</h3>
 <label>Test Title</label>
-<input id="v31AdminTestTitle" placeholder="Example: Current Affairs Practice Test 1">
+<input id="v31AdminTestTitle" placeholder="Example: Current Affairs Practice Test 1"/>
 <label>Category / Subject</label>
-<input id="v31AdminTestCategory" placeholder="Current Affairs / UPSC / Political Science">
+<input id="v31AdminTestCategory" placeholder="Current Affairs / UPSC / Political Science"/>
 <div class="form-grid">
 <div><label>Duration (minutes)</label><input id="v31AdminTestDuration" min="1" type="number" value="10"/></div>
 <div><label>Marks per correct</label><input id="v31AdminPositiveMarks" step="0.25" type="number" value="1"/></div>
@@ -256,7 +256,7 @@
 <textarea id="v31AdminTestDescription" placeholder="Short test instructions or description"></textarea>
 <button class="primary-btn" id="v312CreateTestBtn" onclick="createV312AdminTest()">Create Test</button>
 <p class="small-msg" id="v31AdminTestMsg"></p>
-</input></input></div>
+</div>
 <div class="pro-panel">
 <h3>2️⃣ Add Question</h3>
 <label>Select Test</label>
@@ -359,7 +359,7 @@
 <div class="pro-panel email-center-card">
 <h3>📧 Admin Email Center</h3>
 <p class="muted">Send a branded email to all active members.</p>
-<input id="bulkEmailSubject" placeholder="Email subject">
+<input id="bulkEmailSubject" placeholder="Email subject"/>
 <textarea id="bulkEmailBody" placeholder="Write message for members..."></textarea>
 <button class="primary-btn" onclick="sendBulkEmail()">Send to Active Members</button>
 <p class="small-msg" id="bulkEmailMsg"></p>
@@ -375,7 +375,7 @@
 <div class="v32-email-health-card" id="v32EmailHealthCard"><div><span>📬</span><div><h4>Email System Health</h4><p>Check MailApp authorization, quota and recent failures.</p></div></div><button onclick="runV32EmailHealthCheck()" type="button">Run Check</button><button id="v36SendTestEmail" onclick="sendV36TestEmail()" type="button">Send Test Email</button></div><div class="v32-email-health-result" id="v32EmailHealthResult"></div><div class="v318-email-list" id="v318EmailDeliveryList">
 <p class="muted">Open Email Center to load delivery history.</p>
 </div>
-</input></div>
+</div>
 </section>
 <section class="admin-section" id="adminNotify">
 <div class="pro-panel">
@@ -425,9 +425,45 @@
 </div>
 <div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
 </footer>
-</main>
+<section class="admin-section" id="versionManagerModule">
+<div class="pro-panel v38-version-panel">
+<div class="panel-head">
+<div>
+<h3>Version Manager</h3>
+<p class="muted">Publish release notes and notify all registered members automatically.</p>
 </div>
-<script src="config.js?v=37"></script>
-<script src="app.js?v=37"></script>
+<button class="mini-btn" onclick="loadV38VersionHistory()">Refresh</button>
+</div>
+<div class="v38-version-form">
+<input id="v38VersionNumber" placeholder="Version number (example: v38.0)"/>
+<input id="v38ReleaseTitle" placeholder="Release title"/>
+<input id="v38ReleaseDate" type="date"/>
+<textarea id="v38WhatsNew" placeholder="What's new — one item per line"></textarea>
+<textarea id="v38Improvements" placeholder="Improvements — one item per line"></textarea>
+<textarea id="v38BugFixes" placeholder="Bug fixes — one item per line"></textarea>
+<label class="v38-check"><input id="v38CriticalUpdate" type="checkbox"/> Mark as critical update</label>
+<label class="v38-check"><input checked="" id="v38SendEmails" type="checkbox"/> Send email to all users</label>
+</div>
+<div class="v38-version-actions">
+<button class="primary-btn" onclick="publishV38Version()">Publish Version</button>
+<button class="secondary-btn" onclick="previewV38Release()">Preview</button>
+</div>
+<p class="small-msg" id="v38VersionMsg"></p>
+<div class="v38-version-preview" hidden="" id="v38VersionPreview"></div>
+<hr/>
+<div class="panel-head">
+<div>
+<h3>Version History</h3>
+<p class="muted">Published versions and email delivery summary.</p>
+</div>
+</div>
+<div class="v38-version-history" id="v38AdminVersionHistory">
+<p class="muted">No version history loaded.</p>
+</div>
+</div>
+</section></main>
+</div>
+<script src="config.js?v=38"></script>
+<script src="app.js?v=38"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=37" rel="stylesheet"/>
+<link href="style.css?v=38" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v37 Smart Dashboard + Latest Jobs Hub</div>
+<div class="version-badge">v38 Version Manager + Release Notifications</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -119,7 +119,7 @@
 <button onclick="openV35ProfileSection('security')">🛡️ Account &amp; Security</button><button id="v36SystemMenuButton" onclick="openV35ProfileSection('systemStatusModule')">⚙️ System Status</button>
 <button onclick="togglePortalTheme(); closeV35ProfileMenu()">🌙 Theme</button>
 <button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
-<button onclick="openV35ProfileSection('supportModule')">🆘 Help &amp; Support</button><button class="logout" onclick="logout()">🚪 Logout</button>
+<button id="v38VersionHistoryMenuBtn" onclick="openV35ProfileSection('versionHistoryModule')">📜 Version History</button><button onclick="openV35ProfileSection('supportModule')">🆘 Help &amp; Support</button><button class="logout" onclick="logout()">🚪 Logout</button>
 </div>
 </div>
 </div></div>
@@ -142,7 +142,6 @@
 <button aria-label="Pause news ticker" class="v362-ticker-toggle" id="v362TickerToggle" onclick="toggleV362Ticker()" type="button">⏸</button>
 </div>
 <section class="dash-section active" id="overview">
-
 <section class="v37-smart-focus" id="v37SmartFocus">
 <div class="v37-focus-main">
 <div class="v37-focus-icon">🧭</div>
@@ -581,7 +580,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -599,7 +598,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -611,7 +610,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"><p class="muted">Loading tests...</p></div>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -622,60 +621,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"><p class="muted">No attempts yet.</p></div>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v37 Smart Dashboard + Latest Jobs Hub">
-<div class="v37 Smart Dashboard + Latest Jobs Hub">
-<header class="v37 Smart Dashboard + Latest Jobs Hub">
+<section class="dash-section" id="v38 Version Manager + Release Notifications">
+<div class="v38 Version Manager + Release Notifications">
+<header class="v38 Version Manager + Release Notifications">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v37 Smart Dashboard + Latest Jobs Hub">Mock Test</h2>
+<h2 id="v38 Version Manager + Release Notifications">Mock Test</h2>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub">⏱ <span id="v37 Smart Dashboard + Latest Jobs Hub">00:00</span></div>
+<div class="v38 Version Manager + Release Notifications">⏱ <span id="v38 Version Manager + Release Notifications">00:00</span></div>
 </header>
-<div class="v37 Smart Dashboard + Latest Jobs Hub">
-<main class="v37 Smart Dashboard + Latest Jobs Hub">
-<div class="v37 Smart Dashboard + Latest Jobs Hub">
-<span id="v37 Smart Dashboard + Latest Jobs Hub">Question 1</span>
-<span id="v37 Smart Dashboard + Latest Jobs Hub">Not Answered</span>
+<div class="v38 Version Manager + Release Notifications">
+<main class="v38 Version Manager + Release Notifications">
+<div class="v38 Version Manager + Release Notifications">
+<span id="v38 Version Manager + Release Notifications">Question 1</span>
+<span id="v38 Version Manager + Release Notifications">Not Answered</span>
 </div>
-<h3 id="v37 Smart Dashboard + Latest Jobs Hub"></h3>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub">
-<button onclick="v37 Smart Dashboard + Latest Jobs Hub">← Previous</button>
-<button onclick="v37 Smart Dashboard + Latest Jobs Hub">Clear Response</button>
-<button onclick="v37 Smart Dashboard + Latest Jobs Hub">Mark for Review</button>
-<button onclick="v37 Smart Dashboard + Latest Jobs Hub">Next →</button>
+<h3 id="v38 Version Manager + Release Notifications"></h3>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
+<div class="v38 Version Manager + Release Notifications">
+<button onclick="v38 Version Manager + Release Notifications">← Previous</button>
+<button onclick="v38 Version Manager + Release Notifications">Clear Response</button>
+<button onclick="v38 Version Manager + Release Notifications">Mark for Review</button>
+<button onclick="v38 Version Manager + Release Notifications">Next →</button>
 </div>
 </main>
-<aside class="v37 Smart Dashboard + Latest Jobs Hub">
+<aside class="v38 Version Manager + Release Notifications">
 <h4>Question Palette</h4>
-<div class="v37 Smart Dashboard + Latest Jobs Hub">
+<div class="v38 Version Manager + Release Notifications">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
-<button class="v37 Smart Dashboard + Latest Jobs Hub" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
+<button class="v38 Version Manager + Release Notifications" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v37 Smart Dashboard + Latest Jobs Hub">
+<section class="dash-section" id="v38 Version Manager + Release Notifications">
 <div class="pro-panel">
-<div class="v37 Smart Dashboard + Latest Jobs Hub">
+<div class="v38 Version Manager + Release Notifications">
 <span>🏆</span>
-<h2 id="v37 Smart Dashboard + Latest Jobs Hub">Test Completed</h2>
-<p id="v37 Smart Dashboard + Latest Jobs Hub"></p>
+<h2 id="v38 Version Manager + Release Notifications">Test Completed</h2>
+<p id="v38 Version Manager + Release Notifications"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
+<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -824,9 +823,35 @@
 </div>
 <div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
 </footer>
-</main>
+<section class="dash-section" id="versionHistoryModule">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>Version History</h3>
+<p class="muted">Review recent improvements, new features and bug fixes.</p>
 </div>
-<script src="config.js?v=37"></script>
-<script src="app.js?v=37"></script>
-</body>
+<button class="mini-btn" onclick="loadV38VersionHistory()">Refresh</button>
+</div>
+<div class="v38-version-history" id="v38UserVersionHistory">
+<p class="muted">Loading version history...</p>
+</div>
+</div>
+</section></main>
+</div>
+<script src="config.js?v=38"></script>
+<script src="app.js?v=38"></script>
+<div class="v38-release-modal" hidden="" id="v38ReleaseModal">
+<div class="v38-release-dialog">
+<button aria-label="Close" class="v38-close" onclick="remindV38Later()">×</button>
+<div class="v38-release-icon">🚀</div>
+<span class="v38-release-badge">NEW VERSION</span>
+<h2 id="v38ModalTitle">A new version is available</h2>
+<p id="v38ModalSubtitle"></p>
+<div class="v38-modal-notes" id="v38ModalNotes"></div>
+<div class="v38-modal-actions">
+<button class="primary-btn" onclick="applyV38Update()">Update Now</button>
+<button class="secondary-btn" id="v38RemindLaterBtn" onclick="remindV38Later()">Remind Me Later</button>
+</div>
+</div>
+</div></body>
 </html>

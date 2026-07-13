@@ -6267,3 +6267,146 @@ if(typeof loadDashboard==='function'){
     setTimeout(()=>loadV37JobAlerts(false),900);
   };
 }
+
+
+/* ======================================================
+   v38 VERSION MANAGER + RELEASE NOTIFICATIONS
+   ====================================================== */
+let V38_VERSION_HISTORY=[];
+
+function v38Lines(value){
+  return String(value||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);
+}
+function v38ListHtml(title,items){
+  if(!items||!items.length)return '';
+  return `<section><h4>${escapeHtml(title)}</h4><ul>${items.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></section>`;
+}
+function v38VersionCard(version){
+  return `<article class="v38-version-card">
+    <div class="v38-version-card-head">
+      <div><h4>${escapeHtml(version.version||'Version')}</h4><small>${escapeHtml(version.title||'Release')}</small></div>
+      <span class="v38-version-chip">${escapeHtml(version.releaseDate||'')}</span>
+    </div>
+    <div class="v38-version-lists">
+      <div>${v38ListHtml("What's New",version.whatsNew||[])}</div>
+      <div>${v38ListHtml("Improvements",version.improvements||[])}</div>
+      <div>${v38ListHtml("Bug Fixes",version.bugFixes||[])}</div>
+    </div>
+  </article>`;
+}
+
+window.previewV38Release=function(){
+  const version=document.getElementById('v38VersionNumber')?.value||'';
+  const title=document.getElementById('v38ReleaseTitle')?.value||'';
+  const releaseDate=document.getElementById('v38ReleaseDate')?.value||'';
+  const preview=document.getElementById('v38VersionPreview');
+  if(!preview)return;
+  preview.hidden=false;
+  preview.innerHTML=v38VersionCard({
+    version,title,releaseDate,
+    whatsNew:v38Lines(document.getElementById('v38WhatsNew')?.value),
+    improvements:v38Lines(document.getElementById('v38Improvements')?.value),
+    bugFixes:v38Lines(document.getElementById('v38BugFixes')?.value)
+  });
+};
+
+window.publishV38Version=async function(){
+  const msg=document.getElementById('v38VersionMsg');
+  const payload={
+    token:token(),
+    version:document.getElementById('v38VersionNumber')?.value||'',
+    title:document.getElementById('v38ReleaseTitle')?.value||'',
+    releaseDate:document.getElementById('v38ReleaseDate')?.value||'',
+    whatsNew:v38Lines(document.getElementById('v38WhatsNew')?.value),
+    improvements:v38Lines(document.getElementById('v38Improvements')?.value),
+    bugFixes:v38Lines(document.getElementById('v38BugFixes')?.value),
+    critical:Boolean(document.getElementById('v38CriticalUpdate')?.checked),
+    sendEmails:Boolean(document.getElementById('v38SendEmails')?.checked)
+  };
+  if(!payload.version||!payload.title){
+    if(msg)msg.textContent='Version number and release title are required.';
+    return;
+  }
+  showLoader('Publishing version...','Saving release notes and sending notifications');
+  try{
+    const r=await api('publishVersionRelease',payload);
+    if(msg)msg.textContent=r.message||'';
+    if(r.success){
+      toast('Version published successfully');
+      loadV38VersionHistory();
+    }
+  }finally{hideLoader()}
+};
+
+window.loadV38VersionHistory=async function(){
+  const adminList=document.getElementById('v38AdminVersionHistory');
+  const userList=document.getElementById('v38UserVersionHistory');
+  try{
+    const r=await api('getVersionHistory',{token:token()});
+    if(!r.success)throw new Error(r.message);
+    V38_VERSION_HISTORY=r.rows||[];
+    const html=V38_VERSION_HISTORY.length
+      ?V38_VERSION_HISTORY.map(v38VersionCard).join('')
+      :'<p class="muted">No published versions yet.</p>';
+    if(adminList)adminList.innerHTML=html;
+    if(userList)userList.innerHTML=html;
+  }catch(error){
+    const html=`<p class="muted">${escapeHtml(error.message)}</p>`;
+    if(adminList)adminList.innerHTML=html;
+    if(userList)userList.innerHTML=html;
+  }
+};
+
+window.checkV38LatestVersion=async function(){
+  try{
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v37.1'});
+    if(!r.success||!r.updateAvailable)return;
+    const version=r.release;
+    const dismissed=localStorage.getItem('isp_v38_dismissed_version');
+    if(dismissed===version.version&&!version.critical)return;
+
+    document.getElementById('v38ModalTitle').textContent=`${version.version} is now available`;
+    document.getElementById('v38ModalSubtitle').textContent=version.title||'A new version has been released.';
+    document.getElementById('v38ModalNotes').innerHTML=
+      v38ListHtml("What's New",version.whatsNew||[])+
+      v38ListHtml("Improvements",version.improvements||[])+
+      v38ListHtml("Bug Fixes",version.bugFixes||[]);
+    const later=document.getElementById('v38RemindLaterBtn');
+    if(later)later.hidden=Boolean(version.critical);
+    document.getElementById('v38ReleaseModal').hidden=false;
+    window.V38_LATEST_RELEASE=version;
+  }catch(e){}
+};
+
+window.applyV38Update=function(){
+  localStorage.removeItem('isp_v38_dismissed_version');
+  if(typeof clearV36PortalCache==='function'){
+    clearV36PortalCache();
+  }else{
+    location.reload(true);
+  }
+};
+window.remindV38Later=function(){
+  const version=window.V38_LATEST_RELEASE?.version||'';
+  if(version)localStorage.setItem('isp_v38_dismissed_version',version);
+  const modal=document.getElementById('v38ReleaseModal');
+  if(modal)modal.hidden=true;
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V38=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V38(id,btn);
+    if(id==='versionHistoryModule')setTimeout(loadV38VersionHistory,50);
+  };
+}
+if(typeof openAdminSection==='function'){
+  const OLD_OPEN_ADMIN_V38=openAdminSection;
+  openAdminSection=function(id,btn){
+    OLD_OPEN_ADMIN_V38(id,btn);
+    if(id==='versionManagerModule')setTimeout(loadV38VersionHistory,50);
+  };
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(checkV38LatestVersion,1200);
+});
