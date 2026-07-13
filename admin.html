@@ -1,462 +1,433 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin | IAS Selection Point</title>
-  <link rel="stylesheet" href="style.css?v=3522" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#0B2A55">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="logo.jpg">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin | IAS Selection Point</title>
+<link href="style.css?v=36" rel="stylesheet"/>
+<link href="manifest.webmanifest" rel="manifest"/>
+<meta content="#0B2A55" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadAdmin()">
-  <div class="version-badge">v35.2.2 Profile Data Sync Fix</div>
-  <div id="loaderOverlay" class="loader-overlay">
-    <div class="loader-box">
-      <div class="spinner"></div>
-      <h3 id="loaderTitle">Loading...</h3>
-      <p id="loaderText">Please wait</p>
-    </div>
-  </div>
-
-  <div class="footer-page-modal" id="footerPageModal">
-    <div class="footer-page-card">
-      <div class="footer-page-header">
-        <button onclick="closeFooterPage()">← Back</button>
-        <h3 id="footerPageTitle">Page</h3>
-      </div>
-      <div id="footerPageContent" class="footer-page-content"></div>
-    </div>
-  </div>
-
-  <button id="mobileMenuButton" class="mobile-menu-button" type="button" aria-label="Open menu">☰</button>
-  <div id="mobileSidebarBackdrop" class="mobile-sidebar-backdrop"></div>
-  <div class="portal-shell">
-    <aside class="sidebar-pro">
-      <div class="side-brand full-logo-brand">
-        <img src="logo.jpg" alt="IAS Selection Point Logo" />
-        <p class="brand-slogan">Let's make your imagination true.</p>
-      </div>
-
-      <nav class="side-nav">
-        <button class="v311-exam-nav-btn" onclick="openAdminSection('adminExamManager', this)">📝 Exam Management</button>
-        <button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
-        <button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
-        <button onclick="openAdminSection('adminProTools', this)">🛠️ Admin Pro Tools</button>
-        <button onclick="openAdminSection('adminCommunicationHub', this)">📣 Communication Hub</button>
-        <button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
-        <button onclick="openAdminSection('adminSheetCenter', this)">📊 Sheet Center</button>
-        <button onclick="openAdminSection('adminPerformance', this)">🏆 Student Performance</button>
-        <button onclick="openAdminSection('adminAchievements', this)">🎖 Achievement Center</button>
-        
-        <button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
-        <button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
-        <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
-        <button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
-        <button onclick="location.href='dashboard.html'">👤 Member View</button>
-      </nav>
-
-      <button class="side-logout" onclick="logout()">Logout</button>
-    </aside>
-
-    <main class="portal-main">
-      <header class="portal-header">
-        <div>
-          <h1>Admin Dashboard</h1>
-          <p>Manage users, access, announcements and portal controls</p>
-        </div>
-        <div class="admin-chip">Admin: <b id="adminEmail">Loading...</b></div>
-      </header>
-
-      <section id="adminOverview" class="admin-section active">
-        <div class="stats-grid-pro">
-          <div class="stat-card blue"><span>👥</span><h3 id="totalUsers">0</h3><p>Total Users</p></div>
-          <div class="stat-card green"><span>✅</span><h3 id="activeUsers">0</h3><p>Active Users</p></div>
-          <div class="stat-card orange"><span>⛔</span><h3 id="blockedUsers">0</h3><p>Blocked Users</p></div>
-          <div class="stat-card purple"><span>🛡️</span><h3 id="adminCount">1</h3><p>Admins</p></div>
-          <div class="stat-card blue"><span>🆕</span><h3 id="newUsersToday">0</h3><p>New Today</p></div>
-          <div class="stat-card green"><span>🔐</span><h3 id="loginsToday">0</h3><p>Logins Today</p></div>
-          <div class="stat-card orange"><span>📧</span><h3 id="emailsSentCount">0</h3><p>Emails Sent</p></div>
-          <div class="stat-card purple"><span>🎫</span><h3 id="openTicketsCount">0</h3><p>Open Tickets</p></div>
-        </div>
-
-        <div class="two-col">
-          <div class="pro-panel">
-            <h3>⚡ Quick Actions</h3>
-            <div class="quick-actions">
-              <button onclick="openAdminSection('adminUsers')">Manage Users</button>
-              <button onclick="downloadUsersCSV()">Download Users CSV</button>
-              <button onclick="loadAdmin()">Refresh Data</button>
-              <button onclick="location.href='https://iasselectionpoint.blogspot.com/'">Open Website</button>
-            </div>
-          </div>
-          <div class="pro-panel">
-            <h3>🆕 Recent Members</h3>
-            <div id="recentUsers">Loading...</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="adminProTools" class="admin-section">
-        <div class="stats-grid-pro">
-          <div class="stat-card blue"><span>💬</span><h3>WhatsApp</h3><p>One-click messages</p></div>
-          <div class="stat-card green"><span>📧</span><h3>Email</h3><p>Single / Bulk users</p></div>
-          <div class="stat-card purple"><span>🔔</span><h3>Notify</h3><p>Dashboard alerts</p></div>
-          <div class="stat-card orange"><span>📊</span><h3>Reports</h3><p>CSV export ready</p></div>
-        </div>
-
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <h3>💬 WhatsApp Quick Templates</h3>
-            <p class="muted">Free method: click button, WhatsApp opens with ready message. Admin presses Send.</p>
-            <select id="waTemplate">
-              <option value="welcome">Welcome Message</option>
-              <option value="active">Account Activated</option>
-              <option value="blocked">Account Blocked</option>
-              <option value="study">New Study Material</option>
-              <option value="goal">Daily Goal Reminder</option>
-            </select>
-            <textarea id="waCustomMessage" placeholder="Optional custom message..."></textarea>
-            <p class="small-msg">Use WhatsApp buttons in User Control table.</p>
-          </div>
-
-          <div class="pro-panel">
-            <h3>📧 Single User Message</h3>
-            <input id="singleMsgEmail" placeholder="User email" />
-            <input id="singleMsgSubject" placeholder="Subject / title" />
-            <textarea id="singleMsgBody" placeholder="Message body..."></textarea>
-            <button class="primary-btn" onclick="sendSingleUserMessage()">Send Email + Dashboard Notification</button>
-            <p id="singleMsgStatus" class="small-msg"></p>
-          </div>
-        </div>
-      </section>
-
-      <section id="adminCommunicationHub" class="admin-section">
-        <div class="pro-panel">
-          <h3>📣 Communication Hub</h3>
-          <p class="muted">Send email and dashboard notifications to one user, selected users, or all active users.</p>
-          <div class="communication-grid">
-            <div>
-              <label>Audience</label>
-              <select id="commAudience" onchange="toggleCommunicationAudience()">
-                <option value="all">All Active Users</option>
-                <option value="single">Single User</option>
-                <option value="selected">Selected Users</option>
-              </select>
-            </div>
-            <div id="commSingleEmailWrap" style="display:none;">
-              <label>User Email</label>
-              <input id="commSingleEmail" placeholder="user@example.com" />
-            </div>
-          </div>
-          <input id="commSubject" placeholder="Subject / notification title" />
-          <textarea id="commMessage" placeholder="Write your professional message..."></textarea>
-          <div class="communication-options">
-            <label><input type="checkbox" id="commEmail" checked> Send Email</label>
-            <label><input type="checkbox" id="commDashboard" checked> Dashboard Notification</label>
-          </div>
-          <button class="primary-btn" onclick="sendCommunicationHub()">Send Communication</button>
-          <p id="commStatus" class="small-msg"></p>
-        </div>
-      </section>
-
-      <section id="adminTickets" class="admin-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🎫 Support Tickets</h3>
-              <p class="muted">Review, reply and resolve member support requests.</p>
-            </div>
-            <select id="ticketStatusFilter" onchange="renderAdminTickets()">
-              <option value="">All Tickets</option>
-              <option value="Open">Open</option>
-              <option value="Pending">Pending</option>
-              <option value="Resolved">Resolved</option>
-            </select>
-          </div>
-          <div id="adminTicketsList" class="ticket-list"><p class="muted">Loading tickets...</p></div>
-        </div>
-      </section>
-
-      <section id="adminSheetCenter" class="admin-section">
-        <div class="pro-panel">
-          <h3>📊 Google Sheet Center</h3>
-          <p class="muted">Manage and professionally format your IAS Selection Point database sheets.</p>
-          <div class="sheet-center-grid">
-            <div class="sheet-center-card">
-              <span>🎨</span>
-              <h4>Professional Formatting</h4>
-              <p>Headers, filters, frozen rows, widths, colors and date formats.</p>
-              <button onclick="formatGoogleSheets()">Format All Sheets</button>
-            </div>
-            <div class="sheet-center-card">
-              <span>📈</span>
-              <h4>Dashboard Summary</h4>
-              <p>Create or refresh a visual database summary sheet.</p>
-              <button onclick="refreshSheetDashboard()">Refresh Dashboard</button>
-            </div>
-            <div class="sheet-center-card">
-              <span>🧹</span>
-              <h4>Maintenance</h4>
-              <p>Remove empty rows and refresh filters safely.</p>
-              <button onclick="runSheetMaintenance()">Run Maintenance</button>
-            </div>
-            <div class="sheet-center-card">
-              <span>🔗</span>
-              <h4>Open Google Sheet</h4>
-              <p>Open the connected database in a new tab.</p>
-              <button onclick="window.open('https://docs.google.com/spreadsheets/d/1GfAvSSfCV2vAuTbe4_Yodjn8Y60SMTNhtog8PTpQvNs/edit','_blank')">Open Sheet</button>
-            </div>
-          </div>
-          <p id="sheetCenterMsg" class="small-msg"></p>
-        </div>
-      </section>
-
-      <section id="adminPerformance" class="admin-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🏆 Student Performance Overview</h3>
-              <p class="muted">Monitor consistency, reading activity and top learners.</p>
-            </div>
-            <button class="mini-btn" onclick="loadAdminPerformance()">Refresh</button>
-          </div>
-
-          <div class="stats-grid-pro">
-            <div class="stat-card blue"><span>📖</span><h3 id="adminTotalReads">0</h3><p>Total Reads</p></div>
-            <div class="stat-card green"><span>🔥</span><h3 id="adminActiveStreaks">0</h3><p>Active Streaks</p></div>
-            <div class="stat-card purple"><span>🏅</span><h3 id="adminBadgesAwarded">0</h3><p>Badges Awarded</p></div>
-            <div class="stat-card orange"><span>👑</span><h3 id="adminTopScore">0</h3><p>Top Learner Score</p></div>
-          </div>
-
-          <div class="leaderboard-wrap">
-            <h3>🥇 Top Active Learners</h3>
-            <div id="adminLeaderboard" class="leaderboard-list"><p class="muted">Loading performance...</p></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="adminExamManager" class="admin-section">
-        <div class="v311-exam-guide">
-          <div><b>Step 1</b><span>Create Test</span></div>
-          <div><b>Step 2</b><span>Add Questions</span></div>
-          <div><b>Step 3</b><span>Publish Test</span></div>
-          <div><b>Step 4</b><span>Member Attempts Test</span></div>
-        </div>
-
-        <div class="v311-exam-toolbar">
-          <div>
-            <h2>📝 Exam Management</h2>
-            <p>Create and publish mock tests for portal members.</p>
-          </div>
-          <div>
-            <button type="button" class="secondary-btn" onclick="createV311DemoTest()">⚡ Create Demo Test</button>
-            <button type="button" class="primary-btn" onclick="loadV31AdminTests()">Refresh</button>
-          </div>
-        </div>
-
-        <div class="two-col compact-two">
-          <div class="pro-panel">
-            <h3>1️⃣ Create Mock Test</h3>
-            <label>Test Title</label>
-            <input id="v31AdminTestTitle" placeholder="Example: Current Affairs Practice Test 1" />
-            <label>Category / Subject</label>
-            <input id="v31AdminTestCategory" placeholder="Current Affairs / UPSC / Political Science" />
-            <div class="form-grid">
-              <div><label>Duration (minutes)</label><input id="v31AdminTestDuration" type="number" min="1" value="10" /></div>
-              <div><label>Marks per correct</label><input id="v31AdminPositiveMarks" type="number" step="0.25" value="1" /></div>
-              <div><label>Negative marks</label><input id="v31AdminNegativeMarks" type="number" step="0.25" value="0.25" /></div>
-              <div><label>Passing marks</label><input id="v31AdminPassingMarks" type="number" step="0.25" value="5" /></div>
-            </div>
-            <label>Description</label>
-            <textarea id="v31AdminTestDescription" placeholder="Short test instructions or description"></textarea>
-            <button id="v312CreateTestBtn" class="primary-btn" onclick="createV312AdminTest()">Create Test</button>
-            <p id="v31AdminTestMsg" class="small-msg"></p>
-          </div>
-
-          <div class="pro-panel">
-            <h3>2️⃣ Add Question</h3>
-            <label>Select Test</label>
-            <select id="v31AdminQuestionTest"></select>
-            <label>Question</label>
-            <textarea id="v31AdminQuestionText" placeholder="Enter the complete question"></textarea>
-            <input id="v31OptionA" placeholder="Option A" />
-            <input id="v31OptionB" placeholder="Option B" />
-            <input id="v31OptionC" placeholder="Option C" />
-            <input id="v31OptionD" placeholder="Option D" />
-            <label>Correct Answer</label>
-            <select id="v31CorrectOption">
-              <option value="A">Option A</option>
-              <option value="B">Option B</option>
-              <option value="C">Option C</option>
-              <option value="D">Option D</option>
-            </select>
-            <label>Explanation</label>
-            <textarea id="v31Explanation" placeholder="Explain why the answer is correct"></textarea>
-            <button id="v312AddQuestionBtn" class="primary-btn" onclick="addV312AdminQuestion()">Add Question</button>
-            <p id="v31AdminQuestionMsg" class="small-msg"></p>
-            <div id="v312QuestionPreview" class="v312-question-preview">
-              <b>Question Manager</b>
-              <span>Select a test and add questions. The form clears automatically after a successful save.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>3️⃣ Existing Tests</h3>
-              <p class="muted">Add questions first, then publish the test.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV31AdminTests()">Refresh</button>
-          </div>
-          <div id="v31AdminTestsList" class="v31-admin-tests-list">
-            <p class="muted">Loading tests...</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="adminAchievements" class="admin-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>🎖 Achievement Center</h3>
-              <p class="muted">Review milestone emails and badge history.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV317AdminAchievements()">Refresh</button>
-          </div>
-          <div id="v317AdminAchievementStats" class="v317-achievement-summary"></div>
-          <div id="v317AdminAchievementList" class="v317-admin-achievement-list"></div>
-        </div>
-      </section>
-
-      <section id="adminUsers" class="admin-section">
-        <div class="pro-panel">
-          <div class="panel-head">
-            <div>
-              <h3>👥 User Control</h3>
-              <p class="muted">Activate, block or delete member accounts.</p>
-            </div>
-            <div class="admin-filter-row">
-              <input id="userSearch" oninput="filterUsers()" placeholder="Search name, email or mobile..." />
-              <select id="userStatusFilter" onchange="filterUsers()">
-                <option value="">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Deactivated">Deactivated</option>
-                <option value="Blocked">Blocked</option>
-                <option value="Pending">Pending</option>
-                <option value="Deleted">Deleted</option>
-              </select>
-            </div>
-          </div>
-          <div class="bulk-toolbar">
-            <label><input type="checkbox" id="selectAllUsers" onchange="toggleSelectAllUsers()"> Select All</label>
-            <span id="selectedUserCount">0 selected</span>
-            <button onclick="bulkUpdateUsers('Active')">Activate</button>
-            <button onclick="bulkUpdateUsers('Deactivated')">Deactivate</button>
-            <button onclick="bulkUpdateUsers('Blocked')">Block</button>
-            <button onclick="openSelectedCommunication()">Message Selected</button>
-          </div>
-          <div class="table-wrap">
-            <table class="pro-table">
-              <thead>
-                <tr>
-                  <th>Select</th><th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="usersTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="adminLogs" class="admin-section">
-        <div class="pro-panel">
-          <h3>📜 Admin Logs</h3>
-          <div id="adminLogsList" class="post-list"><p class="muted">Recent admin actions will appear here after actions are performed.</p></div>
-        </div>
-      </section>
-
-      <section id="adminEmailCenter" class="admin-section">
-        <div class="pro-panel email-center-card">
-          <h3>📧 Admin Email Center</h3>
-          <p class="muted">Send a branded email to all active members.</p>
-          <input id="bulkEmailSubject" placeholder="Email subject" />
-          <textarea id="bulkEmailBody" placeholder="Write message for members..."></textarea>
-          <button class="primary-btn" onclick="sendBulkEmail()">Send to Active Members</button>
-          <p id="bulkEmailMsg" class="small-msg"></p>
-          <hr class="v318-email-divider">
-          <div class="panel-head">
-            <div>
-              <h3>📊 Email Delivery Report</h3>
-              <p class="muted">Welcome, admin alerts, achievements, OTP and system emails.</p>
-            </div>
-            <button class="mini-btn" onclick="loadV318EmailReport()">Refresh</button>
-          </div>
-          <div id="v318EmailDeliveryStats" class="v318-email-stats"></div>
-          <div id="v32EmailHealthCard" class="v32-email-health-card"><div><span>📬</span><div><h4>Email System Health</h4><p>Check MailApp authorization, quota and recent failures.</p></div></div><button type="button" onclick="runV32EmailHealthCheck()">Run Check</button></div><div id="v32EmailHealthResult" class="v32-email-health-result"></div><div id="v318EmailDeliveryList" class="v318-email-list">
-            <p class="muted">Open Email Center to load delivery history.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="adminNotify" class="admin-section">
-        <div class="pro-panel">
-          <h3>📢 Portal Notification</h3>
-          <p class="muted">Send a notification to all users or a single user. Email and dashboard notification both will be sent.</p>
-          <select id="notifyTarget" onchange="toggleNotifyEmailBox()">
-            <option value="all">All Active Users</option>
-            <option value="single">Single User</option>
-          </select>
-          <input id="notifyEmail" placeholder="User email for single notification" style="display:none;" />
-          <input id="notifyTitle" placeholder="Notification title" />
-          <textarea id="notifyBody" placeholder="Notification message..."></textarea>
-          <button class="primary-btn" onclick="sendPortalNotification()">Send Notification</button>
-          <p id="notifyMsg" class="small-msg"></p>
-        </div>
-      </section>
-
-      <section id="adminNotice" class="admin-section">
-        <div class="pro-panel">
-          <h3>🔔 Notice / Announcement</h3>
-          <input id="noticeTitle" placeholder="Notice title" />
-          <textarea id="noticeBody" placeholder="Write announcement for members..."></textarea>
-          <button class="primary-btn" onclick="saveLocalNotice()">Save Notice</button>
-          <p id="noticeMsg" class="small-msg"></p>
-          <div id="noticePreview" class="notice-preview"></div>
-        </div>
-      </section>
-      <footer class="portal-footer">
-        <div class="footer-brand">
-          <img src="logo.jpg" alt="IAS Selection Point" />
-          <div>
-            <b>IAS Selection Point</b>
-            <span>Let's make your imagination true.</span>
-          </div>
-        </div>
-        <div class="footer-links footer-pipe-links">
-          <button onclick="openFooterPage('about')">About Us</button>
-          <span>|</span>
-          <button onclick="openFooterPage('contact')">Contact Us</button>
-          <span>|</span>
-          <button onclick="openFooterPage('cookies')">Cookies Policy</button>
-          <span>|</span>
-          <button onclick="openFooterPage('privacy')">Privacy Policy</button>
-          <span>|</span>
-          <button onclick="openFooterPage('terms')">Terms & Conditions</button>
-          <span>|</span>
-          <button onclick="openFooterPage('disclaimer')">Disclaimer</button>
-        </div>
-        <div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
-      </footer>
-
-    </main>
-  </div>
-
-  <script src="config.js?v=3522"></script>
-  <script src="app.js?v=3522"></script>
+<div class="version-badge">v36 Enterprise Core Stability</div>
+<div class="loader-overlay" id="loaderOverlay">
+<div class="loader-box">
+<div class="spinner"></div>
+<h3 id="loaderTitle">Loading...</h3>
+<p id="loaderText">Please wait</p>
+</div>
+</div>
+<div class="footer-page-modal" id="footerPageModal">
+<div class="footer-page-card">
+<div class="footer-page-header">
+<button onclick="closeFooterPage()">← Back</button>
+<h3 id="footerPageTitle">Page</h3>
+</div>
+<div class="footer-page-content" id="footerPageContent"></div>
+</div>
+</div>
+<button aria-label="Open menu" class="mobile-menu-button" id="mobileMenuButton" type="button">☰</button>
+<div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop"></div>
+<div class="portal-shell">
+<aside class="sidebar-pro">
+<div class="side-brand full-logo-brand">
+<img alt="IAS Selection Point Logo" src="logo.jpg"/>
+<p class="brand-slogan">Let's make your imagination true.</p>
+</div>
+<nav class="side-nav">
+<button class="v311-exam-nav-btn" onclick="openAdminSection('adminExamManager', this)">📝 Exam Management</button>
+<button class="active" onclick="openAdminSection('adminOverview', this)">🏠 Overview</button>
+<button onclick="openAdminSection('adminUsers', this)">👥 User Control</button>
+<button onclick="openAdminSection('adminProTools', this)">🛠️ Admin Pro Tools</button>
+<button onclick="openAdminSection('adminCommunicationHub', this)">📣 Communication Hub</button>
+<button onclick="openAdminSection('adminTickets', this)">🎫 Support Tickets</button>
+<button onclick="openAdminSection('adminSheetCenter', this)">📊 Sheet Center</button>
+<button onclick="openAdminSection('adminPerformance', this)">🏆 Student Performance</button>
+<button onclick="openAdminSection('adminAchievements', this)">🎖 Achievement Center</button>
+<button onclick="openAdminSection('adminLogs', this)">📜 Admin Logs</button>
+<button onclick="openAdminSection('adminNotice', this)">🔔 Notice</button>
+<button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
+<button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
+<button onclick="location.href='dashboard.html'">👤 Member View</button>
+</nav>
+<button class="side-logout" onclick="logout()">Logout</button>
+</aside>
+<main class="portal-main">
+<header class="portal-header">
+<div>
+<h1>Admin Dashboard</h1>
+<p>Manage users, access, announcements and portal controls</p>
+</div>
+<div class="admin-chip">Admin: <b id="adminEmail">Loading...</b></div>
+</header>
+<section class="admin-section active" id="adminOverview">
+<div class="stats-grid-pro">
+<div class="stat-card blue"><span>👥</span><h3 id="totalUsers">0</h3><p>Total Users</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="activeUsers">0</h3><p>Active Users</p></div>
+<div class="stat-card orange"><span>⛔</span><h3 id="blockedUsers">0</h3><p>Blocked Users</p></div>
+<div class="stat-card purple"><span>🛡️</span><h3 id="adminCount">1</h3><p>Admins</p></div>
+<div class="stat-card blue"><span>🆕</span><h3 id="newUsersToday">0</h3><p>New Today</p></div>
+<div class="stat-card green"><span>🔐</span><h3 id="loginsToday">0</h3><p>Logins Today</p></div>
+<div class="stat-card orange"><span>📧</span><h3 id="emailsSentCount">0</h3><p>Emails Sent</p></div>
+<div class="stat-card purple"><span>🎫</span><h3 id="openTicketsCount">0</h3><p>Open Tickets</p></div>
+</div>
+<div class="two-col">
+<div class="pro-panel">
+<h3>⚡ Quick Actions</h3>
+<div class="quick-actions">
+<button onclick="openAdminSection('adminUsers')">Manage Users</button>
+<button onclick="downloadUsersCSV()">Download Users CSV</button>
+<button onclick="loadAdmin()">Refresh Data</button>
+<button onclick="location.href='https://iasselectionpoint.blogspot.com/'">Open Website</button>
+</div>
+</div>
+<div class="pro-panel">
+<h3>🆕 Recent Members</h3>
+<div id="recentUsers">Loading...</div>
+</div>
+</div>
+</section>
+<section class="admin-section" id="adminProTools">
+<div class="stats-grid-pro">
+<div class="stat-card blue"><span>💬</span><h3>WhatsApp</h3><p>One-click messages</p></div>
+<div class="stat-card green"><span>📧</span><h3>Email</h3><p>Single / Bulk users</p></div>
+<div class="stat-card purple"><span>🔔</span><h3>Notify</h3><p>Dashboard alerts</p></div>
+<div class="stat-card orange"><span>📊</span><h3>Reports</h3><p>CSV export ready</p></div>
+</div>
+<div class="two-col compact-two">
+<div class="pro-panel">
+<h3>💬 WhatsApp Quick Templates</h3>
+<p class="muted">Free method: click button, WhatsApp opens with ready message. Admin presses Send.</p>
+<select id="waTemplate">
+<option value="welcome">Welcome Message</option>
+<option value="active">Account Activated</option>
+<option value="blocked">Account Blocked</option>
+<option value="study">New Study Material</option>
+<option value="goal">Daily Goal Reminder</option>
+</select>
+<textarea id="waCustomMessage" placeholder="Optional custom message..."></textarea>
+<p class="small-msg">Use WhatsApp buttons in User Control table.</p>
+</div>
+<div class="pro-panel">
+<h3>📧 Single User Message</h3>
+<input id="singleMsgEmail" placeholder="User email"/>
+<input id="singleMsgSubject" placeholder="Subject / title"/>
+<textarea id="singleMsgBody" placeholder="Message body..."></textarea>
+<button class="primary-btn" onclick="sendSingleUserMessage()">Send Email + Dashboard Notification</button>
+<p class="small-msg" id="singleMsgStatus"></p>
+</div>
+</div>
+</section>
+<section class="admin-section" id="adminCommunicationHub">
+<div class="pro-panel">
+<h3>📣 Communication Hub</h3>
+<p class="muted">Send email and dashboard notifications to one user, selected users, or all active users.</p>
+<div class="communication-grid">
+<div>
+<label>Audience</label>
+<select id="commAudience" onchange="toggleCommunicationAudience()">
+<option value="all">All Active Users</option>
+<option value="single">Single User</option>
+<option value="selected">Selected Users</option>
+</select>
+</div>
+<div id="commSingleEmailWrap" style="display:none;">
+<label>User Email</label>
+<input id="commSingleEmail" placeholder="user@example.com"/>
+</div>
+</div>
+<input id="commSubject" placeholder="Subject / notification title"/>
+<textarea id="commMessage" placeholder="Write your professional message..."></textarea>
+<div class="communication-options">
+<label><input checked="" id="commEmail" type="checkbox"/> Send Email</label>
+<label><input checked="" id="commDashboard" type="checkbox"/> Dashboard Notification</label>
+</div>
+<button class="primary-btn" onclick="sendCommunicationHub()">Send Communication</button>
+<p class="small-msg" id="commStatus"></p>
+</div>
+</section>
+<section class="admin-section" id="adminTickets">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🎫 Support Tickets</h3>
+<p class="muted">Review, reply and resolve member support requests.</p>
+</div>
+<select id="ticketStatusFilter" onchange="renderAdminTickets()">
+<option value="">All Tickets</option>
+<option value="Open">Open</option>
+<option value="Pending">Pending</option>
+<option value="Resolved">Resolved</option>
+</select>
+</div>
+<div class="ticket-list" id="adminTicketsList"><p class="muted">Loading tickets...</p></div>
+</div>
+</section>
+<section class="admin-section" id="adminSheetCenter">
+<div class="pro-panel">
+<h3>📊 Google Sheet Center</h3>
+<p class="muted">Manage and professionally format your IAS Selection Point database sheets.</p>
+<div class="sheet-center-grid">
+<div class="sheet-center-card">
+<span>🎨</span>
+<h4>Professional Formatting</h4>
+<p>Headers, filters, frozen rows, widths, colors and date formats.</p>
+<button onclick="formatGoogleSheets()">Format All Sheets</button>
+</div>
+<div class="sheet-center-card">
+<span>📈</span>
+<h4>Dashboard Summary</h4>
+<p>Create or refresh a visual database summary sheet.</p>
+<button onclick="refreshSheetDashboard()">Refresh Dashboard</button>
+</div>
+<div class="sheet-center-card">
+<span>🧹</span>
+<h4>Maintenance</h4>
+<p>Remove empty rows and refresh filters safely.</p>
+<button onclick="runSheetMaintenance()">Run Maintenance</button>
+</div>
+<div class="sheet-center-card">
+<span>🔗</span>
+<h4>Open Google Sheet</h4>
+<p>Open the connected database in a new tab.</p>
+<button onclick="window.open('https://docs.google.com/spreadsheets/d/1GfAvSSfCV2vAuTbe4_Yodjn8Y60SMTNhtog8PTpQvNs/edit','_blank')">Open Sheet</button>
+</div>
+</div>
+<p class="small-msg" id="sheetCenterMsg"></p>
+</div>
+</section>
+<section class="admin-section" id="adminPerformance">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🏆 Student Performance Overview</h3>
+<p class="muted">Monitor consistency, reading activity and top learners.</p>
+</div>
+<button class="mini-btn" onclick="loadAdminPerformance()">Refresh</button>
+</div>
+<div class="stats-grid-pro">
+<div class="stat-card blue"><span>📖</span><h3 id="adminTotalReads">0</h3><p>Total Reads</p></div>
+<div class="stat-card green"><span>🔥</span><h3 id="adminActiveStreaks">0</h3><p>Active Streaks</p></div>
+<div class="stat-card purple"><span>🏅</span><h3 id="adminBadgesAwarded">0</h3><p>Badges Awarded</p></div>
+<div class="stat-card orange"><span>👑</span><h3 id="adminTopScore">0</h3><p>Top Learner Score</p></div>
+</div>
+<div class="leaderboard-wrap">
+<h3>🥇 Top Active Learners</h3>
+<div class="leaderboard-list" id="adminLeaderboard"><p class="muted">Loading performance...</p></div>
+</div>
+</div>
+</section>
+<section class="admin-section" id="adminExamManager">
+<div class="v311-exam-guide">
+<div><b>Step 1</b><span>Create Test</span></div>
+<div><b>Step 2</b><span>Add Questions</span></div>
+<div><b>Step 3</b><span>Publish Test</span></div>
+<div><b>Step 4</b><span>Member Attempts Test</span></div>
+</div>
+<div class="v311-exam-toolbar">
+<div>
+<h2>📝 Exam Management</h2>
+<p>Create and publish mock tests for portal members.</p>
+</div>
+<div>
+<button class="secondary-btn" onclick="createV311DemoTest()" type="button">⚡ Create Demo Test</button>
+<button class="primary-btn" onclick="loadV31AdminTests()" type="button">Refresh</button>
+</div>
+</div>
+<div class="two-col compact-two">
+<div class="pro-panel">
+<h3>1️⃣ Create Mock Test</h3>
+<label>Test Title</label>
+<input id="v31AdminTestTitle" placeholder="Example: Current Affairs Practice Test 1">
+<label>Category / Subject</label>
+<input id="v31AdminTestCategory" placeholder="Current Affairs / UPSC / Political Science">
+<div class="form-grid">
+<div><label>Duration (minutes)</label><input id="v31AdminTestDuration" min="1" type="number" value="10"/></div>
+<div><label>Marks per correct</label><input id="v31AdminPositiveMarks" step="0.25" type="number" value="1"/></div>
+<div><label>Negative marks</label><input id="v31AdminNegativeMarks" step="0.25" type="number" value="0.25"/></div>
+<div><label>Passing marks</label><input id="v31AdminPassingMarks" step="0.25" type="number" value="5"/></div>
+</div>
+<label>Description</label>
+<textarea id="v31AdminTestDescription" placeholder="Short test instructions or description"></textarea>
+<button class="primary-btn" id="v312CreateTestBtn" onclick="createV312AdminTest()">Create Test</button>
+<p class="small-msg" id="v31AdminTestMsg"></p>
+</input></input></div>
+<div class="pro-panel">
+<h3>2️⃣ Add Question</h3>
+<label>Select Test</label>
+<select id="v31AdminQuestionTest"></select>
+<label>Question</label>
+<textarea id="v31AdminQuestionText" placeholder="Enter the complete question"></textarea>
+<input id="v31OptionA" placeholder="Option A"/>
+<input id="v31OptionB" placeholder="Option B"/>
+<input id="v31OptionC" placeholder="Option C"/>
+<input id="v31OptionD" placeholder="Option D"/>
+<label>Correct Answer</label>
+<select id="v31CorrectOption">
+<option value="A">Option A</option>
+<option value="B">Option B</option>
+<option value="C">Option C</option>
+<option value="D">Option D</option>
+</select>
+<label>Explanation</label>
+<textarea id="v31Explanation" placeholder="Explain why the answer is correct"></textarea>
+<button class="primary-btn" id="v312AddQuestionBtn" onclick="addV312AdminQuestion()">Add Question</button>
+<p class="small-msg" id="v31AdminQuestionMsg"></p>
+<div class="v312-question-preview" id="v312QuestionPreview">
+<b>Question Manager</b>
+<span>Select a test and add questions. The form clears automatically after a successful save.</span>
+</div>
+</div>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>3️⃣ Existing Tests</h3>
+<p class="muted">Add questions first, then publish the test.</p>
+</div>
+<button class="mini-btn" onclick="loadV31AdminTests()">Refresh</button>
+</div>
+<div class="v31-admin-tests-list" id="v31AdminTestsList">
+<p class="muted">Loading tests...</p>
+</div>
+</div>
+</section>
+<section class="admin-section" id="adminAchievements">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>🎖 Achievement Center</h3>
+<p class="muted">Review milestone emails and badge history.</p>
+</div>
+<button class="mini-btn" onclick="loadV317AdminAchievements()">Refresh</button>
+</div>
+<div class="v317-achievement-summary" id="v317AdminAchievementStats"></div>
+<div class="v317-admin-achievement-list" id="v317AdminAchievementList"></div>
+</div>
+</section>
+<section class="admin-section" id="adminUsers">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>👥 User Control</h3>
+<p class="muted">Activate, block or delete member accounts.</p>
+</div>
+<div class="admin-filter-row">
+<input id="userSearch" oninput="filterUsers()" placeholder="Search name, email or mobile..."/>
+<select id="userStatusFilter" onchange="filterUsers()">
+<option value="">All Statuses</option>
+<option value="Active">Active</option>
+<option value="Deactivated">Deactivated</option>
+<option value="Blocked">Blocked</option>
+<option value="Pending">Pending</option>
+<option value="Deleted">Deleted</option>
+</select>
+</div>
+</div>
+<div class="bulk-toolbar">
+<label><input id="selectAllUsers" onchange="toggleSelectAllUsers()" type="checkbox"/> Select All</label>
+<span id="selectedUserCount">0 selected</span>
+<button onclick="bulkUpdateUsers('Active')">Activate</button>
+<button onclick="bulkUpdateUsers('Deactivated')">Deactivate</button>
+<button onclick="bulkUpdateUsers('Blocked')">Block</button>
+<button onclick="openSelectedCommunication()">Message Selected</button>
+</div>
+<div class="table-wrap">
+<table class="pro-table">
+<thead>
+<tr>
+<th>Select</th><th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th>
+</tr>
+</thead>
+<tbody id="usersTable"></tbody>
+</table>
+</div>
+</div>
+</section>
+<section class="admin-section" id="adminLogs">
+<div class="pro-panel">
+<h3>📜 Admin Logs</h3>
+<div class="post-list" id="adminLogsList"><p class="muted">Recent admin actions will appear here after actions are performed.</p></div>
+</div>
+</section>
+<section class="admin-section" id="adminEmailCenter">
+<div class="pro-panel email-center-card">
+<h3>📧 Admin Email Center</h3>
+<p class="muted">Send a branded email to all active members.</p>
+<input id="bulkEmailSubject" placeholder="Email subject">
+<textarea id="bulkEmailBody" placeholder="Write message for members..."></textarea>
+<button class="primary-btn" onclick="sendBulkEmail()">Send to Active Members</button>
+<p class="small-msg" id="bulkEmailMsg"></p>
+<hr class="v318-email-divider"/>
+<div class="panel-head">
+<div>
+<h3>📊 Email Delivery Report</h3>
+<p class="muted">Welcome, admin alerts, achievements, OTP and system emails.</p>
+</div>
+<button class="mini-btn" onclick="loadV318EmailReport()">Refresh</button>
+</div>
+<div class="v318-email-stats" id="v318EmailDeliveryStats"></div>
+<div class="v32-email-health-card" id="v32EmailHealthCard"><div><span>📬</span><div><h4>Email System Health</h4><p>Check MailApp authorization, quota and recent failures.</p></div></div><button onclick="runV32EmailHealthCheck()" type="button">Run Check</button><button id="v36SendTestEmail" onclick="sendV36TestEmail()" type="button">Send Test Email</button></div><div class="v32-email-health-result" id="v32EmailHealthResult"></div><div class="v318-email-list" id="v318EmailDeliveryList">
+<p class="muted">Open Email Center to load delivery history.</p>
+</div>
+</input></div>
+</section>
+<section class="admin-section" id="adminNotify">
+<div class="pro-panel">
+<h3>📢 Portal Notification</h3>
+<p class="muted">Send a notification to all users or a single user. Email and dashboard notification both will be sent.</p>
+<select id="notifyTarget" onchange="toggleNotifyEmailBox()">
+<option value="all">All Active Users</option>
+<option value="single">Single User</option>
+</select>
+<input id="notifyEmail" placeholder="User email for single notification" style="display:none;"/>
+<input id="notifyTitle" placeholder="Notification title"/>
+<textarea id="notifyBody" placeholder="Notification message..."></textarea>
+<button class="primary-btn" onclick="sendPortalNotification()">Send Notification</button>
+<p class="small-msg" id="notifyMsg"></p>
+</div>
+</section>
+<section class="admin-section" id="adminNotice">
+<div class="pro-panel">
+<h3>🔔 Notice / Announcement</h3>
+<input id="noticeTitle" placeholder="Notice title"/>
+<textarea id="noticeBody" placeholder="Write announcement for members..."></textarea>
+<button class="primary-btn" onclick="saveLocalNotice()">Save Notice</button>
+<p class="small-msg" id="noticeMsg"></p>
+<div class="notice-preview" id="noticePreview"></div>
+</div>
+</section>
+<footer class="portal-footer">
+<div class="footer-brand">
+<img alt="IAS Selection Point" src="logo.jpg"/>
+<div>
+<b>IAS Selection Point</b>
+<span>Let's make your imagination true.</span>
+</div>
+</div>
+<div class="footer-links footer-pipe-links">
+<button onclick="openFooterPage('about')">About Us</button>
+<span>|</span>
+<button onclick="openFooterPage('contact')">Contact Us</button>
+<span>|</span>
+<button onclick="openFooterPage('cookies')">Cookies Policy</button>
+<span>|</span>
+<button onclick="openFooterPage('privacy')">Privacy Policy</button>
+<span>|</span>
+<button onclick="openFooterPage('terms')">Terms &amp; Conditions</button>
+<span>|</span>
+<button onclick="openFooterPage('disclaimer')">Disclaimer</button>
+</div>
+<div class="footer-copy">© <span id="copyrightYear"></span> IAS Selection Point. All Rights Reserved.</div>
+</footer>
+</main>
+</div>
+<script src="config.js?v=36"></script>
+<script src="app.js?v=36"></script>
 </body>
 </html>

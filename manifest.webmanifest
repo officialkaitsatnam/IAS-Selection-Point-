@@ -2,7 +2,7 @@
   "name": "IAS Selection Point Learning App",
   "short_name": "IAS Selection",
   "description": "Professional learning portal for IAS Selection Point members.",
-  "start_url": "./index.html?v=33",
+  "start_url": "./index.html?v=36",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef4fb",

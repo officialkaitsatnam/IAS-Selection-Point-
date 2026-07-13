@@ -46,13 +46,70 @@ function showForm(name){
   showMsg('');
 }
 
+const V36_SAFE_RETRY_ACTIONS=new Set([
+  'getProfile','getRegistrationProfile','getMyGamification','getXpLeaderboard',
+  'getDailyQuiz','listNotes','listBookmarks','getNotifications','getMyAchievements',
+  'adminEmailDeliveryReport','emailSystemHealth','systemHealth'
+]);
+
 async function api(action,data={}){
-  if(!API_URL||API_URL.includes('PASTE_'))return{success:false,message:'API URL config.js is not set'};
-  try{
-    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...data}),redirect:'follow'});
-    const text=await res.text();
-    try{return JSON.parse(text)}catch(e){return{success:false,message:'Backend JSON response error: '+text.substring(0,160)}}
-  }catch(err){return{success:false,message:'Network/API error: '+err.message}}
+  if(!API_URL||API_URL.includes('PASTE_')){
+    return{success:false,message:'API URL is not configured.'};
+  }
+
+  const attempts=V36_SAFE_RETRY_ACTIONS.has(action)?2:1;
+  let lastError='';
+
+  for(let attempt=1;attempt<=attempts;attempt++){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),12000);
+
+    try{
+      const response=await fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action,...data}),
+        redirect:'follow',
+        signal:controller.signal,
+        cache:'no-store'
+      });
+
+      clearTimeout(timeout);
+      const text=await response.text();
+
+      try{
+        const result=JSON.parse(text);
+        window.V36_LAST_API_OK=Date.now();
+        updateV36ConnectionState('online','Portal Connected','All services are available.');
+        return result;
+      }catch(error){
+        lastError='The server returned an invalid response.';
+        if(attempt===attempts){
+          updateV36ConnectionState('error','Service Response Error',lastError);
+          return{success:false,message:lastError};
+        }
+      }
+    }catch(error){
+      clearTimeout(timeout);
+      lastError=error?.name==='AbortError'
+        ?'The request timed out. Please try again.'
+        :'The portal could not connect to the server.';
+
+      if(attempt<attempts){
+        await new Promise(resolve=>setTimeout(resolve,450));
+        continue;
+      }
+
+      updateV36ConnectionState(
+        navigator.onLine?'error':'offline',
+        navigator.onLine?'Service Unavailable':'You Are Offline',
+        lastError
+      );
+      return{success:false,message:lastError};
+    }
+  }
+
+  return{success:false,message:lastError||'Request failed.'};
 }
 
 /* Auth */
@@ -5683,4 +5740,183 @@ if(typeof openDashSection==='function'){
 }
 document.addEventListener('DOMContentLoaded',()=>{
   v352InitStateDistrict();
+});
+
+
+/* ======================================================
+   v36 ENTERPRISE CORE STABILITY
+   ====================================================== */
+window.V36_WAITING_SERVICE_WORKER=null;
+
+window.updateV36ConnectionState=function(state,title,detail){
+  const bar=document.getElementById('v36ConnectionBar');
+  const text=document.getElementById('v36ConnectionText');
+  const info=document.getElementById('v36ConnectionDetail');
+  if(!bar)return;
+  bar.className='v36-connection-bar '+state;
+  if(text)text.textContent=title||'Portal Status';
+  if(info)info.textContent=detail||'';
+};
+
+window.addEventListener('online',()=>{
+  updateV36ConnectionState('online','Connection Restored','Portal services are available.');
+});
+window.addEventListener('offline',()=>{
+  updateV36ConnectionState('offline','You Are Offline','Cached content remains available.');
+});
+
+window.runV36SystemCheck=async function(){
+  const details=document.getElementById('v36SystemDetails');
+  if(details)details.innerHTML='<p class="muted">Running system diagnostics...</p>';
+
+  const network=navigator.onLine;
+  const session=Boolean(token()&&currentUser()?.email);
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+
+  let apiResult={success:false,message:'Not checked'};
+  try{
+    apiResult=await api('systemHealth',{token:token()});
+  }catch(e){}
+
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+  set('v36NetworkStatus',network?'Online':'Offline');
+  set('v36SessionStatus',session?'Active':'Missing');
+  set('v36PwaStatus',standalone?'Installed':'Browser Mode');
+  set('v36ApiStatus',apiResult.success?'Operational':'Unavailable');
+
+  if(details){
+    details.innerHTML=`
+      <div class="v36-system-row"><b>Internet Connection</b><span class="${network?'ok':'warn'}">${network?'Online':'Offline'}</span></div>
+      <div class="v36-system-row"><b>User Session</b><span class="${session?'ok':'error'}">${session?'Valid':'Missing or expired'}</span></div>
+      <div class="v36-system-row"><b>Backend API</b><span class="${apiResult.success?'ok':'error'}">${apiResult.success?'Operational':escapeHtml(apiResult.message||'Unavailable')}</span></div>
+      <div class="v36-system-row"><b>Application Mode</b><span class="${standalone?'ok':'warn'}">${standalone?'Installed PWA':'Running in browser'}</span></div>
+      <div class="v36-system-row"><b>Portal Version</b><span class="ok">v36 Enterprise Core Stability</span></div>`;
+  }
+
+  updateV36ConnectionState(
+    !network?'offline':apiResult.success?'online':'error',
+    !network?'You Are Offline':apiResult.success?'Portal Connected':'Backend Unavailable',
+    !network?'Cached content remains available.':apiResult.success?'All core services are operational.':apiResult.message
+  );
+};
+
+window.retryV36DashboardData=async function(){
+  showLoader('Refreshing dashboard...','Synchronizing profile and learning data');
+  try{
+    await Promise.allSettled([
+      typeof loadLatestArticles==='function'?loadLatestArticles():Promise.resolve(),
+      typeof loadV35DashboardOverview==='function'?loadV35DashboardOverview():Promise.resolve(),
+      typeof loadV352Profile==='function'?loadV352Profile():Promise.resolve(),
+      typeof loadV33UserStats==='function'?loadV33UserStats():Promise.resolve()
+    ]);
+    toast('Dashboard data refreshed');
+    await runV36SystemCheck();
+  }finally{
+    hideLoader();
+  }
+};
+
+window.clearV36PortalCache=async function(){
+  if(!confirm('Clear cached portal files and reload the latest version?'))return;
+  try{
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(key=>caches.delete(key)));
+    }
+    if('serviceWorker' in navigator){
+      const registrations=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(reg=>reg.unregister()));
+    }
+  }catch(e){}
+  location.reload(true);
+};
+
+window.applyV36Update=function(){
+  if(window.V36_WAITING_SERVICE_WORKER){
+    window.V36_WAITING_SERVICE_WORKER.postMessage({type:'SKIP_WAITING'});
+  }else{
+    location.reload();
+  }
+};
+
+window.initializeV36ServiceWorkerUpdates=async function(){
+  if(!('serviceWorker' in navigator))return;
+  try{
+    const registration=await navigator.serviceWorker.getRegistration();
+    if(!registration)return;
+
+    if(registration.waiting){
+      window.V36_WAITING_SERVICE_WORKER=registration.waiting;
+      const banner=document.getElementById('v36UpdateBanner');
+      if(banner)banner.hidden=false;
+    }
+
+    registration.addEventListener('updatefound',()=>{
+      const worker=registration.installing;
+      if(!worker)return;
+      worker.addEventListener('statechange',()=>{
+        if(worker.state==='installed'&&navigator.serviceWorker.controller){
+          window.V36_WAITING_SERVICE_WORKER=worker;
+          const banner=document.getElementById('v36UpdateBanner');
+          if(banner)banner.hidden=false;
+        }
+      });
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
+  }catch(e){}
+};
+
+window.guardV36LoadingState=function(containerId,retryFunction,delay=12000){
+  setTimeout(()=>{
+    const container=document.getElementById(containerId);
+    if(!container)return;
+    const text=(container.textContent||'').toLowerCase();
+    if(text.includes('loading')){
+      container.innerHTML=`
+        <div class="v32-empty-category">
+          <b>Content is taking longer than expected.</b><br>
+          Please verify your connection and try again.
+          <div style="margin-top:10px">
+            <button class="mini-btn" onclick="${retryFunction}()">Retry</button>
+          </div>
+        </div>`;
+    }
+  },delay);
+};
+
+window.sendV36TestEmail=async function(){
+  const button=document.getElementById('v36SendTestEmail');
+  if(button){button.disabled=true;button.textContent='Sending...'}
+  try{
+    const result=await api('sendSystemTestEmail',{token:token()});
+    if(result.success){
+      toast('Test email sent successfully');
+      if(typeof loadV318EmailReport==='function')loadV318EmailReport();
+    }else{
+      alert(result.message||'Test email could not be sent.');
+    }
+  }finally{
+    if(button){button.disabled=false;button.textContent='Send Test Email'}
+  }
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V36=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V36(id,btn);
+    if(id==='systemStatusModule')setTimeout(runV36SystemCheck,60);
+    if(id==='mockTestsModule')guardV36LoadingState('v31TestsList','loadV31Tests',12000);
+    if(id==='dailyQuizModule')guardV36LoadingState('v33QuizUnavailable','loadV33DailyQuiz',12000);
+  };
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  updateV36ConnectionState(
+    navigator.onLine?'online':'offline',
+    navigator.onLine?'Portal Connected':'You Are Offline',
+    navigator.onLine?'Checking core services...':'Cached content remains available.'
+  );
+  setTimeout(runV36SystemCheck,900);
+  setTimeout(initializeV36ServiceWorkerUpdates,1200);
 });

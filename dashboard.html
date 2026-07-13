@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=3522" rel="stylesheet"/>
+<link href="style.css?v=36" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v35.2.2 Profile Data Sync Fix</div>
+<div class="version-badge">v36 Enterprise Core Stability</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -74,7 +74,10 @@
 <button onclick="openDashSection('supportModule', this)">🎫 Help &amp; Support</button>
 </nav>
 </aside>
-<main class="portal-main">
+<main class="portal-main"><div class="v36-update-banner" hidden="" id="v36UpdateBanner">
+<div><span>⬆️</span><div><b>Portal Update Available</b><small>A newer and more stable version is ready.</small></div></div>
+<button onclick="applyV36Update()" type="button">Update Now</button>
+</div>
 <header class="portal-header learning-header">
 <div>
 <h1>Welcome, <span id="memberName">Member</span> 👋</h1>
@@ -114,14 +117,19 @@
 <button onclick="openV35ProfileSection('bookmarks')">🔖 Bookmarks</button>
 <button onclick="openV35ProfileSection('notesCenterModule')">📝 My Notes</button>
 <button onclick="openV35ProfileSection('performanceModule')">📊 Performance</button>
-<button onclick="openV35ProfileSection('security')">🛡️ Account &amp; Security</button>
+<button onclick="openV35ProfileSection('security')">🛡️ Account &amp; Security</button><button id="v36SystemMenuButton" onclick="openV35ProfileSection('systemStatusModule')">⚙️ System Status</button>
 <button onclick="togglePortalTheme(); closeV35ProfileMenu()">🌙 Theme</button>
 <button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
 <button class="logout" onclick="logout()">🚪 Logout</button>
 </div>
 </div>
 </div></div>
-</header>
+</header><div class="v36-connection-bar online" id="v36ConnectionBar">
+<span id="v36ConnectionDot"></span>
+<b id="v36ConnectionText">Portal Connected</b>
+<small id="v36ConnectionDetail">All services are available.</small>
+<button onclick="runV36SystemCheck()" type="button">Check Status</button>
+</div>
 <div aria-label="Latest articles" class="v291-breaking-wrap">
 <div class="v291-breaking-label">⚡ BREAKING NEWS</div>
 <div class="v291-breaking-window">
@@ -129,7 +137,7 @@
 <span id="v294TickerContent">Latest articles are loading...</span>
 </marquee>
 </div>
-<button class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix" onclick="toggleV30Ticker()" type="button">⏸</button>
+<button class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability" onclick="toggleV30Ticker()" type="button">⏸</button>
 </div>
 <section class="dash-section active" id="overview">
 <div class="stats-grid-pro">
@@ -278,7 +286,6 @@
 <div class="post-list" id="readingHistory"></div>
 </div>
 </section>
-
 <section class="dash-section" id="profileView">
 <div class="pro-panel v352-profile-panel">
 <div class="v352-profile-view-head">
@@ -370,7 +377,6 @@
 <p class="small-msg" id="profileMsg"></p>
 </div>
 </section>
-
 <section class="dash-section" id="notes">
 <div class="pro-panel">
 <h3>📝 My Notes</h3>
@@ -505,7 +511,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"></div>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -523,7 +529,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"></div>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -535,7 +541,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"><p class="muted">Loading tests...</p></div>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -546,60 +552,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"><p class="muted">No attempts yet.</p></div>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v35.2.2 Profile Data Sync Fix">
-<div class="v35.2.2 Profile Data Sync Fix">
-<header class="v35.2.2 Profile Data Sync Fix">
+<section class="dash-section" id="v36 Enterprise Core Stability">
+<div class="v36 Enterprise Core Stability">
+<header class="v36 Enterprise Core Stability">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v35.2.2 Profile Data Sync Fix">Mock Test</h2>
+<h2 id="v36 Enterprise Core Stability">Mock Test</h2>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix">⏱ <span id="v35.2.2 Profile Data Sync Fix">00:00</span></div>
+<div class="v36 Enterprise Core Stability">⏱ <span id="v36 Enterprise Core Stability">00:00</span></div>
 </header>
-<div class="v35.2.2 Profile Data Sync Fix">
-<main class="v35.2.2 Profile Data Sync Fix">
-<div class="v35.2.2 Profile Data Sync Fix">
-<span id="v35.2.2 Profile Data Sync Fix">Question 1</span>
-<span id="v35.2.2 Profile Data Sync Fix">Not Answered</span>
+<div class="v36 Enterprise Core Stability">
+<main class="v36 Enterprise Core Stability">
+<div class="v36 Enterprise Core Stability">
+<span id="v36 Enterprise Core Stability">Question 1</span>
+<span id="v36 Enterprise Core Stability">Not Answered</span>
 </div>
-<h3 id="v35.2.2 Profile Data Sync Fix"></h3>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"></div>
-<div class="v35.2.2 Profile Data Sync Fix">
-<button onclick="v35.2.2 Profile Data Sync Fix">← Previous</button>
-<button onclick="v35.2.2 Profile Data Sync Fix">Clear Response</button>
-<button onclick="v35.2.2 Profile Data Sync Fix">Mark for Review</button>
-<button onclick="v35.2.2 Profile Data Sync Fix">Next →</button>
+<h3 id="v36 Enterprise Core Stability"></h3>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
+<div class="v36 Enterprise Core Stability">
+<button onclick="v36 Enterprise Core Stability">← Previous</button>
+<button onclick="v36 Enterprise Core Stability">Clear Response</button>
+<button onclick="v36 Enterprise Core Stability">Mark for Review</button>
+<button onclick="v36 Enterprise Core Stability">Next →</button>
 </div>
 </main>
-<aside class="v35.2.2 Profile Data Sync Fix">
+<aside class="v36 Enterprise Core Stability">
 <h4>Question Palette</h4>
-<div class="v35.2.2 Profile Data Sync Fix">
+<div class="v36 Enterprise Core Stability">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"></div>
-<button class="v35.2.2 Profile Data Sync Fix" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
+<button class="v36 Enterprise Core Stability" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v35.2.2 Profile Data Sync Fix">
+<section class="dash-section" id="v36 Enterprise Core Stability">
 <div class="pro-panel">
-<div class="v35.2.2 Profile Data Sync Fix">
+<div class="v36 Enterprise Core Stability">
 <span>🏆</span>
-<h2 id="v35.2.2 Profile Data Sync Fix">Test Completed</h2>
-<p id="v35.2.2 Profile Data Sync Fix"></p>
+<h2 id="v36 Enterprise Core Stability">Test Completed</h2>
+<p id="v36 Enterprise Core Stability"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v35.2.2 Profile Data Sync Fix">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v35.2.2 Profile Data Sync Fix">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v35.2.2 Profile Data Sync Fix">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v35.2.2 Profile Data Sync Fix">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v35.2.2 Profile Data Sync Fix" id="v35.2.2 Profile Data Sync Fix"></div>
+<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -692,7 +698,31 @@
 </div>
 </div>
 </section>
-<section class="dash-section" id="security">
+<section class="dash-section" id="systemStatusModule">
+<div class="pro-panel v36-system-panel">
+<div class="panel-head">
+<div>
+<h3>System Status</h3>
+<p class="muted">Review portal connectivity, session, application and service health.</p>
+</div>
+<button class="mini-btn" onclick="runV36SystemCheck()" type="button">Run Check</button>
+</div>
+<div class="v36-system-summary" id="v36SystemSummary">
+<div><small>PORTAL API</small><b id="v36ApiStatus">Checking</b></div>
+<div><small>SESSION</small><b id="v36SessionStatus">Checking</b></div>
+<div><small>NETWORK</small><b id="v36NetworkStatus">Checking</b></div>
+<div><small>APPLICATION</small><b id="v36PwaStatus">Checking</b></div>
+</div>
+<div class="v36-system-details" id="v36SystemDetails">
+<p class="muted">Select “Run Check” to review system health.</p>
+</div>
+<div class="v36-system-actions">
+<button onclick="retryV36DashboardData()" type="button">Refresh Dashboard Data</button>
+<button onclick="clearV36PortalCache()" type="button">Clear Portal Cache</button>
+<button onclick="installV33App()" type="button">Install Application</button>
+</div>
+</div>
+</section><section class="dash-section" id="security">
 <div class="pro-panel">
 <h3>🔐 Change Password</h3>
 <input id="oldPassword" placeholder="Old password" type="password"/>
@@ -726,7 +756,7 @@
 </footer>
 </main>
 </div>
-<script src="config.js?v=3522"></script>
-<script src="app.js?v=3522"></script>
+<script src="config.js?v=36"></script>
+<script src="app.js?v=36"></script>
 </body>
 </html>

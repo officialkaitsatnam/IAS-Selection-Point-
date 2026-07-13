@@ -1,12 +1,12 @@
-const CACHE_NAME = 'ias-selection-point-v3522';
+const CACHE_NAME = 'ias-selection-point-v36';
 const CORE = [
   './',
   './index.html',
   './dashboard.html',
   './admin.html',
-  './style.css?v=3522',
-  './app.js?v=3522',
-  './config.js?v=3522',
+  './style.css?v=36',
+  './app.js?v=36',
+  './config.js?v=36',
   './logo.jpg',
   './offline.html'
 ];
@@ -56,4 +56,8 @@ self.addEventListener('fetch', event => {
       })
     );
   }
+});
+
+self.addEventListener('message',event=>{
+  if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();
 });
