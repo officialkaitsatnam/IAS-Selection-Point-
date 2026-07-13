@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=362" rel="stylesheet"/>
+<link href="style.css?v=37" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v36.2 Professional UI Rebuild</div>
+<div class="version-badge">v37 Smart Dashboard + Latest Jobs Hub</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -62,7 +62,7 @@
 <button class="active" onclick="openDashSection('overview', this)">🏠 Dashboard</button>
 <button onclick="openDashSection('knowledgeModule', this)">📚 Knowledge Center</button>
 <button onclick="openDashSection('upscModule', this)">🎯 UPSC</button>
-<button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button>
+<button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button><button id="v37JobsNavButton" onclick="openDashSection('latestJobsModule', this)">💼 Latest Jobs</button>
 <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
 <button onclick="openDashSection('library', this)">📖 My Library</button>
 <button onclick="openDashSection('notes', this)">📝 Notes</button>
@@ -142,6 +142,40 @@
 <button aria-label="Pause news ticker" class="v362-ticker-toggle" id="v362TickerToggle" onclick="toggleV362Ticker()" type="button">⏸</button>
 </div>
 <section class="dash-section active" id="overview">
+
+<section class="v37-smart-focus" id="v37SmartFocus">
+<div class="v37-focus-main">
+<div class="v37-focus-icon">🧭</div>
+<div>
+<small>PERSONALIZED STUDY FOCUS</small>
+<h3 id="v37FocusTitle">Preparing your learning plan...</h3>
+<p id="v37FocusText">Your target examination and recent activity will be used to suggest the next step.</p>
+</div>
+</div>
+<div class="v37-focus-actions">
+<button onclick="openDashSection('dailyQuizModule')">Daily Quiz</button>
+<button onclick="openDashSection('mockTestsModule')">Mock Tests</button>
+<button onclick="openDashSection('latestJobsModule')">Job Alerts</button>
+</div>
+</section>
+<section class="v37-today-grid">
+<article>
+<span>📖</span>
+<div><small>TODAY'S READING</small><b id="v37TodayReading">0 Articles</b></div>
+</article>
+<article>
+<span>🎯</span>
+<div><small>DAILY QUIZ</small><b id="v37QuizRecommendation">10 Questions</b></div>
+</article>
+<article>
+<span>💼</span>
+<div><small>NEW JOB ALERTS</small><b id="v37JobAlertCount">Checking...</b></div>
+</article>
+<article>
+<span>🔥</span>
+<div><small>CURRENT STREAK</small><b id="v37SmartStreak">0 Days</b></div>
+</article>
+</section>
 <div class="stats-grid-pro">
 <div class="stat-card blue"><span>📚</span><h3>5</h3><p>Knowledge Center</p></div>
 <div class="stat-card green"><span>🎯</span><h3>8</h3><p>UPSC Sections</p></div>
@@ -338,7 +372,6 @@
 <button class="v362-remove-button" onclick="removeV362ProfilePhoto()" type="button">Remove</button>
 </div>
 </div>
-
 <div class="form-grid profile-pro-grid v291-profile-grid v352-profile-edit-grid">
 <input id="profileName" placeholder="Full name"/>
 <input id="profileMobile" placeholder="Mobile / WhatsApp number"/>
@@ -432,7 +465,32 @@
 </div>
 </div>
 </section>
-<section class="dash-section" id="supportModule">
+<section class="dash-section" id="latestJobsModule">
+<div class="pro-panel v37-jobs-panel">
+<div class="panel-head">
+<div>
+<h3>Latest Jobs &amp; Examination Alerts</h3>
+<p class="muted">Fresh government job, admit card, result and answer-key updates from credited sources.</p>
+</div>
+<button class="mini-btn" onclick="loadV37JobAlerts(true)">Refresh</button>
+</div>
+<div class="v37-source-notice">
+<span>ℹ️</span>
+<p>Listings are summaries with source credit. Open the original notification before applying or making any decision.</p>
+</div>
+<div class="v37-job-tabs">
+<button class="active" data-v37-category="latest" onclick="setV37JobCategory('latest',this)">Latest Jobs</button>
+<button data-v37-category="haryana" onclick="setV37JobCategory('haryana',this)">Haryana Jobs</button>
+<button data-v37-category="admit-card" onclick="setV37JobCategory('admit-card',this)">Admit Cards</button>
+<button data-v37-category="result" onclick="setV37JobCategory('result',this)">Results</button>
+<button data-v37-category="answer-key" onclick="setV37JobCategory('answer-key',this)">Answer Keys</button>
+</div>
+<div class="v37-jobs-status" id="v37JobsStatus">
+<p class="muted">Open this module to load the latest alerts.</p>
+</div>
+<div class="v37-jobs-list" id="v37JobsList"></div>
+</div>
+</section><section class="dash-section" id="supportModule">
 <div class="two-col compact-two">
 <div class="pro-panel">
 <h3>🎫 Create Support Ticket</h3>
@@ -523,7 +581,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -541,7 +599,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -553,7 +611,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"><p class="muted">Loading tests...</p></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -564,60 +622,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"><p class="muted">No attempts yet.</p></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v36.2 Professional UI Rebuild">
-<div class="v36.2 Professional UI Rebuild">
-<header class="v36.2 Professional UI Rebuild">
+<section class="dash-section" id="v37 Smart Dashboard + Latest Jobs Hub">
+<div class="v37 Smart Dashboard + Latest Jobs Hub">
+<header class="v37 Smart Dashboard + Latest Jobs Hub">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v36.2 Professional UI Rebuild">Mock Test</h2>
+<h2 id="v37 Smart Dashboard + Latest Jobs Hub">Mock Test</h2>
 </div>
-<div class="v36.2 Professional UI Rebuild">⏱ <span id="v36.2 Professional UI Rebuild">00:00</span></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub">⏱ <span id="v37 Smart Dashboard + Latest Jobs Hub">00:00</span></div>
 </header>
-<div class="v36.2 Professional UI Rebuild">
-<main class="v36.2 Professional UI Rebuild">
-<div class="v36.2 Professional UI Rebuild">
-<span id="v36.2 Professional UI Rebuild">Question 1</span>
-<span id="v36.2 Professional UI Rebuild">Not Answered</span>
+<div class="v37 Smart Dashboard + Latest Jobs Hub">
+<main class="v37 Smart Dashboard + Latest Jobs Hub">
+<div class="v37 Smart Dashboard + Latest Jobs Hub">
+<span id="v37 Smart Dashboard + Latest Jobs Hub">Question 1</span>
+<span id="v37 Smart Dashboard + Latest Jobs Hub">Not Answered</span>
 </div>
-<h3 id="v36.2 Professional UI Rebuild"></h3>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
-<div class="v36.2 Professional UI Rebuild">
-<button onclick="v36.2 Professional UI Rebuild">← Previous</button>
-<button onclick="v36.2 Professional UI Rebuild">Clear Response</button>
-<button onclick="v36.2 Professional UI Rebuild">Mark for Review</button>
-<button onclick="v36.2 Professional UI Rebuild">Next →</button>
+<h3 id="v37 Smart Dashboard + Latest Jobs Hub"></h3>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub">
+<button onclick="v37 Smart Dashboard + Latest Jobs Hub">← Previous</button>
+<button onclick="v37 Smart Dashboard + Latest Jobs Hub">Clear Response</button>
+<button onclick="v37 Smart Dashboard + Latest Jobs Hub">Mark for Review</button>
+<button onclick="v37 Smart Dashboard + Latest Jobs Hub">Next →</button>
 </div>
 </main>
-<aside class="v36.2 Professional UI Rebuild">
+<aside class="v37 Smart Dashboard + Latest Jobs Hub">
 <h4>Question Palette</h4>
-<div class="v36.2 Professional UI Rebuild">
+<div class="v37 Smart Dashboard + Latest Jobs Hub">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
-<button class="v36.2 Professional UI Rebuild" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
+<button class="v37 Smart Dashboard + Latest Jobs Hub" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v36.2 Professional UI Rebuild">
+<section class="dash-section" id="v37 Smart Dashboard + Latest Jobs Hub">
 <div class="pro-panel">
-<div class="v36.2 Professional UI Rebuild">
+<div class="v37 Smart Dashboard + Latest Jobs Hub">
 <span>🏆</span>
-<h2 id="v36.2 Professional UI Rebuild">Test Completed</h2>
-<p id="v36.2 Professional UI Rebuild"></p>
+<h2 id="v37 Smart Dashboard + Latest Jobs Hub">Test Completed</h2>
+<p id="v37 Smart Dashboard + Latest Jobs Hub"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v37 Smart Dashboard + Latest Jobs Hub">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
+<div class="v37 Smart Dashboard + Latest Jobs Hub" id="v37 Smart Dashboard + Latest Jobs Hub"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -768,7 +826,7 @@
 </footer>
 </main>
 </div>
-<script src="config.js?v=362"></script>
-<script src="app.js?v=362"></script>
+<script src="config.js?v=37"></script>
+<script src="app.js?v=37"></script>
 </body>
 </html>

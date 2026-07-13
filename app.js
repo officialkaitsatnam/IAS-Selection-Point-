@@ -6132,3 +6132,138 @@ if(typeof renderLearningPosts==='function'){
 document.addEventListener('DOMContentLoaded',function(){
   setTimeout(renderV362Ticker,700);
 });
+
+
+/* ======================================================
+   v37 SMART DASHBOARD + LATEST JOBS HUB
+   ====================================================== */
+let V37_JOB_ROWS=[];
+let V37_JOB_CATEGORY='latest';
+
+function v37Text(id,value){
+  const el=document.getElementById(id);
+  if(el)el.textContent=value;
+}
+
+window.loadV37SmartDashboard=async function(){
+  let registration={};
+  let game={xp:0,streak:0,level:'Beginner'};
+  try{
+    const r=await api('getRegistrationProfile',{token:token()});
+    if(r?.success)registration=r.profile||{};
+  }catch(e){}
+  try{
+    const g=await api('getMyGamification',{token:token()});
+    if(g?.success)game=g;
+  }catch(e){}
+
+  const exam=registration.targetExam||'your selected examination';
+  v37Text('v37FocusTitle',`Focus on ${exam}`);
+  v37Text(
+    'v37FocusText',
+    `Complete the Daily Quiz, review one learning article and check relevant job or examination alerts for ${exam}.`
+  );
+  v37Text('v37SmartStreak',`${Number(game.streak||0)} Days`);
+
+  let readCount=0;
+  try{
+    readCount=typeof v317HistoryCount==='function'?v317HistoryCount():0;
+  }catch(e){}
+  v37Text('v37TodayReading',`${readCount} Articles`);
+};
+
+window.setV37JobCategory=function(category,button){
+  V37_JOB_CATEGORY=category;
+  document.querySelectorAll('.v37-job-tabs button').forEach(btn=>btn.classList.remove('active'));
+  if(button)button.classList.add('active');
+  renderV37Jobs();
+};
+
+function v37CategoryLabel(category){
+  return {
+    latest:'Latest Job',
+    haryana:'Haryana',
+    'admit-card':'Admit Card',
+    result:'Result',
+    'answer-key':'Answer Key'
+  }[category]||'Update';
+}
+
+window.renderV37Jobs=function(){
+  const list=document.getElementById('v37JobsList');
+  const status=document.getElementById('v37JobsStatus');
+  if(!list)return;
+
+  const rows=V37_JOB_ROWS.filter(row=>{
+    if(V37_JOB_CATEGORY==='latest')return row.category==='latest'||row.category==='job';
+    return row.category===V37_JOB_CATEGORY;
+  });
+
+  if(status)status.innerHTML=rows.length
+    ?`<p class="muted">${rows.length} verified source listings found.</p>`
+    :'<p class="muted">No matching alerts are available in the current feed.</p>';
+
+  list.innerHTML=rows.map(row=>`
+    <article class="v37-job-card">
+      <div class="v37-job-card-head">
+        <h4>${escapeHtml(row.title||'Job Update')}</h4>
+        <span class="v37-job-type">${escapeHtml(v37CategoryLabel(row.category))}</span>
+      </div>
+      <div class="v37-job-meta">
+        <span>🗓 ${escapeHtml(row.date||'Recently updated')}</span>
+        <span>🏛 ${escapeHtml(row.organization||'Government Recruitment')}</span>
+      </div>
+      <div class="v37-job-actions">
+        <span class="v37-job-source">Source: ${escapeHtml(row.source||'FreeJobAlert')}</span>
+        <a href="${escapeAttr(row.url)}" target="_blank" rel="noopener noreferrer">View Original ↗</a>
+      </div>
+    </article>
+  `).join('');
+};
+
+window.loadV37JobAlerts=async function(forceRefresh=false){
+  const status=document.getElementById('v37JobsStatus');
+  const list=document.getElementById('v37JobsList');
+  if(status)status.innerHTML='<p class="muted">Loading latest source updates...</p>';
+  if(list)list.innerHTML='';
+
+  try{
+    const result=await api('getExternalJobAlerts',{
+      token:token(),
+      forceRefresh:Boolean(forceRefresh)
+    });
+
+    if(!result?.success){
+      throw new Error(result?.message||'Job alerts are temporarily unavailable.');
+    }
+
+    V37_JOB_ROWS=Array.isArray(result.rows)?result.rows:[];
+    v37Text('v37JobAlertCount',`${V37_JOB_ROWS.length} Updates`);
+    renderV37Jobs();
+  }catch(error){
+    if(status){
+      status.innerHTML=`<div class="v37-jobs-error">
+        <b>Job alerts could not be updated.</b><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+    }
+    v37Text('v37JobAlertCount','Unavailable');
+  }
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V37=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V37(id,btn);
+    if(id==='latestJobsModule'&&!V37_JOB_ROWS.length)setTimeout(()=>loadV37JobAlerts(false),60);
+  };
+}
+
+if(typeof loadDashboard==='function'){
+  const OLD_LOAD_DASH_V37=loadDashboard;
+  loadDashboard=async function(){
+    await OLD_LOAD_DASH_V37();
+    setTimeout(loadV37SmartDashboard,500);
+    setTimeout(()=>loadV37JobAlerts(false),900);
+  };
+}

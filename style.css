@@ -5558,3 +5558,239 @@ body.portal-dark .v362-photo-preview small{
     flex:1;
   }
 }
+
+
+/* ======================================================
+   v37 SMART DASHBOARD + LATEST JOBS HUB
+   ====================================================== */
+.v37-smart-focus{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 10px;
+  padding:14px;
+  border:1px solid #c7d2fe;
+  border-radius:17px;
+  background:linear-gradient(135deg,#eef2ff,#f8fbff);
+}
+.v37-focus-main{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.v37-focus-icon{
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:#4f46e5;
+  color:#fff;
+  font-size:23px;
+}
+.v37-focus-main small{
+  color:#6366f1;
+  font-size:9px;
+  font-weight:700!important;
+  letter-spacing:.45px;
+}
+.v37-focus-main h3{
+  margin:3px 0;
+  color:#172554;
+  font-size:16px;
+  font-weight:650!important;
+}
+.v37-focus-main p{
+  margin:0;
+  color:#64748b;
+  font-size:11px;
+}
+.v37-focus-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.v37-focus-actions button{
+  border:1px solid #c7d2fe;
+  border-radius:9px;
+  padding:7px 9px;
+  background:#fff;
+  color:#4338ca;
+  font-size:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.v37-today-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+  margin-bottom:11px;
+}
+.v37-today-grid article{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px;
+  border:1px solid #e2eefc;
+  border-radius:14px;
+  background:#fff;
+}
+.v37-today-grid article>span{
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#eef6ff;
+}
+.v37-today-grid small{
+  display:block;
+  color:#64748b;
+  font-size:8px;
+  font-weight:600!important;
+}
+.v37-today-grid b{
+  color:#10233f;
+  font-size:12px;
+  font-weight:600!important;
+}
+.v37-source-notice{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  margin:10px 0 12px;
+  padding:10px 12px;
+  border:1px solid #dbeafe;
+  border-radius:12px;
+  background:#f8fbff;
+}
+.v37-source-notice p{
+  margin:0;
+  color:#475569;
+  font-size:10px;
+  line-height:1.45;
+}
+.v37-job-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:10px 0 13px;
+}
+.v37-job-tabs button{
+  border:1px solid #dbe7f4;
+  border-radius:999px;
+  padding:7px 10px;
+  background:#fff;
+  color:#475569;
+  font-size:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.v37-job-tabs button.active{
+  border-color:#0B5ED7;
+  background:#0B5ED7;
+  color:#fff;
+}
+.v37-jobs-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.v37-job-card{
+  display:grid;
+  gap:8px;
+  padding:13px;
+  border:1px solid #e2eefc;
+  border-radius:15px;
+  background:#fff;
+}
+.v37-job-card-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+}
+.v37-job-card h4{
+  margin:0;
+  color:#10233f;
+  font-size:13px;
+  font-weight:650;
+  line-height:1.35;
+}
+.v37-job-type{
+  flex:0 0 auto;
+  padding:4px 7px;
+  border-radius:999px;
+  background:#eef6ff;
+  color:#0B5ED7;
+  font-size:8px;
+  font-weight:700;
+}
+.v37-job-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px 12px;
+  color:#64748b;
+  font-size:9px;
+}
+.v37-job-actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:9px;
+}
+.v37-job-source{
+  color:#64748b;
+  font-size:8px;
+}
+.v37-job-actions a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9px;
+  padding:7px 10px;
+  background:#0B5ED7;
+  color:#fff;
+  text-decoration:none;
+  font-size:9px;
+  font-weight:650;
+}
+.v37-jobs-status{
+  margin:8px 0;
+}
+.v37-jobs-error{
+  padding:13px;
+  border:1px solid #fed7aa;
+  border-radius:12px;
+  background:#fff7ed;
+  color:#9a3412;
+  font-size:11px;
+}
+body.portal-dark .v37-smart-focus,
+body.portal-dark .v37-today-grid article,
+body.portal-dark .v37-source-notice,
+body.portal-dark .v37-job-tabs button,
+body.portal-dark .v37-job-card{
+  background:#111827!important;
+  border-color:#334155!important;
+}
+body.portal-dark .v37-focus-main h3,
+body.portal-dark .v37-today-grid b,
+body.portal-dark .v37-job-card h4{
+  color:#f8fafc!important;
+}
+@media(max-width:950px){
+  .v37-today-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:750px){
+  .v37-smart-focus{align-items:flex-start;flex-direction:column}
+  .v37-focus-actions{width:100%}
+  .v37-focus-actions button{flex:1}
+  .v37-jobs-list{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .v37-today-grid{grid-template-columns:1fr}
+}
