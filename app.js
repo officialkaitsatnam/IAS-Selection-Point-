@@ -5920,3 +5920,53 @@ document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(runV36SystemCheck,900);
   setTimeout(initializeV36ServiceWorkerUpdates,1200);
 });
+
+
+/* ======================================================
+   v36.1 PHOTO + TICKER + SUPPORT FIX
+   ====================================================== */
+window.removeV361ProfilePhoto=function(){
+  const img=document.getElementById('v291ProfilePhoto');
+  if(img)img.src='logo.jpg';
+
+  try{
+    const local=(typeof getV291Profile==='function'&&getV291Profile())||{};
+    local.photo='';
+    if(typeof saveV291Profile==='function'){
+      saveV291Profile(local);
+    }else{
+      const user=(typeof currentUser==='function'&&currentUser())||{};
+      localStorage.setItem(
+        'isp_v291_profile_'+(user.email||'guest'),
+        JSON.stringify(local)
+      );
+    }
+    if(typeof toast==='function')toast('Profile photo removed');
+  }catch(e){}
+};
+
+window.v361SyncHeaderPhoto=function(){
+  const editPhoto=document.getElementById('v291ProfilePhoto');
+  if(!editPhoto)return;
+  const src=editPhoto.src||'logo.jpg';
+  ['v352ViewPhoto','v35HeaderAvatar','v35MenuAvatar'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.src=src;
+  });
+};
+
+document.addEventListener('change',function(event){
+  if(event.target?.id==='v361ProfilePhotoInput'){
+    setTimeout(v361SyncHeaderPhoto,250);
+  }
+});
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V361=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V361(id,btn);
+    if(id==='profileEdit'){
+      setTimeout(v361SyncHeaderPhoto,150);
+    }
+  };
+}

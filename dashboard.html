@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=36" rel="stylesheet"/>
+<link href="style.css?v=361" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v36 Enterprise Core Stability</div>
+<div class="version-badge">v36.1 UI Corrections</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -71,7 +71,7 @@
 <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
 <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
 <button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
-<button onclick="openDashSection('supportModule', this)">🎫 Help &amp; Support</button>
+
 </nav>
 </aside>
 <main class="portal-main"><div class="v36-update-banner" hidden="" id="v36UpdateBanner">
@@ -120,7 +120,7 @@
 <button onclick="openV35ProfileSection('security')">🛡️ Account &amp; Security</button><button id="v36SystemMenuButton" onclick="openV35ProfileSection('systemStatusModule')">⚙️ System Status</button>
 <button onclick="togglePortalTheme(); closeV35ProfileMenu()">🌙 Theme</button>
 <button onclick="installV33App(); closeV35ProfileMenu()">📲 Install App</button>
-<button class="logout" onclick="logout()">🚪 Logout</button>
+<button onclick="openV35ProfileSection('supportModule')">🆘 Help &amp; Support</button><button class="logout" onclick="logout()">🚪 Logout</button>
 </div>
 </div>
 </div></div>
@@ -137,7 +137,7 @@
 <span id="v294TickerContent">Latest articles are loading...</span>
 </marquee>
 </div>
-<button class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability" onclick="toggleV30Ticker()" type="button">⏸</button>
+<button class="v36.1 UI Corrections" id="v36.1 UI Corrections" onclick="toggleV30Ticker()" type="button">⏸</button>
 </div>
 <section class="dash-section active" id="overview">
 <div class="stats-grid-pro">
@@ -511,7 +511,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -529,7 +529,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -541,7 +541,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"><p class="muted">Loading tests...</p></div>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -552,60 +552,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"><p class="muted">No attempts yet.</p></div>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v36 Enterprise Core Stability">
-<div class="v36 Enterprise Core Stability">
-<header class="v36 Enterprise Core Stability">
+<section class="dash-section" id="v36.1 UI Corrections">
+<div class="v36.1 UI Corrections">
+<header class="v36.1 UI Corrections">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v36 Enterprise Core Stability">Mock Test</h2>
+<h2 id="v36.1 UI Corrections">Mock Test</h2>
 </div>
-<div class="v36 Enterprise Core Stability">⏱ <span id="v36 Enterprise Core Stability">00:00</span></div>
+<div class="v36.1 UI Corrections">⏱ <span id="v36.1 UI Corrections">00:00</span></div>
 </header>
-<div class="v36 Enterprise Core Stability">
-<main class="v36 Enterprise Core Stability">
-<div class="v36 Enterprise Core Stability">
-<span id="v36 Enterprise Core Stability">Question 1</span>
-<span id="v36 Enterprise Core Stability">Not Answered</span>
+<div class="v36.1 UI Corrections">
+<main class="v36.1 UI Corrections">
+<div class="v36.1 UI Corrections">
+<span id="v36.1 UI Corrections">Question 1</span>
+<span id="v36.1 UI Corrections">Not Answered</span>
 </div>
-<h3 id="v36 Enterprise Core Stability"></h3>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
-<div class="v36 Enterprise Core Stability">
-<button onclick="v36 Enterprise Core Stability">← Previous</button>
-<button onclick="v36 Enterprise Core Stability">Clear Response</button>
-<button onclick="v36 Enterprise Core Stability">Mark for Review</button>
-<button onclick="v36 Enterprise Core Stability">Next →</button>
+<h3 id="v36.1 UI Corrections"></h3>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
+<div class="v36.1 UI Corrections">
+<button onclick="v36.1 UI Corrections">← Previous</button>
+<button onclick="v36.1 UI Corrections">Clear Response</button>
+<button onclick="v36.1 UI Corrections">Mark for Review</button>
+<button onclick="v36.1 UI Corrections">Next →</button>
 </div>
 </main>
-<aside class="v36 Enterprise Core Stability">
+<aside class="v36.1 UI Corrections">
 <h4>Question Palette</h4>
-<div class="v36 Enterprise Core Stability">
+<div class="v36.1 UI Corrections">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
-<button class="v36 Enterprise Core Stability" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
+<button class="v36.1 UI Corrections" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v36 Enterprise Core Stability">
+<section class="dash-section" id="v36.1 UI Corrections">
 <div class="pro-panel">
-<div class="v36 Enterprise Core Stability">
+<div class="v36.1 UI Corrections">
 <span>🏆</span>
-<h2 id="v36 Enterprise Core Stability">Test Completed</h2>
-<p id="v36 Enterprise Core Stability"></p>
+<h2 id="v36.1 UI Corrections">Test Completed</h2>
+<p id="v36.1 UI Corrections"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v36 Enterprise Core Stability">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v36.1 UI Corrections">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v36.1 UI Corrections">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v36.1 UI Corrections">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v36.1 UI Corrections">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v36 Enterprise Core Stability" id="v36 Enterprise Core Stability"></div>
+<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -756,7 +756,7 @@
 </footer>
 </main>
 </div>
-<script src="config.js?v=36"></script>
-<script src="app.js?v=36"></script>
+<script src="config.js?v=361"></script>
+<script src="app.js?v=361"></script>
 </body>
 </html>
