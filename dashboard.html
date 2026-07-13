@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=361" rel="stylesheet"/>
+<link href="style.css?v=362" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v36.1 UI Corrections</div>
+<div class="version-badge">v36.2 Professional UI Rebuild</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -71,7 +71,6 @@
 <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
 <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
 <button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
-
 </nav>
 </aside>
 <main class="portal-main"><div class="v36-update-banner" hidden="" id="v36UpdateBanner">
@@ -130,14 +129,17 @@
 <small id="v36ConnectionDetail">All services are available.</small>
 <button onclick="runV36SystemCheck()" type="button">Check Status</button>
 </div>
-<div aria-label="Latest articles" class="v291-breaking-wrap">
-<div class="v291-breaking-label">⚡ BREAKING NEWS</div>
-<div class="v291-breaking-window">
-<marquee behavior="scroll" class="v294-native-marquee" direction="left" id="v294TickerMarquee" onmouseenter="this.stop()" onmouseleave="this.start()" ontouchend="this.start()" ontouchstart="this.stop()" scrollamount="2" scrolldelay="35" truespeed="">
-<span id="v294TickerContent">Latest articles are loading...</span>
+<div aria-label="Latest articles" class="v362-news-ticker" id="v362NewsTicker">
+<div class="v362-news-label">
+<span>⚡</span>
+<b>Breaking News</b>
+</div>
+<div class="v362-news-window">
+<marquee behavior="scroll" direction="left" id="v362NewsMarquee" onmouseenter="this.stop()" onmouseleave="this.start()" ontouchend="this.start()" ontouchstart="this.stop()" scrollamount="2" scrolldelay="45" truespeed="">
+<span id="v362NewsContent">Latest articles are loading...</span>
 </marquee>
 </div>
-<button class="v36.1 UI Corrections" id="v36.1 UI Corrections" onclick="toggleV30Ticker()" type="button">⏸</button>
+<button aria-label="Pause news ticker" class="v362-ticker-toggle" id="v362TickerToggle" onclick="toggleV362Ticker()" type="button">⏸</button>
 </div>
 <section class="dash-section active" id="overview">
 <div class="stats-grid-pro">
@@ -320,13 +322,23 @@
 <p class="muted">Update only the information that is relevant to your preparation.</p>
 </div>
 <button class="mini-btn" onclick="openV35ProfileSection('profileView')" type="button">View Profile</button>
-</div>
-<div class="v352-edit-photo">
+</div><div class="v362-photo-editor">
+<div class="v362-photo-preview">
 <img alt="Member profile photo" id="v291ProfilePhoto" src="logo.jpg"/>
-<label class="v291-photo-upload">Change Photo
-        <input accept="image/*" onchange="handleV291ProfilePhoto(event)" type="file"/>
-</label>
+<div>
+<b>Profile Photo</b>
+<small>Upload a clear JPG, PNG or WebP image up to 2 MB.</small>
 </div>
+</div>
+<div class="v362-photo-actions">
+<label class="v362-upload-button" for="v362ProfilePhotoInput">
+              📷 Upload Photo
+            </label>
+<input accept="image/jpeg,image/png,image/webp" id="v362ProfilePhotoInput" onchange="handleV362ProfilePhoto(event)" type="file"/>
+<button class="v362-remove-button" onclick="removeV362ProfilePhoto()" type="button">Remove</button>
+</div>
+</div>
+
 <div class="form-grid profile-pro-grid v291-profile-grid v352-profile-edit-grid">
 <input id="profileName" placeholder="Full name"/>
 <input id="profileMobile" placeholder="Mobile / WhatsApp number"/>
@@ -511,7 +523,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -529,7 +541,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -541,7 +553,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"><p class="muted">Loading tests...</p></div>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -552,60 +564,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"><p class="muted">No attempts yet.</p></div>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v36.1 UI Corrections">
-<div class="v36.1 UI Corrections">
-<header class="v36.1 UI Corrections">
+<section class="dash-section" id="v36.2 Professional UI Rebuild">
+<div class="v36.2 Professional UI Rebuild">
+<header class="v36.2 Professional UI Rebuild">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v36.1 UI Corrections">Mock Test</h2>
+<h2 id="v36.2 Professional UI Rebuild">Mock Test</h2>
 </div>
-<div class="v36.1 UI Corrections">⏱ <span id="v36.1 UI Corrections">00:00</span></div>
+<div class="v36.2 Professional UI Rebuild">⏱ <span id="v36.2 Professional UI Rebuild">00:00</span></div>
 </header>
-<div class="v36.1 UI Corrections">
-<main class="v36.1 UI Corrections">
-<div class="v36.1 UI Corrections">
-<span id="v36.1 UI Corrections">Question 1</span>
-<span id="v36.1 UI Corrections">Not Answered</span>
+<div class="v36.2 Professional UI Rebuild">
+<main class="v36.2 Professional UI Rebuild">
+<div class="v36.2 Professional UI Rebuild">
+<span id="v36.2 Professional UI Rebuild">Question 1</span>
+<span id="v36.2 Professional UI Rebuild">Not Answered</span>
 </div>
-<h3 id="v36.1 UI Corrections"></h3>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
-<div class="v36.1 UI Corrections">
-<button onclick="v36.1 UI Corrections">← Previous</button>
-<button onclick="v36.1 UI Corrections">Clear Response</button>
-<button onclick="v36.1 UI Corrections">Mark for Review</button>
-<button onclick="v36.1 UI Corrections">Next →</button>
+<h3 id="v36.2 Professional UI Rebuild"></h3>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
+<div class="v36.2 Professional UI Rebuild">
+<button onclick="v36.2 Professional UI Rebuild">← Previous</button>
+<button onclick="v36.2 Professional UI Rebuild">Clear Response</button>
+<button onclick="v36.2 Professional UI Rebuild">Mark for Review</button>
+<button onclick="v36.2 Professional UI Rebuild">Next →</button>
 </div>
 </main>
-<aside class="v36.1 UI Corrections">
+<aside class="v36.2 Professional UI Rebuild">
 <h4>Question Palette</h4>
-<div class="v36.1 UI Corrections">
+<div class="v36.2 Professional UI Rebuild">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
-<button class="v36.1 UI Corrections" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
+<button class="v36.2 Professional UI Rebuild" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v36.1 UI Corrections">
+<section class="dash-section" id="v36.2 Professional UI Rebuild">
 <div class="pro-panel">
-<div class="v36.1 UI Corrections">
+<div class="v36.2 Professional UI Rebuild">
 <span>🏆</span>
-<h2 id="v36.1 UI Corrections">Test Completed</h2>
-<p id="v36.1 UI Corrections"></p>
+<h2 id="v36.2 Professional UI Rebuild">Test Completed</h2>
+<p id="v36.2 Professional UI Rebuild"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v36.1 UI Corrections">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v36.1 UI Corrections">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v36.1 UI Corrections">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v36.1 UI Corrections">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v36.2 Professional UI Rebuild">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v36.1 UI Corrections" id="v36.1 UI Corrections"></div>
+<div class="v36.2 Professional UI Rebuild" id="v36.2 Professional UI Rebuild"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -756,7 +768,7 @@
 </footer>
 </main>
 </div>
-<script src="config.js?v=361"></script>
-<script src="app.js?v=361"></script>
+<script src="config.js?v=362"></script>
+<script src="app.js?v=362"></script>
 </body>
 </html>
