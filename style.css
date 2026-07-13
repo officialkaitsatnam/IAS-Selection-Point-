@@ -5973,3 +5973,123 @@ body.portal-dark .v38-release-dialog h2{
   .v38-version-lists{grid-template-columns:1fr}
   .v38-modal-actions{flex-direction:column}
 }
+
+
+/* ======================================================
+   v39 STUDENT PRODUCTIVITY SUITE
+   ====================================================== */
+.v39-productivity-banner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin:0 0 10px;
+  padding:13px 15px;
+  border:1px solid #c7d2fe;
+  border-radius:16px;
+  background:linear-gradient(135deg,#eef2ff,#f8fbff);
+}
+.v39-productivity-banner>div{display:flex;align-items:center;gap:11px}
+.v39-productivity-banner>div>span{
+  width:43px;height:43px;display:grid;place-items:center;border-radius:13px;
+  background:#4f46e5;color:#fff;font-size:21px
+}
+.v39-productivity-banner small{color:#6366f1;font-size:8px;font-weight:700!important}
+.v39-productivity-banner h3{margin:2px 0;color:#172554;font-size:15px;font-weight:650!important}
+.v39-productivity-banner p{margin:0;color:#64748b;font-size:10px}
+.v39-productivity-banner button{
+  border:0;border-radius:10px;padding:8px 11px;background:#4f46e5;color:#fff;font-size:10px;font-weight:650;cursor:pointer
+}
+.v39-productivity-hero{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:18px;border-radius:19px;background:linear-gradient(135deg,#172554,#4f46e5);color:#fff
+}
+.v39-productivity-hero h2{margin:4px 0;color:#fff}
+.v39-productivity-hero p{margin:0;color:#dbeafe}
+.v39-productivity-score{
+  min-width:150px;padding:13px;border-radius:14px;background:rgba(255,255,255,.12)
+}
+.v39-productivity-score small{display:block;color:#c7d2fe;font-size:8px}
+.v39-productivity-score strong{display:block;margin-top:4px;font-size:27px}
+.v39-productivity-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+.v39-productivity-tabs button{
+  border:1px solid #dbe7f4;border-radius:999px;padding:7px 11px;background:#fff;color:#475569;font-size:10px;font-weight:600;cursor:pointer
+}
+.v39-productivity-tabs button.active{border-color:#4f46e5;background:#4f46e5;color:#fff}
+.v39-tab-panel{display:none}.v39-tab-panel.active{display:block}
+.v39-two-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.v39-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.v39-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.v39-summary-grid>div{
+  padding:10px;border:1px solid #e2eefc;border-radius:12px;background:#f8fbff;text-align:center
+}
+.v39-summary-grid b{display:block;color:#10233f;font-size:16px;font-weight:650}
+.v39-summary-grid small{color:#64748b;font-size:8px}
+.v39-task-list,.v39-session-list,.v39-notes-list{display:grid;gap:8px}
+.v39-task-card,.v39-session-card,.v39-note-card{
+  padding:11px;border:1px solid #e2eefc;border-radius:13px;background:#fff
+}
+.v39-task-card{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.v39-task-card.completed{opacity:.68;background:#f0fdf4}
+.v39-task-check{width:20px;height:20px}
+.v39-task-card h4,.v39-note-card h4{margin:0 0 3px;color:#10233f;font-size:12px;font-weight:650}
+.v39-task-card p,.v39-note-card p{margin:0;color:#64748b;font-size:9px}
+.v39-priority{padding:4px 7px;border-radius:999px;font-size:8px;font-weight:700}
+.v39-priority.High{background:#fee2e2;color:#b91c1c}
+.v39-priority.Medium{background:#fef3c7;color:#92400e}
+.v39-priority.Low{background:#dcfce7;color:#166534}
+.v39-delete-btn{border:0;background:#fff1f2;color:#be123c;border-radius:8px;padding:5px 7px;cursor:pointer}
+.v39-timer-panel{text-align:center}
+.v39-timer-display{margin:16px 0;font-size:62px;line-height:1;color:#172554;font-weight:700;letter-spacing:2px}
+.v39-timer-presets,.v39-timer-actions{display:flex;justify-content:center;gap:7px;margin:10px 0}
+.v39-timer-presets button{border:1px solid #c7d2fe;border-radius:999px;padding:6px 10px;background:#fff;color:#4338ca;cursor:pointer}
+.v39-timer-presets button.active{background:#4f46e5;color:#fff}
+.v39-note-editor{min-height:190px}
+.v39-pin-control{display:flex;align-items:center;gap:7px;color:#475569;font-size:10px}
+.v39-note-card.pinned{border-color:#f59e0b;background:#fffbeb}
+.v39-note-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.v39-note-meta{display:flex;gap:8px;margin-top:7px;color:#64748b;font-size:8px}
+.v39-analytics-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:11px}
+.v39-analytics-cards article{
+  padding:13px;border:1px solid #e2eefc;border-radius:14px;background:#fff
+}
+.v39-analytics-cards span{font-size:20px}.v39-analytics-cards b{display:block;margin:5px 0;color:#10233f;font-size:20px}
+.v39-analytics-cards small{color:#64748b;font-size:8px}
+.v39-weekly-chart{display:flex;align-items:flex-end;gap:9px;height:210px;padding-top:18px}
+.v39-week-day{display:flex;flex:1;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px}
+.v39-week-bar{width:70%;min-height:4px;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,#6366f1,#4f46e5)}
+.v39-week-day b{font-size:9px;color:#475569}.v39-week-day small{font-size:8px;color:#64748b}
+.v39-insights{display:grid;gap:8px}
+.v39-insight{padding:11px;border:1px solid #dbeafe;border-radius:12px;background:#f8fbff;color:#475569;font-size:10px}
+.v39-roadmap-header{margin:10px 0;padding:14px;border-radius:15px;background:linear-gradient(135deg,#ecfeff,#eef2ff)}
+.v39-roadmap-header h3{margin:0 0 4px;color:#164e63}.v39-roadmap-header p{margin:0;color:#64748b}
+.v39-roadmap-list{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.v39-roadmap-card{padding:13px;border:1px solid #e2eefc;border-radius:14px;background:#fff}
+.v39-roadmap-card span{font-size:22px}.v39-roadmap-card h4{margin:7px 0 4px;color:#10233f;font-size:12px}
+.v39-roadmap-card p{margin:0;color:#64748b;font-size:9px;line-height:1.45}
+body.portal-dark .v39-productivity-banner,
+body.portal-dark .v39-productivity-tabs button,
+body.portal-dark .v39-task-card,
+body.portal-dark .v39-session-card,
+body.portal-dark .v39-note-card,
+body.portal-dark .v39-analytics-cards article,
+body.portal-dark .v39-roadmap-card,
+body.portal-dark .v39-summary-grid>div,
+body.portal-dark .v39-insight{
+  background:#111827!important;border-color:#334155!important
+}
+body.portal-dark .v39-task-card h4,
+body.portal-dark .v39-note-card h4,
+body.portal-dark .v39-analytics-cards b,
+body.portal-dark .v39-roadmap-card h4,
+body.portal-dark .v39-timer-display{color:#f8fafc!important}
+@media(max-width:900px){
+  .v39-two-column{grid-template-columns:1fr}
+  .v39-analytics-cards,.v39-roadmap-list{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+  .v39-productivity-banner,.v39-productivity-hero{align-items:flex-start;flex-direction:column}
+  .v39-productivity-banner button{width:100%}
+  .v39-form-grid,.v39-summary-grid,.v39-analytics-cards,.v39-roadmap-list{grid-template-columns:1fr}
+  .v39-timer-display{font-size:48px}
+}

@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=38" rel="stylesheet"/>
+<link href="style.css?v=39" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v38 Version Manager + Release Notifications</div>
+<div class="version-badge">v39 Student Productivity Suite</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -66,7 +66,7 @@
 <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
 <button onclick="openDashSection('library', this)">📖 My Library</button>
 <button onclick="openDashSection('notes', this)">📝 Notes</button>
-<button onclick="openDashSection('studyToolsModule', this)">⏱️ Study Tools</button>
+<button id="v39ProductivityNav" onclick="openDashSection('productivityHubModule', this)">🧠 Productivity Hub</button>
 <button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests</button>
 <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
 <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
@@ -141,7 +141,17 @@
 </div>
 <button aria-label="Pause news ticker" class="v362-ticker-toggle" id="v362TickerToggle" onclick="toggleV362Ticker()" type="button">⏸</button>
 </div>
-<section class="dash-section active" id="overview">
+<section class="dash-section active" id="overview"><section class="v39-productivity-banner" id="v39ProductivityBanner">
+<div>
+<span>🧠</span>
+<div>
+<small>STUDENT PRODUCTIVITY SUITE</small>
+<h3>Plan, Focus, Record and Improve</h3>
+<p>Manage daily tasks, study sessions, personal notes and exam preparation from one place.</p>
+</div>
+</div>
+<button onclick="openDashSection('productivityHubModule')">Open Productivity Hub</button>
+</section>
 <section class="v37-smart-focus" id="v37SmartFocus">
 <div class="v37-focus-main">
 <div class="v37-focus-icon">🧭</div>
@@ -580,7 +590,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -598,7 +608,7 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
@@ -610,7 +620,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"><p class="muted">Loading tests...</p></div>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -621,60 +631,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"><p class="muted">No attempts yet.</p></div>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v38 Version Manager + Release Notifications">
-<div class="v38 Version Manager + Release Notifications">
-<header class="v38 Version Manager + Release Notifications">
+<section class="dash-section" id="v39 Student Productivity Suite">
+<div class="v39 Student Productivity Suite">
+<header class="v39 Student Productivity Suite">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v38 Version Manager + Release Notifications">Mock Test</h2>
+<h2 id="v39 Student Productivity Suite">Mock Test</h2>
 </div>
-<div class="v38 Version Manager + Release Notifications">⏱ <span id="v38 Version Manager + Release Notifications">00:00</span></div>
+<div class="v39 Student Productivity Suite">⏱ <span id="v39 Student Productivity Suite">00:00</span></div>
 </header>
-<div class="v38 Version Manager + Release Notifications">
-<main class="v38 Version Manager + Release Notifications">
-<div class="v38 Version Manager + Release Notifications">
-<span id="v38 Version Manager + Release Notifications">Question 1</span>
-<span id="v38 Version Manager + Release Notifications">Not Answered</span>
+<div class="v39 Student Productivity Suite">
+<main class="v39 Student Productivity Suite">
+<div class="v39 Student Productivity Suite">
+<span id="v39 Student Productivity Suite">Question 1</span>
+<span id="v39 Student Productivity Suite">Not Answered</span>
 </div>
-<h3 id="v38 Version Manager + Release Notifications"></h3>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
-<div class="v38 Version Manager + Release Notifications">
-<button onclick="v38 Version Manager + Release Notifications">← Previous</button>
-<button onclick="v38 Version Manager + Release Notifications">Clear Response</button>
-<button onclick="v38 Version Manager + Release Notifications">Mark for Review</button>
-<button onclick="v38 Version Manager + Release Notifications">Next →</button>
+<h3 id="v39 Student Productivity Suite"></h3>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
+<div class="v39 Student Productivity Suite">
+<button onclick="v39 Student Productivity Suite">← Previous</button>
+<button onclick="v39 Student Productivity Suite">Clear Response</button>
+<button onclick="v39 Student Productivity Suite">Mark for Review</button>
+<button onclick="v39 Student Productivity Suite">Next →</button>
 </div>
 </main>
-<aside class="v38 Version Manager + Release Notifications">
+<aside class="v39 Student Productivity Suite">
 <h4>Question Palette</h4>
-<div class="v38 Version Manager + Release Notifications">
+<div class="v39 Student Productivity Suite">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
-<button class="v38 Version Manager + Release Notifications" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
+<button class="v39 Student Productivity Suite" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v38 Version Manager + Release Notifications">
+<section class="dash-section" id="v39 Student Productivity Suite">
 <div class="pro-panel">
-<div class="v38 Version Manager + Release Notifications">
+<div class="v39 Student Productivity Suite">
 <span>🏆</span>
-<h2 id="v38 Version Manager + Release Notifications">Test Completed</h2>
-<p id="v38 Version Manager + Release Notifications"></p>
+<h2 id="v39 Student Productivity Suite">Test Completed</h2>
+<p id="v39 Student Productivity Suite"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v38 Version Manager + Release Notifications">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v39 Student Productivity Suite">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v39 Student Productivity Suite">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v39 Student Productivity Suite">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v39 Student Productivity Suite">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v38 Version Manager + Release Notifications" id="v38 Version Manager + Release Notifications"></div>
+<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -836,10 +846,171 @@
 <p class="muted">Loading version history...</p>
 </div>
 </div>
+</section><section class="dash-section" id="productivityHubModule">
+<div class="v39-productivity-hero">
+<div>
+<span class="eyebrow">STUDENT PRODUCTIVITY SUITE</span>
+<h2>Build a Consistent Preparation Routine</h2>
+<p>Plan your work, study with focus, create structured notes and track measurable progress.</p>
+</div>
+<div class="v39-productivity-score">
+<small>PRODUCTIVITY SCORE</small>
+<strong id="v39ProductivityScore">0%</strong>
+</div>
+</div>
+<div class="v39-productivity-tabs">
+<button class="active" onclick="showV39ProductivityTab('planner',this)">Study Planner</button>
+<button onclick="showV39ProductivityTab('timer',this)">Focus Timer</button>
+<button onclick="showV39ProductivityTab('notes',this)">Notes Pro</button>
+<button onclick="showV39ProductivityTab('analytics',this)">Analytics</button>
+<button onclick="showV39ProductivityTab('roadmap',this)">Exam Roadmap</button>
+</div>
+<div class="v39-tab-panel active" id="v39TabPlanner">
+<div class="v39-two-column">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>Create Study Task</h3>
+<p class="muted">Add a clear and measurable preparation task.</p>
+</div>
+</div>
+<input id="v39TaskTitle" placeholder="Task title"/>
+<div class="v39-form-grid">
+<select id="v39TaskCategory">
+<option value="General Study">General Study</option>
+<option value="Reading">Reading</option>
+<option value="Revision">Revision</option>
+<option value="Mock Test">Mock Test</option>
+<option value="Daily Quiz">Daily Quiz</option>
+<option value="Current Affairs">Current Affairs</option>
+<option value="Haryana GK">Haryana GK</option>
+</select>
+<input id="v39TaskDate" type="date"/>
+<select id="v39TaskPriority">
+<option value="Medium">Medium Priority</option>
+<option value="High">High Priority</option>
+<option value="Low">Low Priority</option>
+</select>
+<input id="v39TaskMinutes" max="600" min="5" placeholder="Minutes" type="number" value="30"/>
+</div>
+<textarea id="v39TaskNote" placeholder="Optional task note"></textarea>
+<button class="primary-btn" onclick="createV39StudyTask()">Add Task</button>
+<p class="small-msg" id="v39PlannerMsg"></p>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>Today's Plan</h3>
+<p class="muted">Complete your scheduled tasks to improve consistency.</p>
+</div>
+<button class="mini-btn" onclick="loadV39StudyTasks()">Refresh</button>
+</div>
+<div class="v39-summary-grid" id="v39PlannerSummary"></div>
+<div class="v39-task-list" id="v39TaskList">
+<p class="muted">Loading study tasks...</p>
+</div>
+</div>
+</div>
+</div>
+<div class="v39-tab-panel" id="v39TabTimer">
+<div class="v39-two-column">
+<div class="pro-panel v39-timer-panel">
+<span class="eyebrow">FOCUS SESSION</span>
+<div class="v39-timer-display" id="v39TimerDisplay">25:00</div>
+<div class="v39-timer-presets">
+<button class="active" onclick="setV39TimerPreset(25,5,this)">25 / 5</button>
+<button onclick="setV39TimerPreset(45,10,this)">45 / 10</button>
+<button onclick="setV39TimerPreset(60,15,this)">60 / 15</button>
+</div>
+<input id="v39TimerSubject" placeholder="What are you studying?"/>
+<div class="v39-timer-actions">
+<button class="primary-btn" onclick="startV39FocusTimer()">Start</button>
+<button class="secondary-btn" onclick="pauseV39FocusTimer()">Pause</button>
+<button class="secondary-btn" onclick="resetV39FocusTimer()">Reset</button>
+</div>
+<p class="muted" id="v39TimerStatus">Ready for a focused study session.</p>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>Recent Focus Sessions</h3>
+<p class="muted">Your completed sessions and total study minutes.</p>
+</div>
+<button class="mini-btn" onclick="loadV39FocusSessions()">Refresh</button>
+</div>
+<div class="v39-summary-grid" id="v39SessionSummary"></div>
+<div class="v39-session-list" id="v39SessionList"></div>
+</div>
+</div>
+</div>
+<div class="v39-tab-panel" id="v39TabNotes">
+<div class="v39-two-column">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>Personal Notes Pro</h3>
+<p class="muted">Create categorized and searchable revision notes.</p>
+</div>
+</div>
+<input id="v39NoteTitle" placeholder="Note title"/>
+<div class="v39-form-grid">
+<select id="v39NoteCategory">
+<option value="General">General</option>
+<option value="UPSC">UPSC</option>
+<option value="HSSC">HSSC</option>
+<option value="Haryana GK">Haryana GK</option>
+<option value="UGC NET">UGC NET</option>
+<option value="Current Affairs">Current Affairs</option>
+<option value="Revision">Revision</option>
+</select>
+<label class="v39-pin-control"><input id="v39NotePinned" type="checkbox"/> Pin this note</label>
+</div>
+<textarea class="v39-note-editor" id="v39NoteBody" placeholder="Write your note here..."></textarea>
+<button class="primary-btn" onclick="saveV39Note()">Save Note</button>
+<p class="small-msg" id="v39NoteMsg"></p>
+</div>
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>My Saved Notes</h3>
+<p class="muted">Search and review your personal notes.</p>
+</div>
+<input id="v39NoteSearch" oninput="renderV39Notes()" placeholder="Search notes"/>
+</div>
+<div class="v39-notes-list" id="v39NotesList"></div>
+</div>
+</div>
+</div>
+<div class="v39-tab-panel" id="v39TabAnalytics">
+<div class="v39-analytics-cards" id="v39AnalyticsCards"></div>
+<div class="v39-two-column">
+<div class="pro-panel">
+<h3>Seven-Day Study Activity</h3>
+<div class="v39-weekly-chart" id="v39WeeklyChart"></div>
+</div>
+<div class="pro-panel">
+<h3>Preparation Insights</h3>
+<div class="v39-insights" id="v39Insights"></div>
+</div>
+</div>
+</div>
+<div class="v39-tab-panel" id="v39TabRoadmap">
+<div class="pro-panel">
+<div class="panel-head">
+<div>
+<h3>Personalized Exam Roadmap</h3>
+<p class="muted">Recommendations are based on your selected target examination.</p>
+</div>
+<button class="mini-btn" onclick="loadV39ExamRoadmap()">Refresh</button>
+</div>
+<div class="v39-roadmap-header" id="v39RoadmapHeader"></div>
+<div class="v39-roadmap-list" id="v39RoadmapList"></div>
+</div>
+</div>
 </section></main>
 </div>
-<script src="config.js?v=38"></script>
-<script src="app.js?v=38"></script>
+<script src="config.js?v=39"></script>
+<script src="app.js?v=39"></script>
 <div class="v38-release-modal" hidden="" id="v38ReleaseModal">
 <div class="v38-release-dialog">
 <button aria-label="Close" class="v38-close" onclick="remindV38Later()">×</button>

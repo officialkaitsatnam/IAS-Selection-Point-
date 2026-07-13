@@ -6359,7 +6359,7 @@ window.loadV38VersionHistory=async function(){
 
 window.checkV38LatestVersion=async function(){
   try{
-    const r=await api('getLatestVersion',{token:token(),currentVersion:'v37.1'});
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v39'});
     if(!r.success||!r.updateAvailable)return;
     const version=r.release;
     const dismissed=localStorage.getItem('isp_v38_dismissed_version');
@@ -6409,4 +6409,292 @@ if(typeof openAdminSection==='function'){
 }
 document.addEventListener('DOMContentLoaded',()=>{
   setTimeout(checkV38LatestVersion,1200);
+});
+
+
+/* ======================================================
+   v39 STUDENT PRODUCTIVITY SUITE
+   ====================================================== */
+let V39_TASKS=[];
+let V39_NOTES=[];
+let V39_TIMER_TOTAL=25*60;
+let V39_TIMER_REMAINING=V39_TIMER_TOTAL;
+let V39_TIMER_INTERVAL=null;
+let V39_TIMER_STARTED_AT=null;
+let V39_TIMER_FOCUS_MINUTES=25;
+let V39_TIMER_BREAK_MINUTES=5;
+
+function v39Today(){
+  return new Date().toISOString().slice(0,10);
+}
+function v39SetText(id,value){
+  const el=document.getElementById(id);
+  if(el)el.textContent=value;
+}
+window.showV39ProductivityTab=function(tab,button){
+  document.querySelectorAll('.v39-tab-panel').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.v39-productivity-tabs button').forEach(el=>el.classList.remove('active'));
+  const panel=document.getElementById('v39Tab'+tab.charAt(0).toUpperCase()+tab.slice(1));
+  if(panel)panel.classList.add('active');
+  if(button)button.classList.add('active');
+
+  if(tab==='planner')loadV39StudyTasks();
+  if(tab==='timer')loadV39FocusSessions();
+  if(tab==='notes')loadV39Notes();
+  if(tab==='analytics')loadV39ProductivityAnalytics();
+  if(tab==='roadmap')loadV39ExamRoadmap();
+};
+
+window.createV39StudyTask=async function(){
+  const payload={
+    token:token(),
+    title:document.getElementById('v39TaskTitle')?.value||'',
+    category:document.getElementById('v39TaskCategory')?.value||'General Study',
+    dueDate:document.getElementById('v39TaskDate')?.value||v39Today(),
+    priority:document.getElementById('v39TaskPriority')?.value||'Medium',
+    plannedMinutes:Number(document.getElementById('v39TaskMinutes')?.value||30),
+    note:document.getElementById('v39TaskNote')?.value||''
+  };
+  const msg=document.getElementById('v39PlannerMsg');
+  if(!payload.title.trim()){
+    if(msg)msg.textContent='Task title is required.';
+    return;
+  }
+  const r=await api('createStudyTask',payload);
+  if(msg)msg.textContent=r.message||'';
+  if(r.success){
+    document.getElementById('v39TaskTitle').value='';
+    document.getElementById('v39TaskNote').value='';
+    loadV39StudyTasks();
+  }
+};
+
+window.loadV39StudyTasks=async function(){
+  const list=document.getElementById('v39TaskList');
+  if(list)list.innerHTML='<p class="muted">Loading study tasks...</p>';
+  const r=await api('listStudyTasks',{token:token()});
+  if(!r.success){
+    if(list)list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+  V39_TASKS=r.rows||[];
+  const today=V39_TASKS.filter(x=>x.dueDate===v39Today());
+  const completed=today.filter(x=>x.status==='Completed').length;
+  const planned=today.reduce((sum,x)=>sum+Number(x.plannedMinutes||0),0);
+  const summary=document.getElementById('v39PlannerSummary');
+  if(summary)summary.innerHTML=`
+    <div><b>${today.length}</b><small>TODAY'S TASKS</small></div>
+    <div><b>${completed}</b><small>COMPLETED</small></div>
+    <div><b>${planned}</b><small>PLANNED MINUTES</small></div>`;
+
+  if(list){
+    list.innerHTML=V39_TASKS.length?V39_TASKS.map(task=>`
+      <article class="v39-task-card ${task.status==='Completed'?'completed':''}">
+        <input class="v39-task-check" type="checkbox" ${task.status==='Completed'?'checked':''}
+          onchange="toggleV39StudyTask('${escapeAttr(task.id)}',this.checked)">
+        <div>
+          <h4>${escapeHtml(task.title)}</h4>
+          <p>${escapeHtml(task.category)} · ${escapeHtml(task.dueDate)} · ${task.plannedMinutes||0} min</p>
+        </div>
+        <div>
+          <span class="v39-priority ${escapeAttr(task.priority)}">${escapeHtml(task.priority)}</span>
+          <button class="v39-delete-btn" onclick="deleteV39StudyTask('${escapeAttr(task.id)}')">×</button>
+        </div>
+      </article>`).join(''):'<p class="muted">No study tasks created yet.</p>';
+  }
+  loadV39ProductivityAnalytics();
+};
+
+window.toggleV39StudyTask=async function(id,completed){
+  await api('updateStudyTaskStatus',{token:token(),id,status:completed?'Completed':'Pending'});
+  loadV39StudyTasks();
+};
+window.deleteV39StudyTask=async function(id){
+  if(!confirm('Delete this study task?'))return;
+  await api('deleteStudyTask',{token:token(),id});
+  loadV39StudyTasks();
+};
+
+function updateV39TimerDisplay(){
+  const minutes=Math.floor(V39_TIMER_REMAINING/60);
+  const seconds=V39_TIMER_REMAINING%60;
+  v39SetText('v39TimerDisplay',`${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`);
+}
+window.setV39TimerPreset=function(focus,breakMinutes,button){
+  pauseV39FocusTimer();
+  V39_TIMER_FOCUS_MINUTES=focus;
+  V39_TIMER_BREAK_MINUTES=breakMinutes;
+  V39_TIMER_TOTAL=focus*60;
+  V39_TIMER_REMAINING=V39_TIMER_TOTAL;
+  document.querySelectorAll('.v39-timer-presets button').forEach(x=>x.classList.remove('active'));
+  if(button)button.classList.add('active');
+  updateV39TimerDisplay();
+};
+window.startV39FocusTimer=function(){
+  if(V39_TIMER_INTERVAL)return;
+  if(!V39_TIMER_STARTED_AT)V39_TIMER_STARTED_AT=Date.now();
+  v39SetText('v39TimerStatus','Focus session in progress.');
+  V39_TIMER_INTERVAL=setInterval(async()=>{
+    V39_TIMER_REMAINING--;
+    updateV39TimerDisplay();
+    if(V39_TIMER_REMAINING<=0){
+      clearInterval(V39_TIMER_INTERVAL);
+      V39_TIMER_INTERVAL=null;
+      const subject=document.getElementById('v39TimerSubject')?.value||'Focused Study';
+      await api('logStudySession',{
+        token:token(),subject,durationMinutes:V39_TIMER_FOCUS_MINUTES,
+        sessionType:'Focus',completed:true
+      });
+      V39_TIMER_STARTED_AT=null;
+      alert(`Focus session complete. Take a ${V39_TIMER_BREAK_MINUTES}-minute break.`);
+      resetV39FocusTimer();
+      loadV39FocusSessions();
+    }
+  },1000);
+};
+window.pauseV39FocusTimer=function(){
+  if(V39_TIMER_INTERVAL){
+    clearInterval(V39_TIMER_INTERVAL);
+    V39_TIMER_INTERVAL=null;
+    v39SetText('v39TimerStatus','Focus session paused.');
+  }
+};
+window.resetV39FocusTimer=function(){
+  pauseV39FocusTimer();
+  V39_TIMER_REMAINING=V39_TIMER_TOTAL;
+  V39_TIMER_STARTED_AT=null;
+  updateV39TimerDisplay();
+  v39SetText('v39TimerStatus','Ready for a focused study session.');
+};
+
+window.loadV39FocusSessions=async function(){
+  const r=await api('listStudySessions',{token:token()});
+  const list=document.getElementById('v39SessionList');
+  if(!r.success){
+    if(list)list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+  const rows=r.rows||[];
+  const total=rows.reduce((sum,x)=>sum+Number(x.durationMinutes||0),0);
+  const today=rows.filter(x=>String(x.sessionDate||'').slice(0,10)===v39Today());
+  const summary=document.getElementById('v39SessionSummary');
+  if(summary)summary.innerHTML=`
+    <div><b>${rows.length}</b><small>SESSIONS</small></div>
+    <div><b>${total}</b><small>TOTAL MINUTES</small></div>
+    <div><b>${today.length}</b><small>TODAY</small></div>`;
+  if(list)list.innerHTML=rows.length?rows.slice(0,12).map(x=>`
+    <article class="v39-session-card">
+      <b>${escapeHtml(x.subject||'Focused Study')}</b>
+      <p class="muted">${x.durationMinutes||0} minutes · ${escapeHtml(x.sessionDate||'')}</p>
+    </article>`).join(''):'<p class="muted">No completed focus sessions yet.</p>';
+};
+
+window.saveV39Note=async function(){
+  const payload={
+    token:token(),
+    title:document.getElementById('v39NoteTitle')?.value||'',
+    category:document.getElementById('v39NoteCategory')?.value||'General',
+    body:document.getElementById('v39NoteBody')?.value||'',
+    pinned:Boolean(document.getElementById('v39NotePinned')?.checked)
+  };
+  const msg=document.getElementById('v39NoteMsg');
+  if(!payload.title.trim()||!payload.body.trim()){
+    if(msg)msg.textContent='Note title and content are required.';
+    return;
+  }
+  const r=await api('saveProductivityNote',payload);
+  if(msg)msg.textContent=r.message||'';
+  if(r.success){
+    document.getElementById('v39NoteTitle').value='';
+    document.getElementById('v39NoteBody').value='';
+    document.getElementById('v39NotePinned').checked=false;
+    loadV39Notes();
+  }
+};
+window.loadV39Notes=async function(){
+  const r=await api('listProductivityNotes',{token:token()});
+  const list=document.getElementById('v39NotesList');
+  if(!r.success){
+    if(list)list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+  V39_NOTES=r.rows||[];
+  renderV39Notes();
+};
+window.renderV39Notes=function(){
+  const list=document.getElementById('v39NotesList');
+  if(!list)return;
+  const q=(document.getElementById('v39NoteSearch')?.value||'').toLowerCase();
+  const rows=V39_NOTES.filter(x=>(x.title+' '+x.category+' '+x.body).toLowerCase().includes(q));
+  list.innerHTML=rows.length?rows.map(note=>`
+    <article class="v39-note-card ${note.pinned?'pinned':''}">
+      <div class="v39-note-head">
+        <div><h4>${note.pinned?'📌 ':''}${escapeHtml(note.title)}</h4><p>${escapeHtml(note.body)}</p></div>
+        <button class="v39-delete-btn" onclick="deleteV39Note('${escapeAttr(note.id)}')">×</button>
+      </div>
+      <div class="v39-note-meta"><span>${escapeHtml(note.category)}</span><span>${escapeHtml(note.updatedAt||'')}</span></div>
+    </article>`).join(''):'<p class="muted">No matching notes found.</p>';
+};
+window.deleteV39Note=async function(id){
+  if(!confirm('Delete this note?'))return;
+  await api('deleteProductivityNote',{token:token(),id});
+  loadV39Notes();
+};
+
+window.loadV39ProductivityAnalytics=async function(){
+  const r=await api('getProductivityAnalytics',{token:token()});
+  if(!r.success)return;
+  v39SetText('v39ProductivityScore',`${r.productivityScore||0}%`);
+  const cards=document.getElementById('v39AnalyticsCards');
+  if(cards)cards.innerHTML=`
+    <article><span>✅</span><b>${r.completedTasks||0}</b><small>COMPLETED TASKS</small></article>
+    <article><span>⏱</span><b>${r.studyMinutes||0}</b><small>STUDY MINUTES</small></article>
+    <article><span>📝</span><b>${r.notesCount||0}</b><small>SAVED NOTES</small></article>
+    <article><span>🔥</span><b>${r.activeDays||0}</b><small>ACTIVE DAYS</small></article>`;
+  const chart=document.getElementById('v39WeeklyChart');
+  if(chart)chart.innerHTML=(r.weekly||[]).map(day=>`
+    <div class="v39-week-day">
+      <small>${day.minutes}m</small>
+      <div class="v39-week-bar" style="height:${Math.max(4,Math.min(180,day.minutes*2))}px"></div>
+      <b>${escapeHtml(day.label)}</b>
+    </div>`).join('');
+  const insights=document.getElementById('v39Insights');
+  if(insights)insights.innerHTML=(r.insights||[]).map(x=>`<div class="v39-insight">${escapeHtml(x)}</div>`).join('');
+};
+
+window.loadV39ExamRoadmap=async function(){
+  const r=await api('getExamRoadmap',{token:token()});
+  const header=document.getElementById('v39RoadmapHeader');
+  const list=document.getElementById('v39RoadmapList');
+  if(!r.success){
+    if(list)list.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;
+    return;
+  }
+  if(header)header.innerHTML=`<h3>${escapeHtml(r.exam)} Preparation Roadmap</h3><p>${escapeHtml(r.summary)}</p>`;
+  if(list)list.innerHTML=(r.steps||[]).map(step=>`
+    <article class="v39-roadmap-card">
+      <span>${step.icon}</span>
+      <h4>${escapeHtml(step.title)}</h4>
+      <p>${escapeHtml(step.description)}</p>
+    </article>`).join('');
+};
+
+if(typeof openDashSection==='function'){
+  const OLD_OPEN_DASH_V39=openDashSection;
+  openDashSection=function(id,btn){
+    OLD_OPEN_DASH_V39(id,btn);
+    if(id==='productivityHubModule'){
+      setTimeout(()=>{
+        const date=document.getElementById('v39TaskDate');
+        if(date&&!date.value)date.value=v39Today();
+        updateV39TimerDisplay();
+        loadV39StudyTasks();
+      },60);
+    }
+  };
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const date=document.getElementById('v39TaskDate');
+  if(date)date.value=v39Today();
+  updateV39TimerDisplay();
 });
