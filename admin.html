@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Admin | IAS Selection Point</title>
-<link href="style.css?v=40" rel="stylesheet"/>
+<link href="style.css?v=41" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadAdmin()">
-<div class="version-badge">v40 Professional CBT Mock Test Engine</div>
+<div class="version-badge">v41 Smart Learning &amp; Professional Communication Suite</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -54,7 +54,7 @@
 <button onclick="openAdminSection('adminNotify', this)">📢 Portal Notification</button>
 <button onclick="openAdminSection('adminEmailCenter', this)">📧 Email Center</button>
 <button onclick="location.href='dashboard.html'">👤 Member View</button>
-<button id="v38VersionManagerNav" onclick="openAdminSection('versionManagerModule', this)">🚀 Version Manager</button></nav>
+<button id="v38VersionManagerNav" onclick="openAdminSection('versionManagerModule', this)">🚀 Version Manager</button><button id="v41CommunicationNav" onclick="openAdminSection('v41CommunicationModule',this)">📧 Communication Center</button></nav>
 <button class="side-logout" onclick="logout()">Logout</button>
 </aside>
 <main class="portal-main">
@@ -461,9 +461,41 @@
 <p class="muted">No version history loaded.</p>
 </div>
 </div>
+</section><section class="admin-section" id="v41CommunicationModule">
+<div class="pro-panel">
+<div class="panel-head"><div><h3>Professional Communication Center</h3><p class="muted">Email delivery, notifications and communication health.</p></div>
+<button class="mini-btn" onclick="loadV41EmailDashboard()">Refresh</button></div>
+<div class="v41-email-stats" id="v41EmailStats"></div>
+<div class="v41-grid-2">
+<div>
+<h3>Send Announcement</h3>
+<input id="v41AnnouncementTitle" placeholder="Announcement title"/>
+<textarea id="v41AnnouncementBody" placeholder="Announcement message"></textarea>
+<label class="v41-check"><input checked="" id="v41AnnouncementEmail" type="checkbox"/> Send email to active users</label>
+<button class="primary-btn" onclick="sendV41Announcement()">Send Announcement</button>
+<p class="small-msg" id="v41AnnouncementMsg"></p>
+</div>
+<div>
+<h3>Email Template Preview</h3>
+<select id="v41TemplateType">
+<option value="welcome">Welcome Email</option>
+<option value="badge">Badge Earned</option>
+<option value="mock">Mock Test Completed</option>
+<option value="weekly">Weekly Progress Report</option>
+<option value="version">New Version Released</option>
+<option value="certificate">Certificate Earned</option>
+</select>
+<button class="secondary-btn" onclick="previewV41EmailTemplate()">Preview Template</button>
+<div class="v41-template-preview" id="v41TemplatePreview"></div>
+</div>
+</div>
+<hr/>
+<h3>Email Delivery Log</h3>
+<div class="v41-email-log" id="v41EmailLog"></div>
+</div>
 </section></main>
 </div>
-<script src="config.js?v=40"></script>
-<script src="app.js?v=40"></script>
+<script src="config.js?v=41"></script>
+<script src="app.js?v=41"></script>
 </body>
 </html>

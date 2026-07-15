@@ -6359,7 +6359,7 @@ window.loadV38VersionHistory=async function(){
 
 window.checkV38LatestVersion=async function(){
   try{
-    const r=await api('getLatestVersion',{token:token(),currentVersion:'v40'});
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v41'});
     if(!r.success||!r.updateAvailable)return;
     const version=r.release;
     const dismissed=localStorage.getItem('isp_v38_dismissed_version');
@@ -6718,3 +6718,72 @@ window.submitV40Cbt=async function(autoSubmit){if(!autoSubmit&&!confirm('Submit 
 window.loadV40ResultHistory=async function(){const box=document.getElementById('v40ResultHistory');if(box)box.innerHTML='<p class="muted">Loading results...</p>';const r=await api('listProfessionalTestResults',{token:token()});if(!r.success){if(box)box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;return}if(box)box.innerHTML=(r.rows||[]).length?(r.rows||[]).map(x=>`<article class="v40-result-card"><h3>${escapeHtml(x.testTitle)}</h3><div class="v40-result-summary"><div><b>${x.score}</b><small>SCORE</small></div><div><b>${x.percentage}%</b><small>ACCURACY</small></div><div><b>#${x.rank||'-'}</b><small>RANK</small></div><div><b>${x.percentile||0}</b><small>PERCENTILE</small></div><div><b>${x.timeTakenMinutes||0}m</b><small>TIME</small></div></div><div class="v40-weak-topics">${(x.weakTopics||[]).map(t=>`<span>${escapeHtml(t)}</span>`).join('')}</div><button class="mini-btn" onclick="reviewV40Result('${escapeAttr(x.resultId)}')">Review Answers</button><div id="v40Review_${escapeAttr(x.resultId)}"></div></article>`).join(''):'<p class="muted">No CBT test results found.</p>'};
 window.reviewV40Result=async function(resultId){const box=document.getElementById('v40Review_'+resultId);if(!box)return;box.innerHTML='<p class="muted">Loading answer review...</p>';const r=await api('getProfessionalTestReview',{token:token(),resultId});if(!r.success){box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;return}box.innerHTML=(r.rows||[]).map((q,i)=>`<div class="v39-insight"><b>Q${i+1}. ${escapeHtml(q.question)}</b><br>Your answer: ${escapeHtml(q.userAnswer||'Not answered')} · Correct: ${escapeHtml(q.correctAnswer)}<br>${escapeHtml(q.explanation||'No explanation provided.')}</div>`).join('')};
 if(typeof openDashSection==='function'){const OLD_OPEN_DASH_V40=openDashSection;openDashSection=function(id,btn){OLD_OPEN_DASH_V40(id,btn);if(id==='mockTestsModule')setTimeout(loadV40AvailableTests,60);if(id==='v40ResultAnalysisModule')setTimeout(loadV40ResultHistory,60)}}
+
+/* v41 Smart Learning & Professional Communication */
+window.loadV41SmartDashboard=async function(){
+  const r=await api('getSmartLearningDashboard',{token:token()});
+  if(!r.success)return;
+  v39SetText('v41StudyStreak',`${r.streak||0} days`);
+  v39SetText('v41WelcomeTitle',r.title||'Your personalized preparation dashboard');
+  v39SetText('v41WelcomeSubtitle',r.subtitle||'');
+  const stats=document.getElementById('v41SmartStats');
+  if(stats)stats.innerHTML=`
+    <article><span>📚</span><b>${r.articlesRead||0}</b><small>ARTICLES READ</small></article>
+    <article><span>📝</span><b>${r.mockTests||0}</b><small>MOCK TESTS</small></article>
+    <article><span>🎯</span><b>${r.accuracy||0}%</b><small>ACCURACY</small></article>
+    <article><span>⏱</span><b>${r.studyMinutes||0}</b><small>STUDY MINUTES</small></article>`;
+  const plan=document.getElementById('v41TodayPlan');
+  if(plan)plan.innerHTML=(r.todayPlan||[]).map(x=>`<article class="v41-plan-item"><span>${x.icon}</span><div><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.description)}</p></div></article>`).join('');
+  const weak=document.getElementById('v41WeakTopics');
+  if(weak)weak.innerHTML=(r.weakTopics||[]).map(x=>`<article class="v41-weak-item"><b>${escapeHtml(x.topic)}</b><p class="muted">${escapeHtml(x.recommendation)}</p></article>`).join('')||'<p class="muted">No weak topic identified yet.</p>';
+  const achievements=document.getElementById('v41Achievements');
+  if(achievements)achievements.innerHTML=(r.achievements||[]).map(x=>`<article class="v41-achievement-card ${x.unlocked?'':'locked'}"><span>${x.icon}</span><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.description)}</p></article>`).join('');
+};
+window.loadV41RevisionPlan=async function(){
+  const r=await api('getSmartRevisionPlan',{token:token()});
+  const box=document.getElementById('v41RevisionPlan');if(!box)return;
+  box.innerHTML=r.success?(r.rows||[]).map(x=>`<article class="v41-revision-item"><b>${escapeHtml(x.window)}</b><p class="muted">${escapeHtml(x.topic)} — ${escapeHtml(x.action)}</p></article>`).join(''):`<p class="muted">${escapeHtml(r.message)}</p>`;
+};
+window.loadV41PerformanceReport=async function(){
+  const r=await api('getStudentPerformanceReport',{token:token()});if(!r.success)return;
+  const cards=document.getElementById('v41PerformanceCards');
+  if(cards)cards.innerHTML=`
+    <article><span>📖</span><b>${r.totalLearningActions||0}</b><small>LEARNING ACTIONS</small></article>
+    <article><span>📈</span><b>${r.weeklyGrowth||0}%</b><small>WEEKLY GROWTH</small></article>
+    <article><span>✅</span><b>${r.completedTasks||0}</b><small>TASKS COMPLETED</small></article>
+    <article><span>🏆</span><b>${r.badgesEarned||0}</b><small>BADGES EARNED</small></article>`;
+  const chart=document.getElementById('v41PerformanceChart');
+  if(chart)chart.innerHTML=(r.weekly||[]).map(d=>`<div class="v41-report-day"><small>${d.value}</small><div class="v41-report-bar" style="height:${Math.max(4,Math.min(170,d.value*3))}px"></div><b>${escapeHtml(d.label)}</b></div>`).join('');
+};
+window.loadV41Notifications=async function(){
+  const r=await api('listUserNotifications',{token:token()});
+  const box=document.getElementById('v41NotificationList');if(!box)return;
+  if(!r.success){box.innerHTML=`<p class="muted">${escapeHtml(r.message)}</p>`;return}
+  v39SetText('v41UnreadBadge',r.unread||0);
+  box.innerHTML=(r.rows||[]).length?(r.rows||[]).map(n=>`<article class="v41-notification-card ${n.read?'':'unread'}" onclick="readV41Notification('${escapeAttr(n.id)}')"><div class="v41-notification-head"><h4>${escapeHtml(n.title)}</h4><small>${escapeHtml(n.createdAt||'')}</small></div><p>${escapeHtml(n.message)}</p></article>`).join(''):'<p class="muted">No notifications yet.</p>';
+};
+window.readV41Notification=async function(id){await api('markNotificationRead',{token:token(),id});loadV41Notifications()};
+window.markAllV41NotificationsRead=async function(){await api('markAllNotificationsRead',{token:token()});loadV41Notifications()};
+window.loadV41Certificates=async function(){
+  const r=await api('listUserCertificates',{token:token()});const box=document.getElementById('v41CertificateList');if(!box)return;
+  box.innerHTML=r.success?(r.rows||[]).map(c=>`<article class="v41-certificate-card"><span>${c.icon}</span><h4>${escapeHtml(c.title)}</h4><p>${escapeHtml(c.description)}</p><button class="mini-btn" ${c.unlocked?'':'disabled'}>${c.unlocked?'Available':'Locked'}</button></article>`).join(''):`<p class="muted">${escapeHtml(r.message)}</p>`;
+};
+window.loadV41EmailDashboard=async function(){
+  const r=await api('getCommunicationDashboard',{token:token()});if(!r.success)return;
+  const stats=document.getElementById('v41EmailStats');
+  if(stats)stats.innerHTML=`<article><b>${r.total||0}</b><small>TOTAL EMAILS</small></article><article><b>${r.sent||0}</b><small>SENT</small></article><article><b>${r.failed||0}</b><small>FAILED</small></article><article><b>${r.today||0}</b><small>TODAY</small></article>`;
+  const log=document.getElementById('v41EmailLog');
+  if(log)log.innerHTML=(r.logs||[]).map(x=>`<div class="v41-email-row ${String(x.status).toLowerCase()}"><span>${escapeHtml(x.email)}</span><span>${escapeHtml(x.type)}</span><span>${escapeHtml(x.status)}</span><span>${escapeHtml(x.sentAt||'')}</span></div>`).join('');
+};
+window.sendV41Announcement=async function(){
+  const msg=document.getElementById('v41AnnouncementMsg');
+  const r=await api('sendCommunicationAnnouncement',{token:token(),title:document.getElementById('v41AnnouncementTitle')?.value||'',message:document.getElementById('v41AnnouncementBody')?.value||'',sendEmail:Boolean(document.getElementById('v41AnnouncementEmail')?.checked)});
+  if(msg)msg.textContent=r.message||'';if(r.success)loadV41EmailDashboard();
+};
+window.previewV41EmailTemplate=async function(){
+  const r=await api('previewCommunicationTemplate',{token:token(),type:document.getElementById('v41TemplateType')?.value||'welcome'});
+  const box=document.getElementById('v41TemplatePreview');if(box)box.innerHTML=r.success?r.html:`<p>${escapeHtml(r.message)}</p>`;
+};
+if(typeof openDashSection==='function'){const OLD_OPEN_DASH_V41=openDashSection;openDashSection=function(id,btn){OLD_OPEN_DASH_V41(id,btn);if(id==='v41SmartLearningModule')setTimeout(()=>{loadV41SmartDashboard();loadV41RevisionPlan();loadV41PerformanceReport()},50);if(id==='v41NotificationsModule')setTimeout(loadV41Notifications,50);if(id==='v41CertificatesModule')setTimeout(loadV41Certificates,50)}}
+if(typeof openAdminSection==='function'){const OLD_OPEN_ADMIN_V41=openAdminSection;openAdminSection=function(id,btn){OLD_OPEN_ADMIN_V41(id,btn);if(id==='v41CommunicationModule')setTimeout(loadV41EmailDashboard,50)}}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{loadV41SmartDashboard();loadV41Notifications()},1400)});
