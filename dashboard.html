@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
-<link href="style.css?v=39" rel="stylesheet"/>
+<link href="style.css?v=40" rel="stylesheet"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <meta content="#0B2A55" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
@@ -14,7 +14,7 @@
 <link href="logo.jpg" rel="apple-touch-icon"/>
 </head>
 <body onload="loadDashboard()">
-<div class="version-badge">v39 Student Productivity Suite</div>
+<div class="version-badge">v40 Professional CBT Mock Test Engine</div>
 <div class="loader-overlay" id="loaderOverlay">
 <div class="loader-box">
 <div class="spinner"></div>
@@ -67,7 +67,7 @@
 <button onclick="openDashSection('library', this)">📖 My Library</button>
 <button onclick="openDashSection('notes', this)">📝 Notes</button>
 <button id="v39ProductivityNav" onclick="openDashSection('productivityHubModule', this)">🧠 Productivity Hub</button>
-<button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests</button>
+<button onclick="openDashSection('mockTestsModule', this)">📝 Mock Tests Pro</button>
 <button onclick="openDashSection('dailyQuizModule', this)">🎯 Daily Quiz</button>
 <button onclick="openDashSection('myResultsModule', this)">📊 My Results</button>
 <button onclick="openDashSection('revisionCenterModule', this)">🎯 Revision Center</button>
@@ -590,7 +590,7 @@
 </div>
 <input id="notesSearch" oninput="renderV28Notes()" placeholder="Search notes..."/>
 </div>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"></div>
 </div>
 </section>
 <section class="dash-section" id="revisionCenterModule">
@@ -608,11 +608,15 @@
 <button onclick="setRevisionFilter('upcoming')">Upcoming</button>
 <button onclick="setRevisionFilter('completed')">Completed</button>
 </div>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"></div>
 </div>
 </section>
 <section class="dash-section" id="mockTestsModule">
-<div class="pro-panel">
+<div class="pro-panel"><div class="v40-cbt-entry" id="v40CbtEntry">
+<div><span>🖥️</span><div><small>PROFESSIONAL EXAM MODE</small><h3>CBT Mock Test Engine</h3>
+<p>Full-screen exam interface with timer, question palette, review status, negative marking and result analysis.</p></div></div>
+<button onclick="loadV40AvailableTests()" type="button">Open CBT Tests</button>
+</div><div class="v40-test-grid" id="v40AvailableTests"></div>
 <div class="panel-head">
 <div>
 <h3>📝 Mock Tests</h3>
@@ -620,7 +624,7 @@
 </div>
 <button class="mini-btn" onclick="loadV31Tests()">Refresh Tests</button>
 </div>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"><p class="muted">Loading tests...</p></div>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"><p class="muted">Loading tests...</p></div>
 </div>
 </section>
 <section class="dash-section" id="myResultsModule">
@@ -631,60 +635,60 @@
 <p class="muted">Review previous attempts and performance.</p>
 </div>
 </div>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"><p class="muted">No attempts yet.</p></div>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"><p class="muted">No attempts yet.</p></div>
 </div>
 </section>
-<section class="dash-section" id="v39 Student Productivity Suite">
-<div class="v39 Student Productivity Suite">
-<header class="v39 Student Productivity Suite">
+<section class="dash-section" id="v40 Professional CBT Mock Test Engine">
+<div class="v40 Professional CBT Mock Test Engine">
+<header class="v40 Professional CBT Mock Test Engine">
 <div>
 <span class="eyebrow">LIVE MOCK TEST</span>
-<h2 id="v39 Student Productivity Suite">Mock Test</h2>
+<h2 id="v40 Professional CBT Mock Test Engine">Mock Test</h2>
 </div>
-<div class="v39 Student Productivity Suite">⏱ <span id="v39 Student Productivity Suite">00:00</span></div>
+<div class="v40 Professional CBT Mock Test Engine">⏱ <span id="v40 Professional CBT Mock Test Engine">00:00</span></div>
 </header>
-<div class="v39 Student Productivity Suite">
-<main class="v39 Student Productivity Suite">
-<div class="v39 Student Productivity Suite">
-<span id="v39 Student Productivity Suite">Question 1</span>
-<span id="v39 Student Productivity Suite">Not Answered</span>
+<div class="v40 Professional CBT Mock Test Engine">
+<main class="v40 Professional CBT Mock Test Engine">
+<div class="v40 Professional CBT Mock Test Engine">
+<span id="v40 Professional CBT Mock Test Engine">Question 1</span>
+<span id="v40 Professional CBT Mock Test Engine">Not Answered</span>
 </div>
-<h3 id="v39 Student Productivity Suite"></h3>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
-<div class="v39 Student Productivity Suite">
-<button onclick="v39 Student Productivity Suite">← Previous</button>
-<button onclick="v39 Student Productivity Suite">Clear Response</button>
-<button onclick="v39 Student Productivity Suite">Mark for Review</button>
-<button onclick="v39 Student Productivity Suite">Next →</button>
+<h3 id="v40 Professional CBT Mock Test Engine"></h3>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"></div>
+<div class="v40 Professional CBT Mock Test Engine">
+<button onclick="v40 Professional CBT Mock Test Engine">← Previous</button>
+<button onclick="v40 Professional CBT Mock Test Engine">Clear Response</button>
+<button onclick="v40 Professional CBT Mock Test Engine">Mark for Review</button>
+<button onclick="v40 Professional CBT Mock Test Engine">Next →</button>
 </div>
 </main>
-<aside class="v39 Student Productivity Suite">
+<aside class="v40 Professional CBT Mock Test Engine">
 <h4>Question Palette</h4>
-<div class="v39 Student Productivity Suite">
+<div class="v40 Professional CBT Mock Test Engine">
 <span><i class="answered"></i> Answered</span>
 <span><i class="review"></i> Review</span>
 <span><i class="unanswered"></i> Unanswered</span>
 </div>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
-<button class="v39 Student Productivity Suite" onclick="submitV31Test(false)">Submit Test</button>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"></div>
+<button class="v40 Professional CBT Mock Test Engine" onclick="submitV31Test(false)">Submit Test</button>
 </aside>
 </div>
 </div>
 </section>
-<section class="dash-section" id="v39 Student Productivity Suite">
+<section class="dash-section" id="v40 Professional CBT Mock Test Engine">
 <div class="pro-panel">
-<div class="v39 Student Productivity Suite">
+<div class="v40 Professional CBT Mock Test Engine">
 <span>🏆</span>
-<h2 id="v39 Student Productivity Suite">Test Completed</h2>
-<p id="v39 Student Productivity Suite"></p>
+<h2 id="v40 Professional CBT Mock Test Engine">Test Completed</h2>
+<p id="v40 Professional CBT Mock Test Engine"></p>
 </div>
 <div class="stats-grid-pro">
-<div class="stat-card blue"><span>🎯</span><h3 id="v39 Student Productivity Suite">0</h3><p>Score</p></div>
-<div class="stat-card green"><span>✅</span><h3 id="v39 Student Productivity Suite">0</h3><p>Correct</p></div>
-<div class="stat-card orange"><span>❌</span><h3 id="v39 Student Productivity Suite">0</h3><p>Wrong</p></div>
-<div class="stat-card purple"><span>⏭</span><h3 id="v39 Student Productivity Suite">0</h3><p>Unanswered</p></div>
+<div class="stat-card blue"><span>🎯</span><h3 id="v40 Professional CBT Mock Test Engine">0</h3><p>Score</p></div>
+<div class="stat-card green"><span>✅</span><h3 id="v40 Professional CBT Mock Test Engine">0</h3><p>Correct</p></div>
+<div class="stat-card orange"><span>❌</span><h3 id="v40 Professional CBT Mock Test Engine">0</h3><p>Wrong</p></div>
+<div class="stat-card purple"><span>⏭</span><h3 id="v40 Professional CBT Mock Test Engine">0</h3><p>Unanswered</p></div>
 </div>
-<div class="v39 Student Productivity Suite" id="v39 Student Productivity Suite"></div>
+<div class="v40 Professional CBT Mock Test Engine" id="v40 Professional CBT Mock Test Engine"></div>
 <button class="primary-btn" onclick="openDashSection('mockTestsModule')">Back to Tests</button>
 </div>
 </section>
@@ -1007,10 +1011,16 @@
 <div class="v39-roadmap-list" id="v39RoadmapList"></div>
 </div>
 </div>
+</section><section class="dash-section" id="v40ResultAnalysisModule">
+<div class="pro-panel">
+<div class="panel-head"><div><h3>Mock Test Result Analysis</h3><p class="muted">Review score, accuracy, percentile and weak topics.</p></div>
+<button class="mini-btn" onclick="loadV40ResultHistory()">Refresh</button></div>
+<div class="v40-result-history" id="v40ResultHistory"></div>
+</div>
 </section></main>
 </div>
-<script src="config.js?v=39"></script>
-<script src="app.js?v=39"></script>
+<script src="config.js?v=40"></script>
+<script src="app.js?v=40"></script>
 <div class="v38-release-modal" hidden="" id="v38ReleaseModal">
 <div class="v38-release-dialog">
 <button aria-label="Close" class="v38-close" onclick="remindV38Later()">×</button>
@@ -1023,6 +1033,37 @@
 <button class="primary-btn" onclick="applyV38Update()">Update Now</button>
 <button class="secondary-btn" id="v38RemindLaterBtn" onclick="remindV38Later()">Remind Me Later</button>
 </div>
+</div>
+</div><div class="v40-cbt-shell" hidden="" id="v40CbtShell">
+<header class="v40-cbt-header">
+<div><small>IAS SELECTION POINT</small><h2 id="v40CbtTestTitle">Mock Test</h2></div>
+<div class="v40-cbt-header-meta">
+<span>Question <b id="v40CbtQuestionCounter">1 / 1</b></span>
+<span class="v40-cbt-timer">Time Left <b id="v40CbtTimer">00:00</b></span>
+<button onclick="exitV40Cbt()" type="button">Exit</button>
+</div>
+</header>
+<div class="v40-cbt-layout">
+<main class="v40-cbt-question-area">
+<div class="v40-cbt-subject-row"><span id="v40CbtSubject">General</span><span id="v40CbtMarks">+1 / -0.25</span></div>
+<h3 id="v40CbtQuestionText">Question text</h3>
+<div class="v40-cbt-options" id="v40CbtOptions"></div>
+<div class="v40-cbt-actions">
+<button onclick="clearV40Response()" type="button">Clear Response</button>
+<button onclick="markV40ForReview()" type="button">Mark for Review &amp; Next</button>
+<button onclick="previousV40Question()" type="button">Previous</button>
+<button class="primary" onclick="saveAndNextV40Question()" type="button">Save &amp; Next</button>
+</div>
+</main>
+<aside class="v40-cbt-sidebar">
+<div class="v40-cbt-user"><img alt="" id="v40CbtUserAvatar" src="logo.jpg"/><div><b id="v40CbtUserName">Member</b><small>Candidate</small></div></div>
+<div class="v40-cbt-legend">
+<span><i class="answered"></i>Answered</span><span><i class="not-answered"></i>Not Answered</span>
+<span><i class="review"></i>Marked for Review</span><span><i class="not-visited"></i>Not Visited</span>
+</div>
+<div class="v40-cbt-palette" id="v40CbtPalette"></div>
+<button class="v40-submit-test" onclick="submitV40Cbt(false)" type="button">Submit Test</button>
+</aside>
 </div>
 </div></body>
 </html>
