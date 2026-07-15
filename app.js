@@ -6359,7 +6359,7 @@ window.loadV38VersionHistory=async function(){
 
 window.checkV38LatestVersion=async function(){
   try{
-    const r=await api('getLatestVersion',{token:token(),currentVersion:'v41'});
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v41.1'});
     if(!r.success||!r.updateAvailable)return;
     const version=r.release;
     const dismissed=localStorage.getItem('isp_v38_dismissed_version');
@@ -6787,3 +6787,69 @@ window.previewV41EmailTemplate=async function(){
 if(typeof openDashSection==='function'){const OLD_OPEN_DASH_V41=openDashSection;openDashSection=function(id,btn){OLD_OPEN_DASH_V41(id,btn);if(id==='v41SmartLearningModule')setTimeout(()=>{loadV41SmartDashboard();loadV41RevisionPlan();loadV41PerformanceReport()},50);if(id==='v41NotificationsModule')setTimeout(loadV41Notifications,50);if(id==='v41CertificatesModule')setTimeout(loadV41Certificates,50)}}
 if(typeof openAdminSection==='function'){const OLD_OPEN_ADMIN_V41=openAdminSection;openAdminSection=function(id,btn){OLD_OPEN_ADMIN_V41(id,btn);if(id==='v41CommunicationModule')setTimeout(loadV41EmailDashboard,50)}}
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{loadV41SmartDashboard();loadV41Notifications()},1400)});
+
+
+/* ======================================================
+   v41.1 STABILITY, EMAIL & QUALITY UPDATE
+   ====================================================== */
+window.sendV411TestEmail = async function() {
+  const input = document.getElementById('v411TestEmail');
+  const msg = document.getElementById('v411TestEmailMsg');
+  const email = (input?.value || '').trim();
+
+  if (!email) {
+    if (msg) msg.textContent = 'Please enter the recipient email.';
+    return;
+  }
+
+  if (msg) msg.textContent = 'Sending test email...';
+
+  try {
+    const response = await api('sendV411TestEmail', {
+      token: token(),
+      email: email
+    });
+
+    if (msg) msg.textContent = response.message || '';
+    if (response.success) {
+      toast('Test email sent successfully');
+      if (typeof loadV41EmailDashboard === 'function') {
+        loadV41EmailDashboard();
+      }
+    }
+  } catch (error) {
+    if (msg) msg.textContent = error.message || 'Unable to send test email.';
+  }
+};
+
+/* Avoid duplicate v41 dashboard API calls during quick navigation. */
+const V411_LOAD_LOCKS = {};
+
+function v411RunOnce(key, delay, callback) {
+  const now = Date.now();
+  if (V411_LOAD_LOCKS[key] && now - V411_LOAD_LOCKS[key] < delay) return;
+  V411_LOAD_LOCKS[key] = now;
+  callback();
+}
+
+if (typeof loadV41SmartDashboard === 'function') {
+  const V411_OLD_SMART = loadV41SmartDashboard;
+  loadV41SmartDashboard = function() {
+    v411RunOnce('smart-dashboard', 1500, V411_OLD_SMART);
+  };
+}
+
+if (typeof loadV41Notifications === 'function') {
+  const V411_OLD_NOTIFICATIONS = loadV41Notifications;
+  loadV41Notifications = function() {
+    v411RunOnce('notifications', 1200, V411_OLD_NOTIFICATIONS);
+  };
+}
+
+window.addEventListener('error', function(event) {
+  const target = event.target;
+  if (target && target.tagName === 'IMG') {
+    target.onerror = null;
+    target.src = 'logo.jpg';
+  }
+}, true);
