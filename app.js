@@ -6359,7 +6359,7 @@ window.loadV38VersionHistory=async function(){
 
 window.checkV38LatestVersion=async function(){
   try{
-    const r=await api('getLatestVersion',{token:token(),currentVersion:'v41.1'});
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v41.1.1'});
     if(!r.success||!r.updateAvailable)return;
     const version=r.release;
     const dismissed=localStorage.getItem('isp_v38_dismissed_version');
@@ -6853,3 +6853,53 @@ window.addEventListener('error', function(event) {
     target.src = 'logo.jpg';
   }
 }, true);
+
+
+/* ======================================================
+   v41.1.1 INSTALL & CACHE HOTFIX
+   ====================================================== */
+(function() {
+  const BUILD_ID = '20260715-4111';
+  const VERSION = 'v41.1.1';
+  const STORAGE_KEY = 'ias_selection_point_build_id';
+
+  async function clearOldInstallCache() {
+    const previousBuild = localStorage.getItem(STORAGE_KEY);
+    if (previousBuild === BUILD_ID) return;
+
+    try {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
+      }
+
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(key => caches.delete(key)));
+      }
+    } catch (error) {
+      console.warn('Cache cleanup warning:', error);
+    }
+
+    localStorage.setItem(STORAGE_KEY, BUILD_ID);
+    sessionStorage.setItem('ias_build_refresh_pending', '1');
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', BUILD_ID);
+    window.location.replace(url.toString());
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const badge = document.querySelector('.version-badge');
+    if (badge) badge.textContent = 'v41.1.1 Install, Cache & Email Stability Hotfix';
+
+    const refreshPending = sessionStorage.getItem('ias_build_refresh_pending');
+    if (refreshPending === '1') {
+      sessionStorage.removeItem('ias_build_refresh_pending');
+    }
+
+    clearOldInstallCache();
+  });
+})();

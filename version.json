@@ -1,0 +1,7 @@
+{
+  "version": "41.1.1",
+  "title": "v41.1.1 Install, Cache & Email Stability Hotfix",
+  "build": "20260715-4111",
+  "cacheStrategy": "network-first",
+  "emailFix": true
+}
