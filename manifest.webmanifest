@@ -1,8 +1,8 @@
 {
-  "name": "IAS Selection Point v42.0.0",
+  "name": "IAS Selection Point v43.0.0",
   "short_name": "IAS Selection",
   "description": "Professional learning portal for IAS Selection Point members.",
-  "start_url": "./index.html?v=20260717-4200",
+  "start_url": "./index.html?v=20260717-4300",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef4fb",
@@ -22,5 +22,5 @@
       "purpose": "any maskable"
     }
   ],
-  "id": "./?build=20260717-4200"
+  "id": "./?build=20260717-4300"
 }

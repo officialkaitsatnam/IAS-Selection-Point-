@@ -1,13 +1,14 @@
 {
-  "version": "42.0.0",
-  "title": "v42 Exam Hub & Smart Preparation",
-  "build": "20260717-4200",
+  "version": "43.0.0",
+  "title": "v43 Smart Learning & Revision",
+  "build": "20260717-4300",
+  "base": "v42.0.0",
   "modules": [
-    "Exam Hub",
-    "Resource Center",
-    "PYQ Center",
-    "Exam Calendar",
-    "Smart Preparation Plan"
-  ],
-  "base": "v41.1.1"
+    "Smart Study Assistant (local guided rules)",
+    "Daily Revision Planner",
+    "Weak Topic Tracker",
+    "Study Session Logger",
+    "Weekly Progress Analytics",
+    "Study Streak, XP and Readiness"
+  ]
 }

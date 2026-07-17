@@ -218,6 +218,7 @@ function openDashSection(id,btn){
   if(id==='notes') loadNotes();
   if(id==='bookmarks') loadBookmarks();
   if(id==='v42ExamHubModule') initV42ExamHub();
+  if(id==='v43SmartLearningModule') initV43SmartLearning();
 }
 
 function logout(){
@@ -6360,7 +6361,7 @@ window.loadV38VersionHistory=async function(){
 
 window.checkV38LatestVersion=async function(){
   try{
-    const r=await api('getLatestVersion',{token:token(),currentVersion:'v42.0.0'});
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v43.0.0'});
     if(!r.success||!r.updateAvailable)return;
     const version=r.release;
     const dismissed=localStorage.getItem('isp_v38_dismissed_version');
@@ -6857,11 +6858,11 @@ window.addEventListener('error', function(event) {
 
 
 /* ======================================================
-   v42.0.0 EXAM HUB BUILD
+   v43.0.0 SMART LEARNING BUILD
    ====================================================== */
 (function() {
-  const BUILD_ID = '20260717-4200';
-  const VERSION = 'v42.0.0';
+  const BUILD_ID = '20260717-4300';
+  const VERSION = 'v43.0.0';
   const STORAGE_KEY = 'ias_selection_point_build_id';
 
   async function clearOldInstallCache() {
@@ -6894,7 +6895,7 @@ window.addEventListener('error', function(event) {
 
   document.addEventListener('DOMContentLoaded', function() {
     const badge = document.querySelector('.version-badge');
-    if (badge) badge.textContent = 'v42 Exam Hub & Smart Preparation';
+    if (badge) badge.textContent = 'v43 Smart Learning & Revision';
 
     const refreshPending = sessionStorage.getItem('ias_build_refresh_pending');
     if (refreshPending === '1') {
@@ -7059,3 +7060,112 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(count) count.textContent=V42_RESOURCES.length;
   }
 });
+
+
+/* ======================================================
+   v43 SMART LEARNING & REVISION
+   ====================================================== */
+const V43_KEY='isp_v43_learning';
+const V43_DEFAULT_TASKS=[
+  {id:'t1',title:'Read one core topic',minutes:30,done:false},
+  {id:'t2',title:'Solve 25 practice questions',minutes:35,done:false},
+  {id:'t3',title:'Revise current affairs',minutes:20,done:false},
+  {id:'t4',title:'Review one weak topic',minutes:25,done:false}
+];
+
+function getV43Data(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(V43_KEY)||'null');
+    if(saved) return saved;
+  }catch(e){}
+  return {tasks:V43_DEFAULT_TASKS.map(x=>({...x})),weakTopics:[],sessions:{},xp:0,lastActive:'',streak:1};
+}
+function saveV43Data(d){localStorage.setItem(V43_KEY,JSON.stringify(d));}
+function todayV43(){return new Date().toISOString().slice(0,10);}
+
+function initV43SmartLearning(){
+  const d=getV43Data();
+  const today=todayV43();
+  if(d.lastActive!==today){
+    const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    d.streak=d.lastActive===yesterday?(d.streak||1)+1:1;
+    d.lastActive=today;
+    saveV43Data(d);
+  }
+  renderV43All();
+}
+function renderV43All(){
+  renderV43Tasks(); renderV43WeakTopics(); renderV43Progress(); updateV43Stats();
+}
+function renderV43Tasks(){
+  const el=document.getElementById('v43TaskList'); if(!el)return;
+  const d=getV43Data();
+  el.innerHTML=d.tasks.length?d.tasks.map(t=>`
+    <div class="v43-task ${t.done?'done':''}">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleV43Task('${t.id}')">
+      <div class="v43-task-main"><div class="v43-task-title">${escapeV43(t.title)}</div><small>${t.minutes||20} minute focus task</small></div>
+      <button title="Delete" onclick="deleteV43Task('${t.id}')">🗑️</button>
+    </div>`).join(''):'<div class="v42-empty">No tasks. Add your first revision task.</div>';
+}
+function addV43Task(){
+  const input=document.getElementById('v43NewTask'); const title=(input?.value||'').trim();
+  if(!title)return;
+  const d=getV43Data(); d.tasks.push({id:'t'+Date.now(),title,minutes:25,done:false}); saveV43Data(d);
+  input.value=''; renderV43All();
+}
+function toggleV43Task(id){
+  const d=getV43Data(); const t=d.tasks.find(x=>x.id===id); if(!t)return;
+  t.done=!t.done; d.xp=Math.max(0,(d.xp||0)+(t.done?20:-20)); saveV43Data(d); renderV43All();
+}
+function deleteV43Task(id){const d=getV43Data(); d.tasks=d.tasks.filter(x=>x.id!==id); saveV43Data(d); renderV43All();}
+function resetV43Day(){const d=getV43Data(); d.tasks=V43_DEFAULT_TASKS.map(x=>({...x})); saveV43Data(d); renderV43All();}
+
+function addV43WeakTopic(){
+  const input=document.getElementById('v43WeakTopicInput'); const topic=(input?.value||'').trim();
+  const priority=document.getElementById('v43WeakPriority')?.value||'Medium'; if(!topic)return;
+  const d=getV43Data(); d.weakTopics.push({id:'w'+Date.now(),topic,priority}); saveV43Data(d); input.value=''; renderV43All();
+}
+function renderV43WeakTopics(){
+  const el=document.getElementById('v43WeakTopicList'); if(!el)return;
+  const d=getV43Data();
+  el.innerHTML=d.weakTopics.length?d.weakTopics.map(x=>`
+    <div class="v43-topic"><div><b>${escapeV43(x.topic)}</b><span class="v43-priority">${x.priority}</span></div><button onclick="removeV43WeakTopic('${x.id}')">✕</button></div>`).join(''):'<div class="v42-empty">No weak topic added yet.</div>';
+}
+function removeV43WeakTopic(id){const d=getV43Data(); d.weakTopics=d.weakTopics.filter(x=>x.id!==id); saveV43Data(d); renderV43All();}
+
+function logV43StudySession(){
+  const min=Math.max(5,Number(document.getElementById('v43SessionMinutes')?.value||30));
+  const d=getV43Data(); const day=todayV43(); d.sessions[day]=(d.sessions[day]||0)+min; d.xp=(d.xp||0)+Math.round(min/5); saveV43Data(d); renderV43All();
+}
+function renderV43Progress(){
+  const el=document.getElementById('v43ProgressBars'); if(!el)return;
+  const d=getV43Data(); const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; let rows=[];
+  for(let i=6;i>=0;i--){const dt=new Date(Date.now()-i*86400000);const key=dt.toISOString().slice(0,10);const mins=d.sessions[key]||0;rows.push({day:days[dt.getDay()],mins});}
+  const max=Math.max(60,...rows.map(x=>x.mins));
+  el.innerHTML=rows.map(x=>`<div class="v43-progress-row"><b>${x.day}</b><div class="v43-progress-track"><div class="v43-progress-fill" style="width:${Math.min(100,Math.round(x.mins/max*100))}%"></div></div><span>${x.mins}m</span></div>`).join('');
+}
+function updateV43Stats(){
+  const d=getV43Data(); const completed=d.tasks.filter(x=>x.done).length; const total=Math.max(1,d.tasks.length);
+  const mins=Object.values(d.sessions||{}).reduce((a,b)=>a+Number(b||0),0);
+  const readiness=Math.min(100,Math.round((completed/total)*55+Math.min(45,mins/10)));
+  const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
+  set('v43CompletedTasks',completed);set('v43StudyMinutes',mins);set('v43WeakCount',d.weakTopics.length);set('v43XP',d.xp||0);set('v43ReadinessScore',readiness+'%');set('v43StreakCount',(d.streak||1)+' day'+((d.streak||1)>1?'s':''));
+}
+function useV43Prompt(text){const i=document.getElementById('v43AssistantInput');if(i){i.value=text;askV43Assistant();}}
+function askV43Assistant(){
+  const input=document.getElementById('v43AssistantInput'); const q=(input?.value||'').trim(); if(!q)return;
+  const chat=document.getElementById('v43AssistantChat'); chat.insertAdjacentHTML('beforeend',`<div class="v43-message user">${escapeV43(q)}</div>`);
+  const a=buildV43Answer(q); setTimeout(()=>{chat.insertAdjacentHTML('beforeend',`<div class="v43-message bot">${escapeV43(a)}</div>`);chat.scrollTop=chat.scrollHeight;},250);
+  input.value=''; chat.scrollTop=chat.scrollHeight;
+}
+function buildV43Answer(q){
+  const t=q.toLowerCase(); const target=(document.getElementById('v42TargetExam')?.textContent||'your target exam');
+  if(t.includes('2 ghante')||t.includes('2 hour')) return `2-hour plan for ${target}:\n1. 35 min core notes\n2. 35 min practice questions\n3. 10 min break\n4. 25 min weak topic revision\n5. 15 min error review`;
+  if(t.includes('haryana gk')) return 'Haryana GK strategy:\n• Districts, history, geography and schemes ko 4 blocks me divide karein.\n• Daily 20 MCQs solve karein.\n• Galat questions ko Weak Topic Tracker me add karein.\n• Sunday ko full revision karein.';
+  if(t.includes('math')||t.includes('percentage')) return 'Math improvement plan:\n• Formula sheet banayein.\n• Basic examples se start karein.\n• 15 easy + 10 medium questions daily solve karein.\n• Har galti ka reason note karein: concept, calculation ya speed.';
+  if(t.includes('revision')) return 'Revision rule: 1-day, 3-day and 7-day cycle follow karein. Aaj padhe topic ko kal 10 minute, 3 din baad 15 minute aur 7 din baad practice test ke saath revise karein.';
+  if(t.includes('mock')||t.includes('test')) return 'Mock test strategy:\n• Exam-like timer use karein.\n• Pehle easy questions complete karein.\n• Test ke baad score se zyada error analysis karein.\n• Weak topics ko tracker me save karein.';
+  return `Focused plan for ${target}:\n1. One important topic choose karein.\n2. 30 minutes concept study.\n3. 25 practice questions.\n4. Wrong answers revise karein.\n5. 10-minute summary note banayein.`;
+}
+function escapeV43(v){return String(v).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
+document.addEventListener('DOMContentLoaded',()=>{if(document.getElementById('v43SmartLearningModule'))updateV43Stats();});

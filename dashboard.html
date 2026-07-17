@@ -2,8 +2,8 @@
 
 <html lang="en">
 <head>
-<meta name="app-version" content="42.0.0">
-<meta name="app-build" content="20260717-4200">
+<meta name="app-version" content="43.0.0">
+<meta name="app-build" content="20260717-4300">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
@@ -65,7 +65,8 @@
 <button onclick="openDashSection('knowledgeModule', this)">📚 Knowledge Center</button>
 <button onclick="openDashSection('upscModule', this)">🎯 UPSC</button>
 <button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button>
-<button id="v42ExamHubNav" onclick="openDashSection('v42ExamHubModule', this)">🚀 Exam Hub <span class="v42-new-tag">NEW</span></button><button id="v37JobsNavButton" onclick="openDashSection('latestJobsModule', this)">💼 Latest Jobs</button>
+<button id="v42ExamHubNav" onclick="openDashSection('v42ExamHubModule', this)">🚀 Exam Hub <span class="v42-new-tag">NEW</span></button>
+<button id="v43SmartNav" onclick="openDashSection('v43SmartLearningModule', this)">🧠 Smart Learning <span class="v42-new-tag">NEW</span></button><button id="v37JobsNavButton" onclick="openDashSection('latestJobsModule', this)">💼 Latest Jobs</button>
 <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
 <button onclick="openDashSection('library', this)">📖 My Library</button>
 <button onclick="openDashSection('notes', this)">📝 Notes</button>
@@ -1088,6 +1089,90 @@
   </div>
 </section>
 
+
+<section class="dash-section" id="v43SmartLearningModule">
+  <div class="v43-hero">
+    <div>
+      <span class="v43-kicker">IAS SELECTION POINT v43</span>
+      <h2>Smart Learning Center</h2>
+      <p>Daily revision, weak-topic tracking, focused study guidance and local progress analytics in one place.</p>
+      <div class="v43-streak-line">🔥 Current study streak: <b id="v43StreakCount">1 day</b></div>
+    </div>
+    <div class="v43-readiness">
+      <span>Exam Readiness</span>
+      <strong id="v43ReadinessScore">0%</strong>
+      <small>Based on completed study tasks</small>
+    </div>
+  </div>
+
+  <div class="v43-stats-grid">
+    <article class="v43-stat-card"><span>✅</span><div><strong id="v43CompletedTasks">0</strong><small>Tasks completed</small></div></article>
+    <article class="v43-stat-card"><span>📚</span><div><strong id="v43StudyMinutes">0</strong><small>Study minutes</small></div></article>
+    <article class="v43-stat-card"><span>🎯</span><div><strong id="v43WeakCount">0</strong><small>Weak topics</small></div></article>
+    <article class="v43-stat-card"><span>🏆</span><div><strong id="v43XP">0</strong><small>Learning XP</small></div></article>
+  </div>
+
+  <div class="v43-main-grid">
+    <div class="pro-panel">
+      <div class="panel-head">
+        <div><h3>🤖 Smart Study Assistant</h3><p class="muted">Ask for a study plan, revision help or topic strategy.</p></div>
+      </div>
+      <div class="v43-assistant-box">
+        <div id="v43AssistantChat" class="v43-chat">
+          <div class="v43-message bot">Namaste! Apna exam ya topic likhiye. Main aapko focused study plan dunga.</div>
+        </div>
+        <div class="v43-prompt-row">
+          <input id="v43AssistantInput" placeholder="Example: CET Group D Haryana GK ka plan..." onkeydown="if(event.key==='Enter')askV43Assistant()"/>
+          <button class="primary-btn" onclick="askV43Assistant()">Ask</button>
+        </div>
+        <div class="v43-quick-prompts">
+          <button onclick="useV43Prompt('Aaj ka 2 ghante ka study plan')">2-hour plan</button>
+          <button onclick="useV43Prompt('Haryana GK revision strategy')">Haryana GK</button>
+          <button onclick="useV43Prompt('Weak maths topic improve kaise karu')">Weak Maths</button>
+        </div>
+        <p class="v43-note">This assistant works locally with guided study rules; it does not send your data to an external AI service.</p>
+      </div>
+    </div>
+
+    <div class="pro-panel">
+      <div class="panel-head">
+        <div><h3>📅 Daily Revision Planner</h3><p class="muted">Complete tasks to improve readiness and XP.</p></div>
+        <button class="mini-btn" onclick="resetV43Day()">Reset Day</button>
+      </div>
+      <div id="v43TaskList" class="v43-task-list"></div>
+      <div class="v43-add-task">
+        <input id="v43NewTask" placeholder="Add custom task..."/>
+        <button onclick="addV43Task()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="v43-main-grid">
+    <div class="pro-panel">
+      <div class="panel-head">
+        <div><h3>🎯 Weak Topic Tracker</h3><p class="muted">Save topics that need extra revision.</p></div>
+      </div>
+      <div class="v43-topic-entry">
+        <input id="v43WeakTopicInput" placeholder="Example: Percentage, Haryana History..."/>
+        <select id="v43WeakPriority"><option>High</option><option>Medium</option><option>Low</option></select>
+        <button class="primary-btn" onclick="addV43WeakTopic()">Add Topic</button>
+      </div>
+      <div id="v43WeakTopicList" class="v43-topic-list"></div>
+    </div>
+
+    <div class="pro-panel">
+      <div class="panel-head">
+        <div><h3>📊 Weekly Progress</h3><p class="muted">Your recent study activity.</p></div>
+      </div>
+      <div id="v43ProgressBars" class="v43-progress-bars"></div>
+      <div class="v43-session-row">
+        <input id="v43SessionMinutes" type="number" min="5" max="600" value="30"/>
+        <button class="primary-btn" onclick="logV43StudySession()">Log Study Session</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="dash-section" id="v41SmartLearningModule">
 <div class="v41-smart-hero">
 <div>
@@ -1146,8 +1231,8 @@
 </div>
 </section></main>
 </div>
-<script src="config.js?v=20260717-4200"></script>
-<script src="app.js?v=20260717-4200"></script>
+<script src="config.js?v=20260717-4300"></script>
+<script src="app.js?v=20260717-4300"></script>
 <div class="v38-release-modal" hidden="" id="v38ReleaseModal">
 <div class="v38-release-dialog">
 <button aria-label="Close" class="v38-close" onclick="remindV38Later()">×</button>
