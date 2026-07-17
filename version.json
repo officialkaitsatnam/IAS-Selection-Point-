@@ -1,7 +1,13 @@
 {
-  "version": "41.1.1",
-  "title": "v41.1.1 Install, Cache & Email Stability Hotfix",
-  "build": "20260715-4111",
-  "cacheStrategy": "network-first",
-  "emailFix": true
+  "version": "42.0.0",
+  "title": "v42 Exam Hub & Smart Preparation",
+  "build": "20260717-4200",
+  "modules": [
+    "Exam Hub",
+    "Resource Center",
+    "PYQ Center",
+    "Exam Calendar",
+    "Smart Preparation Plan"
+  ],
+  "base": "v41.1.1"
 }

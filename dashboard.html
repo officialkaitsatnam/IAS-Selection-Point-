@@ -2,8 +2,8 @@
 
 <html lang="en">
 <head>
-<meta name="app-version" content="41.1.1">
-<meta name="app-build" content="20260715-4111">
+<meta name="app-version" content="42.0.0">
+<meta name="app-build" content="20260717-4200">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Learning Portal | IAS Selection Point</title>
@@ -64,7 +64,8 @@
 <button class="active" onclick="openDashSection('overview', this)">🏠 Dashboard</button>
 <button onclick="openDashSection('knowledgeModule', this)">📚 Knowledge Center</button>
 <button onclick="openDashSection('upscModule', this)">🎯 UPSC</button>
-<button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button><button id="v37JobsNavButton" onclick="openDashSection('latestJobsModule', this)">💼 Latest Jobs</button>
+<button onclick="openDashSection('hsscModule', this)">🟢 HSSC</button>
+<button id="v42ExamHubNav" onclick="openDashSection('v42ExamHubModule', this)">🚀 Exam Hub <span class="v42-new-tag">NEW</span></button><button id="v37JobsNavButton" onclick="openDashSection('latestJobsModule', this)">💼 Latest Jobs</button>
 <button onclick="openDashSection('ugcModule', this)">🎓 UGC</button>
 <button onclick="openDashSection('library', this)">📖 My Library</button>
 <button onclick="openDashSection('notes', this)">📝 Notes</button>
@@ -1029,7 +1030,65 @@
 <button class="mini-btn" onclick="loadV40ResultHistory()">Refresh</button></div>
 <div class="v40-result-history" id="v40ResultHistory"></div>
 </div>
-</section><section class="dash-section" id="v41SmartLearningModule">
+</section>
+<section class="dash-section" id="v42ExamHubModule">
+  <div class="v42-hero">
+    <div>
+      <span class="v42-kicker">IAS SELECTION POINT v42</span>
+      <h2>Haryana Exam Hub</h2>
+      <p>Exams, syllabus, notes, previous papers, mock tests and important dates—one focused workspace.</p>
+      <div class="v42-target-line">Your target: <b id="v42TargetExam">General Haryana Exams</b></div>
+    </div>
+    <div class="v42-hero-stat">
+      <strong id="v42ResourceCount">0</strong>
+      <span>Study resources</span>
+    </div>
+  </div>
+
+  <div class="v42-toolbar pro-panel">
+    <input id="v42ExamSearch" type="search" placeholder="Search exam, syllabus, PYQ, notes..." oninput="renderV42ExamHub()"/>
+    <select id="v42ResourceType" onchange="renderV42ExamHub()">
+      <option value="all">All resources</option>
+      <option value="Syllabus">Syllabus</option>
+      <option value="PYQ">Previous Papers</option>
+      <option value="Notes">Notes</option>
+      <option value="Mock Test">Mock Tests</option>
+      <option value="Current Affairs">Current Affairs</option>
+    </select>
+    <button class="primary-btn" onclick="resetV42ExamFilters()">Reset</button>
+  </div>
+
+  <div class="v42-section-head">
+    <div><h3>Choose Your Exam</h3><p>Open a category to view focused preparation resources.</p></div>
+  </div>
+  <div class="v42-exam-grid" id="v42ExamGrid"></div>
+
+  <div class="v42-layout">
+    <div class="pro-panel">
+      <div class="panel-head">
+        <div><h3>📚 Resource Center</h3><p class="muted" id="v42ResourceSubtitle">Recommended study material</p></div>
+      </div>
+      <div class="v42-resource-list" id="v42ResourceList"></div>
+    </div>
+
+    <div class="pro-panel">
+      <div class="panel-head">
+        <div><h3>📅 Exam Calendar</h3><p class="muted">Important upcoming milestones</p></div>
+      </div>
+      <div class="v42-calendar-list" id="v42CalendarList"></div>
+    </div>
+  </div>
+
+  <div class="pro-panel">
+    <div class="panel-head">
+      <div><h3>🎯 Smart Preparation Plan</h3><p class="muted">Suggestions based on your selected target exam.</p></div>
+      <button class="mini-btn" onclick="buildV42StudyPlan()">Refresh Plan</button>
+    </div>
+    <div class="v42-plan-grid" id="v42StudyPlan"></div>
+  </div>
+</section>
+
+<section class="dash-section" id="v41SmartLearningModule">
 <div class="v41-smart-hero">
 <div>
 <span class="eyebrow">PERSONALIZED LEARNING</span>
@@ -1087,8 +1146,8 @@
 </div>
 </section></main>
 </div>
-<script src="config.js?v=20260715-4111"></script>
-<script src="app.js?v=20260715-4111"></script>
+<script src="config.js?v=20260717-4200"></script>
+<script src="app.js?v=20260717-4200"></script>
 <div class="v38-release-modal" hidden="" id="v38ReleaseModal">
 <div class="v38-release-dialog">
 <button aria-label="Close" class="v38-close" onclick="remindV38Later()">×</button>

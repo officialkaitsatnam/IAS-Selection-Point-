@@ -217,6 +217,7 @@ function openDashSection(id,btn){
   if(id==='library') renderContinueReading();
   if(id==='notes') loadNotes();
   if(id==='bookmarks') loadBookmarks();
+  if(id==='v42ExamHubModule') initV42ExamHub();
 }
 
 function logout(){
@@ -6359,7 +6360,7 @@ window.loadV38VersionHistory=async function(){
 
 window.checkV38LatestVersion=async function(){
   try{
-    const r=await api('getLatestVersion',{token:token(),currentVersion:'v41.1.1'});
+    const r=await api('getLatestVersion',{token:token(),currentVersion:'v42.0.0'});
     if(!r.success||!r.updateAvailable)return;
     const version=r.release;
     const dismissed=localStorage.getItem('isp_v38_dismissed_version');
@@ -6856,11 +6857,11 @@ window.addEventListener('error', function(event) {
 
 
 /* ======================================================
-   v41.1.1 INSTALL & CACHE HOTFIX
+   v42.0.0 EXAM HUB BUILD
    ====================================================== */
 (function() {
-  const BUILD_ID = '20260715-4111';
-  const VERSION = 'v41.1.1';
+  const BUILD_ID = '20260717-4200';
+  const VERSION = 'v42.0.0';
   const STORAGE_KEY = 'ias_selection_point_build_id';
 
   async function clearOldInstallCache() {
@@ -6893,7 +6894,7 @@ window.addEventListener('error', function(event) {
 
   document.addEventListener('DOMContentLoaded', function() {
     const badge = document.querySelector('.version-badge');
-    if (badge) badge.textContent = 'v41.1.1 Install, Cache & Email Stability Hotfix';
+    if (badge) badge.textContent = 'v42 Exam Hub & Smart Preparation';
 
     const refreshPending = sessionStorage.getItem('ias_build_refresh_pending');
     if (refreshPending === '1') {
@@ -6903,3 +6904,158 @@ window.addEventListener('error', function(event) {
     clearOldInstallCache();
   });
 })();
+
+
+/* ======================================================
+   v42 EXAM HUB & SMART PREPARATION
+   ====================================================== */
+const V42_EXAMS = [
+  {id:'hssc',icon:'🏛️',name:'HSSC',desc:'Haryana Staff Selection Commission',labels:['HSSC','Haryana Jobs']},
+  {id:'cet-c',icon:'📘',name:'CET Group C',desc:'Group C common eligibility preparation',labels:['CET Group C','Haryana CET']},
+  {id:'cet-d',icon:'📗',name:'CET Group D',desc:'Group D syllabus, practice and updates',labels:['CET Group D','Haryana CET']},
+  {id:'police',icon:'👮',name:'Haryana Police',desc:'Constable and Sub-Inspector preparation',labels:['Haryana Police']},
+  {id:'hpsc',icon:'⚖️',name:'HPSC',desc:'HCS and Haryana civil services',labels:['HPSC','HCS']},
+  {id:'htet',icon:'🎓',name:'HTET',desc:'PRT, TGT and PGT teaching eligibility',labels:['HTET']},
+  {id:'patwari',icon:'🌾',name:'Patwari',desc:'Revenue and land records examination',labels:['Patwari']},
+  {id:'clerk',icon:'📝',name:'Clerk',desc:'Clerical and office recruitment exams',labels:['Clerk']}
+];
+
+const V42_RESOURCES = [
+  ['hssc','Syllabus','HSSC General Syllabus','Complete subject structure and preparation priorities.','HSSC'],
+  ['hssc','Current Affairs','Haryana Current Affairs','Important Haryana events, schemes and appointments.','Haryana Current Affairs'],
+  ['cet-c','Syllabus','CET Group C Syllabus','Subject-wise syllabus and exam pattern.','CET Group C'],
+  ['cet-c','PYQ','CET Group C Previous Papers','Practice questions from earlier recruitment cycles.','CET Group C'],
+  ['cet-c','Mock Test','CET Group C Mock Tests','Timed CBT practice with result analytics.','Mock Tests'],
+  ['cet-d','Syllabus','CET Group D Syllabus','Updated topic list and marks distribution.','CET Group D'],
+  ['cet-d','PYQ','CET Group D Previous Papers','Year-wise papers and answer keys.','CET Group D'],
+  ['police','Notes','Haryana Police Notes','Law, reasoning, Haryana GK and general studies.','Haryana Police'],
+  ['police','Mock Test','Police Practice Test','Constable-oriented timed test series.','Mock Tests'],
+  ['hpsc','Syllabus','HPSC / HCS Syllabus','Prelims and mains preparation structure.','HPSC'],
+  ['hpsc','PYQ','HCS Previous Papers','Previous papers for trend analysis.','HPSC'],
+  ['htet','Notes','HTET Pedagogy Notes','Child development and teaching methodology.','HTET'],
+  ['htet','PYQ','HTET Previous Papers','Level 1, 2 and 3 practice papers.','HTET'],
+  ['patwari','Notes','Patwari Subject Notes','Maths, reasoning, computer and Haryana GK.','Patwari'],
+  ['clerk','Mock Test','Clerk Speed Practice','Accuracy and time-management test set.','Mock Tests']
+].map((r,i)=>({id:'R'+(i+1),examId:r[0],type:r[1],title:r[2],description:r[3],label:r[4]}));
+
+const V42_CALENDAR = [
+  {day:'01',month:'AUG',title:'Monthly Current Affairs Revision',detail:'Revise Haryana and national current affairs.'},
+  {day:'05',month:'AUG',title:'CET Practice Test',detail:'Full-length timed practice milestone.'},
+  {day:'10',month:'AUG',title:'PYQ Revision Day',detail:'Solve one previous paper from your target exam.'},
+  {day:'15',month:'AUG',title:'Performance Review',detail:'Check weak topics and update your study plan.'}
+];
+
+let V42_SELECTED_EXAM = 'hssc';
+
+function getV42TargetExam(){
+  let target = '';
+  try{
+    const u = JSON.parse(localStorage.getItem('isp_user') || '{}');
+    target = u.targetExam || u.exam || u.TargetExam || '';
+  }catch(e){}
+  const profileExam = document.getElementById('profileExam');
+  if(!target && profileExam) target = profileExam.value || '';
+  return target || 'General Haryana Exams';
+}
+
+function matchV42Target(target){
+  const t=(target||'').toLowerCase();
+  const hit=V42_EXAMS.find(e=>t.includes(e.name.toLowerCase()) || e.labels.some(x=>t.includes(x.toLowerCase())));
+  return hit ? hit.id : 'hssc';
+}
+
+function initV42ExamHub(){
+  const target=getV42TargetExam();
+  V42_SELECTED_EXAM=matchV42Target(target);
+  const el=document.getElementById('v42TargetExam');
+  if(el) el.textContent=target;
+  renderV42ExamHub();
+  renderV42Calendar();
+  buildV42StudyPlan();
+}
+
+function renderV42ExamHub(){
+  const grid=document.getElementById('v42ExamGrid');
+  const list=document.getElementById('v42ResourceList');
+  if(!grid || !list) return;
+  const q=(document.getElementById('v42ExamSearch')?.value||'').trim().toLowerCase();
+  const type=document.getElementById('v42ResourceType')?.value||'all';
+
+  grid.innerHTML=V42_EXAMS.map(ex=>`
+    <article class="v42-exam-card ${ex.id===V42_SELECTED_EXAM?'active':''}" onclick="selectV42Exam('${ex.id}')">
+      <div class="v42-exam-icon">${ex.icon}</div>
+      <h4>${ex.name}</h4><p>${ex.desc}</p>
+      <small>${V42_RESOURCES.filter(r=>r.examId===ex.id).length} resources →</small>
+    </article>`).join('');
+
+  const items=V42_RESOURCES.filter(r=>{
+    const examMatch = r.examId===V42_SELECTED_EXAM;
+    const typeMatch = type==='all' || r.type===type;
+    const searchMatch = !q || [r.title,r.description,r.type,r.label].join(' ').toLowerCase().includes(q);
+    return examMatch && typeMatch && searchMatch;
+  });
+
+  document.getElementById('v42ResourceCount').textContent=V42_RESOURCES.length;
+  const ex=V42_EXAMS.find(x=>x.id===V42_SELECTED_EXAM);
+  document.getElementById('v42ResourceSubtitle').textContent=(ex?ex.name:'Selected exam')+' preparation resources';
+
+  list.innerHTML=items.length?items.map(r=>`
+    <div class="v42-resource-item">
+      <div class="meta"><span class="v42-type">${r.type}</span><div><h4>${r.title}</h4><p>${r.description}</p></div></div>
+      <button class="v42-open-btn" onclick="openV42Resource('${r.label}','${r.type}')">Open</button>
+    </div>`).join(''):'<div class="v42-empty">No matching resource found. Try another filter.</div>';
+}
+
+function selectV42Exam(id){
+  V42_SELECTED_EXAM=id;
+  renderV42ExamHub();
+  buildV42StudyPlan();
+}
+
+function resetV42ExamFilters(){
+  const q=document.getElementById('v42ExamSearch'); if(q) q.value='';
+  const t=document.getElementById('v42ResourceType'); if(t) t.value='all';
+  renderV42ExamHub();
+}
+
+function openV42Resource(label,type){
+  if(type==='Mock Test'){
+    openDashSection('mockTestsModule',document.querySelector('[onclick*="mockTestsModule"]'));
+    return;
+  }
+  if(typeof loadModuleCategory==='function'){
+    openDashSection('hsscModule',document.querySelector('[onclick*="hsscModule"]'));
+    setTimeout(()=>loadModuleCategory(label,'hssc'),120);
+    return;
+  }
+  const url='https://iasselectionpoint.blogspot.com/search/label/'+encodeURIComponent(label);
+  window.open(url,'_blank','noopener');
+}
+
+function renderV42Calendar(){
+  const el=document.getElementById('v42CalendarList'); if(!el) return;
+  el.innerHTML=V42_CALENDAR.map(x=>`
+    <div class="v42-calendar-item">
+      <div class="v42-date-box"><b>${x.day}</b><span>${x.month}</span></div>
+      <div><h4>${x.title}</h4><p>${x.detail}</p></div>
+    </div>`).join('');
+}
+
+function buildV42StudyPlan(){
+  const el=document.getElementById('v42StudyPlan'); if(!el) return;
+  const ex=V42_EXAMS.find(x=>x.id===V42_SELECTED_EXAM)||V42_EXAMS[0];
+  const plans=[
+    ['📖','Read Core Notes',`Study one focused ${ex.name} topic for 30 minutes.`],
+    ['🧠','Practice Questions',`Solve at least 25 ${ex.name} questions today.`],
+    ['📄','Previous Paper',`Review one PYQ section and note repeated topics.`],
+    ['📊','Check Performance','Open My Results and revise your weakest subject.']
+  ];
+  el.innerHTML=plans.map(p=>`<article class="v42-plan-card"><span>${p[0]}</span><h4>${p[1]}</h4><p>${p[2]}</p></article>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(document.getElementById('v42ExamHubModule')){
+    const count=document.getElementById('v42ResourceCount');
+    if(count) count.textContent=V42_RESOURCES.length;
+  }
+});
