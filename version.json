@@ -1,12 +1,6 @@
 {
-  "version": "50.1.0",
-  "build": "20260719-5010",
-  "name": "IAS Selection Point Core Public Feed Portal",
-  "features": [
-    "Scrolling repair for public website",
-    "Automatic IAS Selection Point Blogger public posts",
-    "Motivation Center powered by satnamkait.in posts",
-    "Login protected Knowledge Center and exam categories",
-    "Responsive feed cards with Blogger JSONP support"
-  ]
+  "version": "51.0.0",
+  "build": "20260719-5100",
+  "name": "IAS Selection Point v51 Digital Book Reader",
+  "release": "Dual Blogger posts/pages, live ticker, internal book reader, unified search, bookmarks, history, audio and print"
 }

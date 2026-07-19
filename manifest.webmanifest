@@ -1,8 +1,8 @@
 {
-  "name": "IAS Selection Point v50.0.0",
-  "short_name": "IAS Selection",
+  "name": "IAS Selection Point v51 Digital Book Reader",
+  "short_name": "IAS Point v51",
   "description": "Professional public education website and secure member learning portal.",
-  "start_url": "./index.html?v=20260719-5000",
+  "start_url": "./?v=5100",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef4fb",

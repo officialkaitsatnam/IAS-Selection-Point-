@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="app-version" content="50.1.0">
-<meta name="app-build" content="20260719-5010">
+<meta name="app-version" content="51.0.0">
+<meta name="app-build" content="20260719-5100">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>IAS Selection Point | Professional Education Portal</title>
 <meta name="description" content="IAS Selection Point: competitive exam updates, current affairs, public resources and a secure member knowledge center.">
-<link rel="stylesheet" href="style.css?v=20260719-5010">
+<link rel="stylesheet" href="style.css?v=20260719-5100">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#082d5c">
 <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body class="v50-public-home">
-<div class="version-badge">v50.1 Core Public Feed Portal</div>
+<div class="version-badge">v51 Digital Book Reader</div>
 <div id="loaderOverlay" class="loader-overlay"><div class="loader-box"><div class="spinner"></div><h3 id="loaderTitle">Please wait...</h3><p id="loaderText">Processing your request</p></div></div>
 
 <div class="v50-top-strip">
@@ -37,14 +37,18 @@
     <div class="v50-hero-panel"><div class="v50-panel-title"><span>📢</span><div><small>NOTICE BOARD</small><b>Important Student Updates</b></div></div><div class="v50-notice-list"><a href="#updates"><span>NEW</span> Latest exam notifications and dates</a><a href="#resources"><span>FREE</span> Current affairs and public study material</a><a onclick="openAuth('login')"><span>MEMBER</span> Knowledge Center access</a><a onclick="openAuth('login')"><span>TEST</span> Mock tests and performance reports</a></div><button onclick="openAuth('login')">Open Student Portal →</button></div>
   </div>
 </section>
-<div class="v50-ticker"><div class="v50-container"><b>⚡ Latest:</b><div><span>IAS Selection Point v50 public website is now ready • Member Knowledge Center is available after login • New exam categories can be managed from admin panel</span></div></div></div>
+<div class="v50-ticker v51-live-ticker" aria-label="Live updates"><div class="v50-container"><b>⚡ Live:</b><div class="v51-ticker-window"><div id="v51TickerTrack" class="v51-ticker-track"><span>Loading latest posts from both websites…</span></div></div><button class="v51-ticker-pause" id="v51TickerPause" type="button" aria-label="Pause ticker" title="Pause ticker">⏸</button></div></div>
 
 <section class="v50-section" id="updates"><div class="v50-container"><div class="v50-section-head"><div><small>PUBLIC INFORMATION</small><h2>Latest Updates</h2></div><a href="#">View all updates →</a></div><div class="v50-card-grid v50-three"><article class="v50-info-card"><span class="v50-card-icon">📅</span><small>IMPORTANT DATES</small><h3>Exam Calendar & Deadlines</h3><p>Keep track of application deadlines, examination dates and important schedules.</p><a href="#">Read Updates →</a></article><article class="v50-info-card"><span class="v50-card-icon">💼</span><small>RECRUITMENT</small><h3>Latest Government Jobs</h3><p>Public recruitment notices, eligibility highlights and application guidance.</p><a href="#">Explore Jobs →</a></article><article class="v50-info-card"><span class="v50-card-icon">📰</span><small>CURRENT AFFAIRS</small><h3>Daily Current Affairs</h3><p>Selected current affairs and important national and international developments.</p><a href="#">Start Reading →</a></article></div></div></section>
 
 
-<section class="v50-section v501-feed-section" id="education-posts"><div class="v50-container"><div class="v50-section-head"><div><small>IAS SELECTION POINT BLOG</small><h2>Latest Education Posts</h2><p>Public posts from IAS Selection Point are displayed automatically. Protected exam categories remain inside the member portal.</p></div><a href="https://iasselectionpoi.blogspot.com/" target="_blank" rel="noopener">Open main website →</a></div><div id="iasFeedStatus" class="v501-feed-status">Loading latest education posts…</div><div id="iasPublicFeed" class="v501-post-grid"></div></div></section>
+<section class="v50-section v501-feed-section" id="education-posts"><div class="v50-container"><div class="v50-section-head"><div><small>IAS SELECTION POINT BLOG</small><h2>Latest Education Posts</h2><p>Public posts from IAS Selection Point are displayed automatically. Protected exam categories remain inside the member portal.</p></div><button class="v51-section-action" onclick="focusPortalSearch('education')">Search education posts →</button></div><div id="iasFeedStatus" class="v501-feed-status">Loading latest education posts…</div><div id="iasPublicFeed" class="v501-post-grid"></div></div></section>
 
-<section class="v50-section v50-soft v501-feed-section" id="motivation"><div class="v50-container"><div class="v50-section-head"><div><small>SATNAM KAIT</small><h2>🌿 Motivation Center</h2><p>Motivational articles, poems, life lessons and literature from satnamkait.in.</p></div><a href="https://satnamkait.in/" target="_blank" rel="noopener">Visit satnamkait.in →</a></div><div id="motivationFeedStatus" class="v501-feed-status">Loading motivation posts…</div><div id="motivationFeed" class="v501-post-grid"></div></div></section>
+<section class="v50-section v50-soft v501-feed-section" id="motivation"><div class="v50-container"><div class="v50-section-head"><div><small>SATNAM KAIT</small><h2>🌿 Motivation Center</h2><p>Motivational articles, poems, life lessons and literature from satnamkait.in.</p></div><button class="v51-section-action" onclick="focusPortalSearch('motivation')">Search motivation posts →</button></div><div id="motivationFeedStatus" class="v501-feed-status">Loading motivation posts…</div><div id="motivationFeed" class="v501-post-grid"></div></div></section>
+
+<section class="v50-section v51-discovery" id="portal-search"><div class="v50-container"><div class="v50-section-head"><div><small>UNIFIED CONTENT SEARCH</small><h2>Search the complete public library</h2><p>Search education posts, motivation articles and public pages from both websites without leaving this portal.</p></div></div><div class="v51-search-shell"><span>🔎</span><input id="v51GlobalSearch" type="search" placeholder="Search posts, poems, notes, pages…" autocomplete="off"><select id="v51SearchSource" aria-label="Filter source"><option value="all">Both websites</option><option value="education">IAS Selection Point</option><option value="motivation">Satnam Kait</option><option value="pages">Public pages</option></select><button type="button" onclick="runPortalSearch()">Search</button></div><div id="v51SearchMeta" class="v51-search-meta">Posts will become searchable as soon as both feeds load.</div><div id="v51SearchResults" class="v501-post-grid"></div></div></section>
+
+<section class="v50-section v50-soft v501-feed-section" id="public-pages"><div class="v50-container"><div class="v50-section-head"><div><small>PUBLIC INFORMATION PAGES</small><h2>Pages from both websites</h2><p>About, contact, policy and other public pages open inside the same book reader.</p></div></div><div id="pagesFeedStatus" class="v501-feed-status">Loading public pages…</div><div id="publicPagesFeed" class="v501-post-grid"></div></div></section>
 
 <section class="v50-section v50-soft" id="exams"><div class="v50-container"><div class="v50-section-head center"><div><small>EXAM PREPARATION</small><h2>Popular Exam Categories</h2><p>Category overview is public. Complete notes, PYQs, tests and downloads open after login.</p></div></div><div class="v50-exam-grid">
   <button onclick="openAuth('login')"><span>🏛️</span><b>UPSC</b><small>Prelims • Mains • Interview</small></button><button onclick="openAuth('login')"><span>🎓</span><b>UGC NET</b><small>Political Science & More</small></button><button onclick="openAuth('login')"><span>🟢</span><b>HSSC</b><small>Haryana Recruitment</small></button><button onclick="openAuth('login')"><span>🎯</span><b>CET Group C</b><small>Notes • PYQ • Tests</small></button><button onclick="openAuth('login')"><span>📘</span><b>CET Group D</b><small>Complete Preparation</small></button><button onclick="openAuth('login')"><span>⚖️</span><b>HPSC</b><small>State Civil Services</small></button><button onclick="openAuth('login')"><span>👮</span><b>Police</b><small>Haryana Police Exams</small></button><button onclick="openAuth('login')"><span>🏫</span><b>Teaching</b><small>HTET • PGT • TGT</small></button>
@@ -59,12 +63,42 @@
 
 <footer class="v50-footer" id="contact"><div class="v50-container v50-footer-grid"><div><div class="v50-footer-brand"><img src="logo.jpg" alt=""><b>IAS Selection Point</b></div><p>A professional education portal for competitive examination preparation.</p></div><div><h4>Public Links</h4><a href="#home">Home</a><a href="#education-posts">Education Posts</a><a href="#motivation">Motivation Center</a><a href="#updates">Latest Updates</a><a href="#resources">Free Resources</a><a href="#about">About</a></div><div><h4>Member Portal</h4><a onclick="openAuth('login')">Knowledge Center</a><a onclick="openAuth('login')">Mock Tests</a><a onclick="openAuth('login')">My Progress</a><a onclick="openAuth('login')">Downloads</a></div><div><h4>Student Access</h4><button onclick="openAuth('signup')">Register Free</button><button onclick="openAuth('login')">Member Login</button></div></div><div class="v50-copyright">© 2026 IAS Selection Point. All rights reserved.</div></footer>
 
+<div class="v51-reader-modal" id="v51ReaderModal" aria-hidden="true">
+  <div class="v51-reader-backdrop" onclick="closeBookReader()"></div>
+  <article class="v51-reader-shell" role="dialog" aria-modal="true" aria-labelledby="v51ReaderTitle">
+    <header class="v51-reader-toolbar">
+      <button type="button" onclick="closeBookReader()" aria-label="Close reader">← Back</button>
+      <div class="v51-reader-tools">
+        <button type="button" onclick="changeReaderFont(-1)" title="Decrease font">A−</button>
+        <button type="button" onclick="changeReaderFont(1)" title="Increase font">A+</button>
+        <button type="button" onclick="toggleReaderTheme()" title="Change reading theme">🎨 Theme</button>
+        <button type="button" onclick="toggleReaderFocus()" title="Focus mode">⛶ Focus</button>
+        <button type="button" onclick="speakCurrentArticle()" title="Listen article">🔊 Listen</button>
+        <button type="button" onclick="window.print()" title="Print article">🖨 Print</button>
+      </div>
+    </header>
+    <div class="v51-reading-progress"><span id="v51ReadingProgress"></span></div>
+    <main class="v51-book-stage" id="v51BookStage">
+      <section class="v51-book-page">
+        <div class="v51-book-ornament">❦</div>
+        <div class="v51-reader-source" id="v51ReaderSource"></div>
+        <h1 id="v51ReaderTitle">Article</h1>
+        <div class="v51-reader-meta" id="v51ReaderMeta"></div>
+        <div class="v51-reader-cover" id="v51ReaderCover"></div>
+        <div class="v51-reader-content" id="v51ReaderContent"></div>
+        <footer class="v51-book-footer"><span>IAS Selection Point Digital Library</span><span id="v51ReaderPageNo">Page 1</span></footer>
+      </section>
+    </main>
+    <nav class="v51-reader-nav"><button type="button" onclick="openAdjacentArticle(-1)">← Previous</button><button type="button" onclick="bookmarkCurrentArticle()">🔖 Save for later</button><button type="button" onclick="openAdjacentArticle(1)">Next →</button></nav>
+  </article>
+</div>
+
 <div class="v50-auth-modal" id="authModal" aria-hidden="true"><div class="v50-auth-backdrop" onclick="closeAuth()"></div><section class="auth-card v50-auth-card"><button class="v50-modal-close" onclick="closeAuth()">×</button><div class="brand"><img src="logo.jpg" alt="IAS Selection Point Logo" class="logo"><h1>IAS Selection Point</h1><p>Secure Member Portal</p></div><div class="tabs"><button class="tab active" data-auth-tab="login" onclick="openAuth('login')">Login</button><button class="tab" data-auth-tab="signup" onclick="openAuth('signup')">Signup</button></div>
 <form id="loginForm" class="form active" onsubmit="loginUser(event)"><h2>Member Login</h2><input id="loginEmail" type="email" placeholder="Email address" required><input id="loginPassword" type="password" placeholder="Password" required><button type="submit">Login</button><a href="#" onclick="openAuth('forgot');return false">Forgot password?</a></form>
 <form id="signupForm" class="form" onsubmit="signupUser(event)"><h2>Create Account</h2><input id="signupName" type="text" placeholder="Full name" required><input id="signupEmail" type="email" placeholder="Email address" required><input id="signupMobile" type="tel" placeholder="Mobile number" required><div class="v34-registration-grid"><select id="signupQualification" required><option value="">Select qualification</option><option>10th</option><option>12th</option><option>Diploma</option><option>Graduate</option><option>Post Graduate</option><option>B.Ed.</option><option>M.Ed.</option><option>Ph.D.</option><option>Other</option></select><select id="signupTargetExam" required><option value="">Preparing for</option><option>UPSC</option><option>HPSC</option><option>HSSC</option><option>Haryana CET (Group C)</option><option>Haryana CET (Group D)</option><option>Haryana Police</option><option>UGC NET (Political Science)</option><option>SSC</option><option>Banking</option><option>Railway</option><option>Other</option></select><select id="signupState" required><option value="">Select state / union territory</option></select><select id="signupDistrict" required disabled><option value="">Select district</option></select><input id="signupSubject" placeholder="Preferred / optional subject"></div><input id="signupPassword" type="password" placeholder="Password" required><input id="signupConfirmPassword" type="password" placeholder="Repeat password" required><div id="signupPasswordMatch" class="v318-password-match"></div><button type="submit">Signup</button></form>
 <form id="forgotForm" class="form" onsubmit="sendResetOtp(event)"><h2>Forgot Password</h2><input id="forgotEmail" type="email" placeholder="Registered email" required><button type="submit">Send OTP</button><a href="#" onclick="openAuth('login');return false">Back to login</a></form>
 <form id="resetForm" class="form" onsubmit="resetPassword(event)"><h2>Reset Password</h2><input id="resetEmail" type="email" placeholder="Registered email" required><input id="resetOtp" type="text" placeholder="6 digit OTP" required><input id="resetPassword" type="password" placeholder="New password" required><button type="submit">Reset Password</button></form><p id="msg" class="msg"></p></section></div>
-<script src="config.js?v=20260719-5010"></script><script src="app.js?v=20260719-5010"></script>
+<script src="config.js?v=20260719-5100"></script><script src="app.js?v=20260719-5100"></script>
 <script>
 function openAuth(type){const m=document.getElementById('authModal');m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');showForm(type);document.querySelectorAll('[data-auth-tab]').forEach(x=>x.classList.toggle('active',x.dataset.authTab===type));}
 function closeAuth(){document.getElementById('authModal').classList.remove('open');document.body.classList.remove('modal-open');}
@@ -73,62 +107,58 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
 
 <script>
 (function(){
-  const FEEDS = [
-    {callback:'renderIASPublicFeed', host:'https://iasselectionpoi.blogspot.com', target:'iasPublicFeed', status:'iasFeedStatus', limit:12},
-    {callback:'renderMotivationFeed', host:'https://satnamkait.in', target:'motivationFeed', status:'motivationFeedStatus', limit:12}
-  ];
+  const SOURCES={
+    education:{name:'IAS Selection Point',icon:'📘',host:'https://iasselectionpoint.blogspot.com',accent:'Education'},
+    motivation:{name:'Satnam Kait',icon:'🌿',host:'https://satnamkait.in',accent:'Motivation'}
+  };
+  const LIBRARY=[];
+  let currentIndex=-1, readerFont=18, readerTheme=0, speech=null;
+  const themes=['classic','sunrise','mint','night'];
 
-  function textOnly(html){
-    const box=document.createElement('div'); box.innerHTML=html||'';
-    return (box.textContent||box.innerText||'').replace(/\s+/g,' ').trim();
-  }
-  function imageFrom(entry){
-    if(entry.media$thumbnail && entry.media$thumbnail.url){
-      return entry.media$thumbnail.url.replace(/\/s72-c\//,'/s640/').replace(/=s72-c$/,'=s640');
-    }
-    const html=(entry.content&&entry.content.$t)||(entry.summary&&entry.summary.$t)||'';
-    const m=html.match(/<img[^>]+src=["']([^"']+)["']/i);
-    return m?m[1]: 'logo.jpg';
-  }
-  function postLink(entry){
-    const links=entry.link||[];
-    const alt=links.find(x=>x.rel==='alternate');
-    return alt?alt.href:'#';
-  }
-  function dateText(entry){
-    const raw=(entry.published&&entry.published.$t)||(entry.updated&&entry.updated.$t);
-    if(!raw) return '';
-    try{return new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(raw));}catch(e){return ''}
-  }
-  function renderFeed(data,targetId,statusId,emptyMessage){
-    const target=document.getElementById(targetId), status=document.getElementById(statusId);
-    if(!target) return;
-    const entries=(data&&data.feed&&data.feed.entry)||[];
-    if(!entries.length){ if(status) status.textContent=emptyMessage; return; }
-    target.innerHTML=entries.map(entry=>{
-      const title=textOnly(entry.title&&entry.title.$t)||'Untitled post';
-      const body=textOnly((entry.summary&&entry.summary.$t)||(entry.content&&entry.content.$t));
-      const excerpt=body.length>145?body.slice(0,145)+'…':body;
-      return `<article class="v501-post-card"><a class="v501-post-image" href="${postLink(entry)}" target="_blank" rel="noopener"><img src="${imageFrom(entry)}" alt="" loading="lazy" onerror="this.src='logo.jpg'"></a><div class="v501-post-body"><small>${dateText(entry)}</small><h3><a href="${postLink(entry)}" target="_blank" rel="noopener">${title}</a></h3><p>${excerpt}</p><a class="v501-read-more" href="${postLink(entry)}" target="_blank" rel="noopener">Read full post →</a></div></article>`;
-    }).join('');
-    if(status) status.hidden=true;
-  }
-  window.renderIASPublicFeed=data=>renderFeed(data,'iasPublicFeed','iasFeedStatus','No public education posts are available right now.');
-  window.renderMotivationFeed=data=>renderFeed(data,'motivationFeed','motivationFeedStatus','No motivation posts are available right now.');
+  function textOnly(html){const box=document.createElement('div');box.innerHTML=html||'';return(box.textContent||box.innerText||'').replace(/\s+/g,' ').trim()}
+  function safeHtml(html){const doc=new DOMParser().parseFromString(html||'','text/html');doc.querySelectorAll('script,iframe,object,embed,form,link,meta').forEach(n=>n.remove());doc.querySelectorAll('*').forEach(el=>[...el.attributes].forEach(a=>{if(/^on/i.test(a.name)||/^javascript:/i.test(a.value))el.removeAttribute(a.name)}));doc.querySelectorAll('a').forEach(a=>{a.target='_blank';a.rel='noopener noreferrer'});return doc.body.innerHTML}
+  function imageFrom(entry){if(entry.media$thumbnail&&entry.media$thumbnail.url)return entry.media$thumbnail.url.replace(/\/s72-c\//,'/s1200/').replace(/=s72-c$/,'=s1200');const html=(entry.content&&entry.content.$t)||(entry.summary&&entry.summary.$t)||'';const m=html.match(/<img[^>]+src=["']([^"']+)["']/i);return m?m[1]:'logo.jpg'}
+  function postLink(entry){const alt=(entry.link||[]).find(x=>x.rel==='alternate');return alt?alt.href:'#'}
+  function dateText(entry){const raw=(entry.published&&entry.published.$t)||(entry.updated&&entry.updated.$t);try{return raw?new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'long',year:'numeric'}).format(new Date(raw)):''}catch(e){return''}}
+  function normalize(entry,source,type='post'){const title=textOnly(entry.title&&entry.title.$t)||'Untitled';const content=(entry.content&&entry.content.$t)||(entry.summary&&entry.summary.$t)||'';return{key:source+'-'+type+'-'+(entry.id&&entry.id.$t||title),source,type,title,content:safeHtml(content),plain:textOnly(content),image:imageFrom(entry),date:dateText(entry),url:postLink(entry),labels:(entry.category||[]).map(x=>x.term).filter(Boolean)}}
+  function card(item,index){const excerpt=item.plain.length>155?item.plain.slice(0,155)+'…':item.plain;return `<article class="v501-post-card v51-source-${item.source}"><button class="v501-post-image" type="button" onclick="openBookReader(${index})"><img src="${item.image}" alt="" loading="lazy" onerror="this.src='logo.jpg'"></button><div class="v501-post-body"><small>${SOURCES[item.source].icon} ${item.type==='page'?'Public Page':item.date}</small><h3><button type="button" onclick="openBookReader(${index})">${escapeHtml(item.title)}</button></h3><p>${escapeHtml(excerpt)}</p><button class="v501-read-more" type="button" onclick="openBookReader(${index})">Read in book view →</button></div></article>`}
+  function escapeHtml(v){return String(v||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function upsert(items){items.forEach(item=>{if(!LIBRARY.some(x=>x.key===item.key))LIBRARY.push(item)})}
+  function renderCollection(items,targetId,statusId,empty){const target=document.getElementById(targetId),status=document.getElementById(statusId);if(!target)return;if(!items.length){if(status)status.textContent=empty;return}target.innerHTML=items.map(item=>card(item,LIBRARY.indexOf(item))).join('');if(status)status.hidden=true}
+  function processFeed(data,source,type,target,status){const entries=(data&&data.feed&&data.feed.entry)||[];const items=entries.map(x=>normalize(x,source,type));upsert(items);const canonical=items.map(x=>LIBRARY.find(y=>y.key===x.key));renderCollection(canonical,target,status,'No content is available right now.');refreshTicker();updateSearchMeta()}
 
-  function loadJSONP(item){
-    const script=document.createElement('script');
-    script.src=`${item.host}/feeds/posts/default?alt=json-in-script&max-results=${item.limit}&callback=${item.callback}`;
-    script.async=true;
-    script.onerror=function(){
-      const status=document.getElementById(item.status);
-      if(status) status.innerHTML=`Posts could not be loaded. <a href="${item.host}" target="_blank" rel="noopener">Open website</a>`;
-      script.remove();
-    };
-    document.body.appendChild(script);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>FEEDS.forEach(loadJSONP));
-  else FEEDS.forEach(loadJSONP);
+  window.v51EducationPosts=data=>processFeed(data,'education','post','iasPublicFeed','iasFeedStatus');
+  window.v51MotivationPosts=data=>processFeed(data,'motivation','post','motivationFeed','motivationFeedStatus');
+  window.v51EducationPages=data=>processFeed(data,'education','page','publicPagesFeed','pagesFeedStatus');
+  window.v51MotivationPages=data=>processFeed(data,'motivation','page','publicPagesFeed','pagesFeedStatus');
+
+  function loadJSONP(host,path,callback){const script=document.createElement('script');script.src=`${host}${path}?alt=json-in-script&max-results=30&callback=${callback}`;script.async=true;script.onerror=()=>{console.warn('Feed unavailable:',script.src);script.remove()};document.body.appendChild(script)}
+  function initFeeds(){loadJSONP(SOURCES.education.host,'/feeds/posts/default','v51EducationPosts');loadJSONP(SOURCES.motivation.host,'/feeds/posts/default','v51MotivationPosts');loadJSONP(SOURCES.education.host,'/feeds/pages/default','v51EducationPages');loadJSONP(SOURCES.motivation.host,'/feeds/pages/default','v51MotivationPages')}
+
+  function refreshTicker(){const track=document.getElementById('v51TickerTrack');if(!track)return;const latest=LIBRARY.filter(x=>x.type==='post').slice(0,16);if(!latest.length)return;const html=latest.map(x=>`<button type="button" onclick="openBookReader(${LIBRARY.indexOf(x)})"><b>${SOURCES[x.source].icon}</b> ${escapeHtml(x.title)}</button>`).join('<span class="v51-ticker-dot">◆</span>');track.innerHTML=html+html}
+  const pause=document.getElementById('v51TickerPause');if(pause)pause.addEventListener('click',()=>{const track=document.getElementById('v51TickerTrack');const paused=track.classList.toggle('paused');pause.textContent=paused?'▶':'⏸';pause.title=paused?'Play ticker':'Pause ticker'});
+
+  window.openBookReader=function(index){const item=LIBRARY[index];if(!item)return;currentIndex=index;document.getElementById('v51ReaderSource').textContent=`${SOURCES[item.source].icon} ${SOURCES[item.source].name} • ${item.type==='page'?'Public Page':'Article'}`;document.getElementById('v51ReaderTitle').textContent=item.title;document.getElementById('v51ReaderMeta').textContent=[item.date,item.labels.slice(0,3).join(' • '),Math.max(1,Math.ceil(item.plain.split(/\s+/).length/220))+' min read'].filter(Boolean).join('  ·  ');document.getElementById('v51ReaderCover').innerHTML=item.image&&item.image!=='logo.jpg'?`<img src="${item.image}" alt="" onerror="this.parentNode.hidden=true">`:'';const body=document.getElementById('v51ReaderContent');body.innerHTML=item.content||`<p>${escapeHtml(item.plain)}</p>`;body.style.fontSize=readerFont+'px';const modal=document.getElementById('v51ReaderModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('v51-reader-open');document.getElementById('v51BookStage').scrollTop=0;saveHistory(item);applyReaderTheme();updateProgress()}
+  window.closeBookReader=function(){document.getElementById('v51ReaderModal').classList.remove('open');document.body.classList.remove('v51-reader-open');if(speechSynthesis)speechSynthesis.cancel()}
+  window.changeReaderFont=function(delta){readerFont=Math.max(14,Math.min(26,readerFont+delta));document.getElementById('v51ReaderContent').style.fontSize=readerFont+'px';localStorage.setItem('v51ReaderFont',readerFont)}
+  window.toggleReaderTheme=function(){readerTheme=(readerTheme+1)%themes.length;localStorage.setItem('v51ReaderTheme',readerTheme);applyReaderTheme()}
+  function applyReaderTheme(){const shell=document.querySelector('.v51-reader-shell');if(!shell)return;shell.dataset.theme=themes[readerTheme]}
+  window.toggleReaderFocus=function(){document.querySelector('.v51-reader-shell').classList.toggle('focus')}
+  window.openAdjacentArticle=function(step){if(!LIBRARY.length)return;let i=currentIndex;do{i=(i+step+LIBRARY.length)%LIBRARY.length}while(LIBRARY[i].type!=='post'&&i!==currentIndex);openBookReader(i)}
+  window.bookmarkCurrentArticle=function(){const item=LIBRARY[currentIndex];if(!item)return;const saved=JSON.parse(localStorage.getItem('v51Bookmarks')||'[]');if(!saved.some(x=>x.key===item.key))saved.unshift({key:item.key,title:item.title,source:item.source,url:item.url,date:Date.now()});localStorage.setItem('v51Bookmarks',JSON.stringify(saved.slice(0,100)));alert('Article saved for later. 🔖')}
+  window.speakCurrentArticle=function(){const item=LIBRARY[currentIndex];if(!item||!('speechSynthesis'in window))return;speechSynthesis.cancel();speech=new SpeechSynthesisUtterance(item.title+'. '+item.plain);speech.lang=/[\u0900-\u097F]/.test(item.plain)?'hi-IN':'en-IN';speech.rate=.92;speechSynthesis.speak(speech)}
+  function saveHistory(item){const h=JSON.parse(localStorage.getItem('v51ReadingHistory')||'[]').filter(x=>x.key!==item.key);h.unshift({key:item.key,title:item.title,source:item.source,readAt:Date.now()});localStorage.setItem('v51ReadingHistory',JSON.stringify(h.slice(0,50)))}
+  function updateProgress(){const stage=document.getElementById('v51BookStage'),bar=document.getElementById('v51ReadingProgress');if(!stage||!bar)return;const max=stage.scrollHeight-stage.clientHeight;bar.style.width=(max?stage.scrollTop/max*100:100)+'%';document.getElementById('v51ReaderPageNo').textContent='Page '+Math.max(1,Math.ceil(stage.scrollTop/900+1))}
+  document.getElementById('v51BookStage').addEventListener('scroll',updateProgress,{passive:true});
+
+  window.runPortalSearch=function(){const q=(document.getElementById('v51GlobalSearch').value||'').trim().toLowerCase();const source=document.getElementById('v51SearchSource').value;const results=LIBRARY.filter(x=>(source==='all'||(source==='pages'?x.type==='page':x.source===source))&&(!q||(x.title+' '+x.plain+' '+x.labels.join(' ')).toLowerCase().includes(q)));renderCollection(results,'v51SearchResults','',q?`No result found for “${q}”.`:'Start typing to search.');document.getElementById('v51SearchMeta').textContent=`${results.length} result${results.length===1?'':'s'} found in the portal library.`}
+  window.focusPortalSearch=function(source){document.getElementById('v51SearchSource').value=source;document.getElementById('portal-search').scrollIntoView({behavior:'smooth'});setTimeout(()=>document.getElementById('v51GlobalSearch').focus(),500)}
+  function updateSearchMeta(){const el=document.getElementById('v51SearchMeta');if(el)el.textContent=`${LIBRARY.length} public posts and pages are ready to search.`}
+  document.getElementById('v51GlobalSearch').addEventListener('input',()=>{clearTimeout(window.__v51st);window.__v51st=setTimeout(runPortalSearch,250)});
+  document.getElementById('v51SearchSource').addEventListener('change',runPortalSearch);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('v51ReaderModal').classList.contains('open'))closeBookReader()});
+  readerFont=Number(localStorage.getItem('v51ReaderFont')||18);readerTheme=Number(localStorage.getItem('v51ReaderTheme')||0)%themes.length;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initFeeds);else initFeeds();
 })();
 </script>
 
