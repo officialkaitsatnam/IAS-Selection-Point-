@@ -1,6 +1,13 @@
 {
-  "version": "51.0.0",
-  "build": "20260719-5100",
-  "name": "IAS Selection Point v51 Digital Book Reader",
-  "release": "Dual Blogger posts/pages, live ticker, internal book reader, unified search, bookmarks, history, audio and print"
+  "version": "52.0.0",
+  "name": "Digital Library Notes Board",
+  "build": "20260719-5200",
+  "base": "v50.1 Core Public Feed Portal",
+  "features": [
+    "Scrolling book reader",
+    "Notes Board auto-scroll",
+    "Education and Motivation full in-portal reader",
+    "Dynamic Blogger pages navigation",
+    "Student Help Desk"
+  ]
 }
