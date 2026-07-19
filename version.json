@@ -1,14 +1,15 @@
 {
-  "version": "43.0.0",
-  "title": "v43 Smart Learning & Revision",
-  "build": "20260717-4300",
-  "base": "v42.0.0",
+  "version": "50.0.0",
+  "title": "v50 Professional Education Portal",
+  "build": "20260719-5000",
+  "base": "v43.0.0",
   "modules": [
-    "Smart Study Assistant (local guided rules)",
-    "Daily Revision Planner",
-    "Weak Topic Tracker",
-    "Study Session Logger",
-    "Weekly Progress Analytics",
-    "Study Streak, XP and Readiness"
+    "GMN-inspired public education homepage",
+    "Public website without login",
+    "Secure member login and registration modal",
+    "Knowledge Center protected after login",
+    "UPSC, UGC NET and exam categories inside member portal",
+    "Responsive institutional header, notice board and footer",
+    "Existing v43 dashboard, admin and backend preserved"
   ]
 }

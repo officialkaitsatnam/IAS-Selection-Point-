@@ -1,91 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="app-version" content="43.0.0">
-<meta name="app-build" content="20260717-4300">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IAS Selection Point | Member Login</title>
-  <link rel="stylesheet" href="style.css?v=20260715-4111" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#0B2A55">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="logo.jpg">
+<meta name="app-version" content="50.0.0">
+<meta name="app-build" content="20260719-5000">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IAS Selection Point | Professional Education Portal</title>
+<meta name="description" content="IAS Selection Point: competitive exam updates, current affairs, public resources and a secure member knowledge center.">
+<link rel="stylesheet" href="style.css?v=20260719-5000">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#082d5c">
+<link rel="apple-touch-icon" href="logo.jpg">
 </head>
-<body>
-  <div class="version-badge">v43 Smart Learning & Revision</div>
-  <div id="loaderOverlay" class="loader-overlay"><div class="loader-box"><div class="spinner"></div><h3 id="loaderTitle">Please wait...</h3><p id="loaderText">Processing your request</p></div></div>
-  <main class="auth-page">
-    <section class="auth-card">
-      <div class="brand">
-        <img src="logo.jpg" alt="IAS Selection Point Logo" class="logo" />
-        <h1>IAS Selection Point</h1>
-        <p>Professional Study Member Portal</p>
-      </div>
+<body class="v50-public-home">
+<div class="version-badge">v50 Professional Education Portal</div>
+<div id="loaderOverlay" class="loader-overlay"><div class="loader-box"><div class="spinner"></div><h3 id="loaderTitle">Please wait...</h3><p id="loaderText">Processing your request</p></div></div>
 
-      <div class="tabs">
-        <button class="tab active" onclick="showForm('login')">Login</button>
-        <button class="tab" onclick="showForm('signup')">Signup</button>
-      </div>
+<div class="v50-top-strip">
+  <div class="v50-container"><span>📞 Student Helpdesk</span><span>✉️ IAS Selection Point</span><span class="v50-strip-spacer"></span><a href="#updates">Latest Updates</a><a href="#contact">Contact</a></div>
+</div>
+<header class="v50-site-header">
+  <div class="v50-container v50-brand-row">
+    <a class="v50-main-brand" href="#home"><img src="logo.jpg" alt="IAS Selection Point"><span><strong>IAS Selection Point</strong><small>Professional Education & Competitive Exam Portal</small></span></a>
+    <div class="v50-header-actions"><button class="v50-outline-btn" onclick="openAuth('signup')">Register Free</button><button class="v50-primary-btn" onclick="openAuth('login')">Member Login</button></div>
+    <button class="v50-menu-toggle" aria-label="Open menu" onclick="document.querySelector('.v50-nav').classList.toggle('open')">☰</button>
+  </div>
+  <nav class="v50-nav"><div class="v50-container">
+    <a href="#home">Home</a><a href="#about">About</a><a href="#updates">Latest Updates</a><a href="#exams">Exams</a><a href="#resources">Free Resources</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a><button onclick="openAuth('login')">Knowledge Center 🔒</button>
+  </div></nav>
+</header>
 
-      <form id="loginForm" class="form active" onsubmit="loginUser(event)">
-        <h2>Member Login</h2>
-        <input id="loginEmail" type="email" placeholder="Email address" required />
-        <input id="loginPassword" type="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-        <a href="#" onclick="showForm('forgot')">Forgot password?</a>
-      </form>
+<main id="home">
+<section class="v50-hero">
+  <div class="v50-container v50-hero-grid">
+    <div class="v50-hero-copy"><span class="v50-eyebrow">LEARN • PRACTICE • SUCCEED</span><h1>Your complete destination for competitive exam preparation.</h1><p>Get public updates and free resources without login. Members can access the complete Knowledge Center, UPSC, UGC NET, Haryana exams, notes, PYQs, mock tests and smart learning tools.</p><div class="v50-hero-actions"><button class="v50-primary-btn" onclick="openAuth('signup')">Create Free Account</button><a class="v50-outline-btn" href="#updates">Explore Public Updates</a></div><div class="v50-trust-row"><span>✓ Public website</span><span>✓ Secure member portal</span><span>✓ Mobile friendly</span></div></div>
+    <div class="v50-hero-panel"><div class="v50-panel-title"><span>📢</span><div><small>NOTICE BOARD</small><b>Important Student Updates</b></div></div><div class="v50-notice-list"><a href="#updates"><span>NEW</span> Latest exam notifications and dates</a><a href="#resources"><span>FREE</span> Current affairs and public study material</a><a onclick="openAuth('login')"><span>MEMBER</span> Knowledge Center access</a><a onclick="openAuth('login')"><span>TEST</span> Mock tests and performance reports</a></div><button onclick="openAuth('login')">Open Student Portal →</button></div>
+  </div>
+</section>
+<div class="v50-ticker"><div class="v50-container"><b>⚡ Latest:</b><div><span>IAS Selection Point v50 public website is now ready • Member Knowledge Center is available after login • New exam categories can be managed from admin panel</span></div></div></div>
 
-      <form id="signupForm" class="form" onsubmit="signupUser(event)">
-        <h2>Create Account</h2>
-        <input id="signupName" type="text" placeholder="Full name" required />
-        <input id="signupEmail" type="email" placeholder="Email address" required />
-        <input id="signupMobile" type="tel" placeholder="Mobile number" required />
-        <div class="v34-registration-grid">
-          <select id="signupQualification" required>
-            <option value="">Select qualification</option>
-            <option>10th</option><option>12th</option><option>Diploma</option>
-            <option>Graduate</option><option>Post Graduate</option>
-            <option>B.Ed.</option><option>M.Ed.</option><option>Ph.D.</option><option>Other</option>
-          </select>
-          <select id="signupTargetExam" required>
-            <option value="">Preparing for</option>
-            <option>UPSC</option><option>HPSC</option><option>HSSC</option>
-            <option>Haryana CET (Group C)</option><option>Haryana CET (Group D)</option>
-            <option>Haryana Police</option><option>UGC NET (Political Science)</option>
-            <option>SSC</option><option>Banking</option><option>Railway</option><option>Other</option>
-          </select>
-          <select id="signupState" required><option value="">Select state / union territory</option></select>
-          <select id="signupDistrict" required disabled><option value="">Select district</option></select>
-          <input id="signupSubject" placeholder="Preferred / optional subject" />
-        </div>
-        <input id="signupPassword" type="password" placeholder="Password" required />
-        <input id="signupConfirmPassword" type="password" placeholder="Repeat password" required />
-        <div id="signupPasswordMatch" class="v318-password-match"></div>
-        <button type="submit">Signup</button>
-      </form>
+<section class="v50-section" id="updates"><div class="v50-container"><div class="v50-section-head"><div><small>PUBLIC INFORMATION</small><h2>Latest Updates</h2></div><a href="#">View all updates →</a></div><div class="v50-card-grid v50-three"><article class="v50-info-card"><span class="v50-card-icon">📅</span><small>IMPORTANT DATES</small><h3>Exam Calendar & Deadlines</h3><p>Keep track of application deadlines, examination dates and important schedules.</p><a href="#">Read Updates →</a></article><article class="v50-info-card"><span class="v50-card-icon">💼</span><small>RECRUITMENT</small><h3>Latest Government Jobs</h3><p>Public recruitment notices, eligibility highlights and application guidance.</p><a href="#">Explore Jobs →</a></article><article class="v50-info-card"><span class="v50-card-icon">📰</span><small>CURRENT AFFAIRS</small><h3>Daily Current Affairs</h3><p>Selected current affairs and important national and international developments.</p><a href="#">Start Reading →</a></article></div></div></section>
 
-      <form id="forgotForm" class="form" onsubmit="sendResetOtp(event)">
-        <h2>Forgot Password</h2>
-        <input id="forgotEmail" type="email" placeholder="Registered email" required />
-        <button type="submit">Send OTP</button>
-        <a href="#" onclick="showForm('login')">Back to login</a>
-      </form>
+<section class="v50-section v50-soft" id="exams"><div class="v50-container"><div class="v50-section-head center"><div><small>EXAM PREPARATION</small><h2>Popular Exam Categories</h2><p>Category overview is public. Complete notes, PYQs, tests and downloads open after login.</p></div></div><div class="v50-exam-grid">
+  <button onclick="openAuth('login')"><span>🏛️</span><b>UPSC</b><small>Prelims • Mains • Interview</small></button><button onclick="openAuth('login')"><span>🎓</span><b>UGC NET</b><small>Political Science & More</small></button><button onclick="openAuth('login')"><span>🟢</span><b>HSSC</b><small>Haryana Recruitment</small></button><button onclick="openAuth('login')"><span>🎯</span><b>CET Group C</b><small>Notes • PYQ • Tests</small></button><button onclick="openAuth('login')"><span>📘</span><b>CET Group D</b><small>Complete Preparation</small></button><button onclick="openAuth('login')"><span>⚖️</span><b>HPSC</b><small>State Civil Services</small></button><button onclick="openAuth('login')"><span>👮</span><b>Police</b><small>Haryana Police Exams</small></button><button onclick="openAuth('login')"><span>🏫</span><b>Teaching</b><small>HTET • PGT • TGT</small></button>
+</div></div></section>
 
-      <form id="resetForm" class="form" onsubmit="resetPassword(event)">
-        <h2>Reset Password</h2>
-        <input id="resetEmail" type="email" placeholder="Registered email" required />
-        <input id="resetOtp" type="text" placeholder="6 digit OTP" required />
-        <input id="resetPassword" type="password" placeholder="New password" required />
-        <button type="submit">Reset Password</button>
-      </form>
+<section class="v50-section" id="resources"><div class="v50-container v50-split"><div><small class="v50-kicker">FREE FOR EVERYONE</small><h2>Useful resources without login</h2><p>Visitors can explore selected public content while protected learning modules remain inside the member portal.</p><div class="v50-check-list"><span>✓ Latest notifications and public notices</span><span>✓ Selected current affairs and blog articles</span><span>✓ Exam overview and syllabus guidance</span><span>✓ About, gallery, contact and FAQs</span></div><a class="v50-primary-btn" href="#updates">Browse Free Content</a></div><div class="v50-member-box"><span>🔐</span><h3>Member Knowledge Center</h3><p>Login to unlock UPSC, UGC NET and all exam subcategories, notes, PDFs, PYQs, mock tests, bookmarks, progress and certificates.</p><div class="v50-mini-grid"><b>📚 Notes</b><b>📄 PYQ</b><b>📝 Tests</b><b>📊 Progress</b></div><button onclick="openAuth('login')">Login to Continue →</button></div></div></section>
 
-      <p id="msg" class="msg"></p>
-    </section>
-  </main>
-  <script src="config.js?v=20260717-4300"></script>
-  <script src="app.js?v=20260717-4300"></script>
-</body>
-</html>
+<section class="v50-section v50-dark" id="about"><div class="v50-container v50-about-grid"><div><small>ABOUT THE PORTAL</small><h2>Education, guidance and technology in one place.</h2><p>IAS Selection Point is designed as a modern public education website and secure student learning portal. The public side builds trust and shares useful information; the member side provides structured preparation tools.</p></div><div class="v50-stat-grid"><div><b>15+</b><span>Exam Categories</span></div><div><b>24×7</b><span>Learning Access</span></div><div><b>100%</b><span>Responsive</span></div><div><b>1</b><span>Unified Portal</span></div></div></div></section>
+
+<section class="v50-section" id="gallery"><div class="v50-container"><div class="v50-section-head center"><div><small>PORTAL HIGHLIGHTS</small><h2>Built for modern learners</h2></div></div><div class="v50-card-grid v50-three"><article class="v50-feature-card"><span>📱</span><h3>Mobile First</h3><p>Fast and easy to use on phones, tablets and desktop systems.</p></article><article class="v50-feature-card"><span>🧠</span><h3>Smart Learning</h3><p>Revision planning, weak-topic tracking, streaks and performance analytics.</p></article><article class="v50-feature-card"><span>🛡️</span><h3>Controlled Access</h3><p>Public, member, premium and admin access levels for every content type.</p></article></div></div></section>
+</main>
+
+<footer class="v50-footer" id="contact"><div class="v50-container v50-footer-grid"><div><div class="v50-footer-brand"><img src="logo.jpg" alt=""><b>IAS Selection Point</b></div><p>A professional education portal for competitive examination preparation.</p></div><div><h4>Public Links</h4><a href="#home">Home</a><a href="#updates">Latest Updates</a><a href="#resources">Free Resources</a><a href="#about">About</a></div><div><h4>Member Portal</h4><a onclick="openAuth('login')">Knowledge Center</a><a onclick="openAuth('login')">Mock Tests</a><a onclick="openAuth('login')">My Progress</a><a onclick="openAuth('login')">Downloads</a></div><div><h4>Student Access</h4><button onclick="openAuth('signup')">Register Free</button><button onclick="openAuth('login')">Member Login</button></div></div><div class="v50-copyright">© 2026 IAS Selection Point. All rights reserved.</div></footer>
+
+<div class="v50-auth-modal" id="authModal" aria-hidden="true"><div class="v50-auth-backdrop" onclick="closeAuth()"></div><section class="auth-card v50-auth-card"><button class="v50-modal-close" onclick="closeAuth()">×</button><div class="brand"><img src="logo.jpg" alt="IAS Selection Point Logo" class="logo"><h1>IAS Selection Point</h1><p>Secure Member Portal</p></div><div class="tabs"><button class="tab active" data-auth-tab="login" onclick="openAuth('login')">Login</button><button class="tab" data-auth-tab="signup" onclick="openAuth('signup')">Signup</button></div>
+<form id="loginForm" class="form active" onsubmit="loginUser(event)"><h2>Member Login</h2><input id="loginEmail" type="email" placeholder="Email address" required><input id="loginPassword" type="password" placeholder="Password" required><button type="submit">Login</button><a href="#" onclick="openAuth('forgot');return false">Forgot password?</a></form>
+<form id="signupForm" class="form" onsubmit="signupUser(event)"><h2>Create Account</h2><input id="signupName" type="text" placeholder="Full name" required><input id="signupEmail" type="email" placeholder="Email address" required><input id="signupMobile" type="tel" placeholder="Mobile number" required><div class="v34-registration-grid"><select id="signupQualification" required><option value="">Select qualification</option><option>10th</option><option>12th</option><option>Diploma</option><option>Graduate</option><option>Post Graduate</option><option>B.Ed.</option><option>M.Ed.</option><option>Ph.D.</option><option>Other</option></select><select id="signupTargetExam" required><option value="">Preparing for</option><option>UPSC</option><option>HPSC</option><option>HSSC</option><option>Haryana CET (Group C)</option><option>Haryana CET (Group D)</option><option>Haryana Police</option><option>UGC NET (Political Science)</option><option>SSC</option><option>Banking</option><option>Railway</option><option>Other</option></select><select id="signupState" required><option value="">Select state / union territory</option></select><select id="signupDistrict" required disabled><option value="">Select district</option></select><input id="signupSubject" placeholder="Preferred / optional subject"></div><input id="signupPassword" type="password" placeholder="Password" required><input id="signupConfirmPassword" type="password" placeholder="Repeat password" required><div id="signupPasswordMatch" class="v318-password-match"></div><button type="submit">Signup</button></form>
+<form id="forgotForm" class="form" onsubmit="sendResetOtp(event)"><h2>Forgot Password</h2><input id="forgotEmail" type="email" placeholder="Registered email" required><button type="submit">Send OTP</button><a href="#" onclick="openAuth('login');return false">Back to login</a></form>
+<form id="resetForm" class="form" onsubmit="resetPassword(event)"><h2>Reset Password</h2><input id="resetEmail" type="email" placeholder="Registered email" required><input id="resetOtp" type="text" placeholder="6 digit OTP" required><input id="resetPassword" type="password" placeholder="New password" required><button type="submit">Reset Password</button></form><p id="msg" class="msg"></p></section></div>
+<script src="config.js?v=20260719-5000"></script><script src="app.js?v=20260719-5000"></script>
+<script>
+function openAuth(type){const m=document.getElementById('authModal');m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');showForm(type);document.querySelectorAll('[data-auth-tab]').forEach(x=>x.classList.toggle('active',x.dataset.authTab===type));}
+function closeAuth(){document.getElementById('authModal').classList.remove('open');document.body.classList.remove('modal-open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
+</script>
+</body></html>
