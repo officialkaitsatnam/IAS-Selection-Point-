@@ -13,11 +13,11 @@
 <link rel="apple-touch-icon" href="logo.jpg">
 </head>
 <body class="v50-public-home">
-<div class="version-badge">v52 Digital Library & Notes Board</div>
+<div class="version-badge">v50.1 Core Public Feed Portal</div>
 <div id="loaderOverlay" class="loader-overlay"><div class="loader-box"><div class="spinner"></div><h3 id="loaderTitle">Please wait...</h3><p id="loaderText">Processing your request</p></div></div>
 
 <div class="v50-top-strip">
-  <div class="v50-container"><span>📞 9883000089</span><span>✉️ iasselection1@gmail.com</span><span>✉️ kaitsatnam@gmail.com</span><span class="v50-strip-spacer"></span><a href="#updates">Latest Updates</a><a href="#contact">Contact</a></div>
+  <div class="v50-container"><span>📞 Student Helpdesk</span><span>✉️ IAS Selection Point</span><span class="v50-strip-spacer"></span><a href="#updates">Latest Updates</a><a href="#contact">Contact</a></div>
 </div>
 <header class="v50-site-header">
   <div class="v50-container v50-brand-row">
@@ -26,7 +26,7 @@
     <button class="v50-menu-toggle" aria-label="Open menu" onclick="document.querySelector('.v50-nav').classList.toggle('open')">☰</button>
   </div>
   <nav class="v50-nav"><div class="v50-container">
-    <a href="#home">Home</a><a href="#notes-board">Notes Board</a><a href="#education-posts">Educational Updates</a><a href="#motivation">Motivation Updates</a><a href="#updates">Latest Updates</a><div class="v52-pages-menu"><button type="button">Website Pages ▾</button><div id="v52PagesDropdown" class="v52-pages-dropdown"><span>Loading pages…</span></div></div><a href="#contact">Help Desk</a><button onclick="openAuth('login')">Knowledge Center 🔒</button>
+    <a href="#home">Home</a><a href="#about">About</a><a href="#education-posts">Education Posts</a><a href="#motivation">Motivation</a><a href="#updates">Latest Updates</a><a href="#exams">Exams</a><a href="#resources">Free Resources</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a><button onclick="openAuth('login')">Knowledge Center 🔒</button>
   </div></nav>
 </header>
 
@@ -37,16 +37,14 @@
     <div class="v50-hero-panel"><div class="v50-panel-title"><span>📢</span><div><small>NOTICE BOARD</small><b>Important Student Updates</b></div></div><div class="v50-notice-list"><a href="#updates"><span>NEW</span> Latest exam notifications and dates</a><a href="#resources"><span>FREE</span> Current affairs and public study material</a><a onclick="openAuth('login')"><span>MEMBER</span> Knowledge Center access</a><a onclick="openAuth('login')"><span>TEST</span> Mock tests and performance reports</a></div><button onclick="openAuth('login')">Open Student Portal →</button></div>
   </div>
 </section>
-<div class="v50-ticker"><div class="v50-container"><b>⚡ Live:</b><div class="v52-ticker-window"><div id="v52TickerTrack" class="v52-ticker-track"><span>Loading latest updates…</span></div></div></div></div></div>
+<div class="v50-ticker"><div class="v50-container"><b>⚡ Latest:</b><div><span>IAS Selection Point v50 public website is now ready • Member Knowledge Center is available after login • New exam categories can be managed from admin panel</span></div></div></div>
 
 <section class="v50-section" id="updates"><div class="v50-container"><div class="v50-section-head"><div><small>PUBLIC INFORMATION</small><h2>Latest Updates</h2></div><a href="#">View all updates →</a></div><div class="v50-card-grid v50-three"><article class="v50-info-card"><span class="v50-card-icon">📅</span><small>IMPORTANT DATES</small><h3>Exam Calendar & Deadlines</h3><p>Keep track of application deadlines, examination dates and important schedules.</p><a href="#">Read Updates →</a></article><article class="v50-info-card"><span class="v50-card-icon">💼</span><small>RECRUITMENT</small><h3>Latest Government Jobs</h3><p>Public recruitment notices, eligibility highlights and application guidance.</p><a href="#">Explore Jobs →</a></article><article class="v50-info-card"><span class="v50-card-icon">📰</span><small>CURRENT AFFAIRS</small><h3>Daily Current Affairs</h3><p>Selected current affairs and important national and international developments.</p><a href="#">Start Reading →</a></article></div></div></section>
 
 
-<section class="v50-section v52-notes-section" id="notes-board"><div class="v50-container"><div class="v50-section-head"><div><small>IAS SELECTION POINT</small><h2>📚 Notes Board</h2><p>Latest notes automatically move upward like a live popular-post board. Tap any note to read it inside the portal.</p></div></div><div class="v52-notes-frame"><div id="notesFeedStatus" class="v501-feed-status">Loading notes…</div><div id="v52NotesBoard" class="v52-notes-track"></div></div></div></section>
+<section class="v50-section v501-feed-section" id="education-posts"><div class="v50-container"><div class="v50-section-head"><div><small>IAS SELECTION POINT BLOG</small><h2>Latest Education Posts</h2><p>Public posts from IAS Selection Point are displayed automatically. Protected exam categories remain inside the member portal.</p></div><a href="https://iasselectionpoi.blogspot.com/" target="_blank" rel="noopener">Open main website →</a></div><div id="iasFeedStatus" class="v501-feed-status">Loading latest education posts…</div><div id="iasPublicFeed" class="v501-post-grid"></div></div></section>
 
-<section class="v50-section v501-feed-section" id="education-posts"><div class="v50-container"><div class="v50-section-head"><div><small>IAS SELECTION POINT BLOG</small><h2>Latest Educational Updates</h2><p>Public posts from IAS Selection Point are displayed automatically. Protected exam categories remain inside the member portal.</p></div><a href="#education-posts">View all inside portal →</a></div><div id="iasFeedStatus" class="v501-feed-status">Loading latest education posts…</div><div id="iasPublicFeed" class="v501-post-grid"></div></div></section>
-
-<section class="v50-section v50-soft v501-feed-section" id="motivation"><div class="v50-container"><div class="v50-section-head"><div><small>SATNAM KAIT</small><h2>🌿 Motivation Center</h2><p>Motivational articles, poems, life lessons and literature from satnamkait.in.</p></div><a href="#motivation">Read all inside portal →</a></div><div id="motivationFeedStatus" class="v501-feed-status">Loading motivation posts…</div><div id="motivationFeed" class="v501-post-grid"></div></div></section>
+<section class="v50-section v50-soft v501-feed-section" id="motivation"><div class="v50-container"><div class="v50-section-head"><div><small>SATNAM KAIT</small><h2>🌿 Motivation Center</h2><p>Motivational articles, poems, life lessons and literature from satnamkait.in.</p></div><a href="https://satnamkait.in/" target="_blank" rel="noopener">Visit satnamkait.in →</a></div><div id="motivationFeedStatus" class="v501-feed-status">Loading motivation posts…</div><div id="motivationFeed" class="v501-post-grid"></div></div></section>
 
 <section class="v50-section v50-soft" id="exams"><div class="v50-container"><div class="v50-section-head center"><div><small>EXAM PREPARATION</small><h2>Popular Exam Categories</h2><p>Category overview is public. Complete notes, PYQs, tests and downloads open after login.</p></div></div><div class="v50-exam-grid">
   <button onclick="openAuth('login')"><span>🏛️</span><b>UPSC</b><small>Prelims • Mains • Interview</small></button><button onclick="openAuth('login')"><span>🎓</span><b>UGC NET</b><small>Political Science & More</small></button><button onclick="openAuth('login')"><span>🟢</span><b>HSSC</b><small>Haryana Recruitment</small></button><button onclick="openAuth('login')"><span>🎯</span><b>CET Group C</b><small>Notes • PYQ • Tests</small></button><button onclick="openAuth('login')"><span>📘</span><b>CET Group D</b><small>Complete Preparation</small></button><button onclick="openAuth('login')"><span>⚖️</span><b>HPSC</b><small>State Civil Services</small></button><button onclick="openAuth('login')"><span>👮</span><b>Police</b><small>Haryana Police Exams</small></button><button onclick="openAuth('login')"><span>🏫</span><b>Teaching</b><small>HTET • PGT • TGT</small></button>
@@ -59,15 +57,14 @@
 <section class="v50-section" id="gallery"><div class="v50-container"><div class="v50-section-head center"><div><small>PORTAL HIGHLIGHTS</small><h2>Built for modern learners</h2></div></div><div class="v50-card-grid v50-three"><article class="v50-feature-card"><span>📱</span><h3>Mobile First</h3><p>Fast and easy to use on phones, tablets and desktop systems.</p></article><article class="v50-feature-card"><span>🧠</span><h3>Smart Learning</h3><p>Revision planning, weak-topic tracking, streaks and performance analytics.</p></article><article class="v50-feature-card"><span>🛡️</span><h3>Controlled Access</h3><p>Public, member, premium and admin access levels for every content type.</p></article></div></div></section>
 </main>
 
-<footer class="v50-footer" id="contact"><div class="v50-container v50-footer-grid"><div><div class="v50-footer-brand"><img src="logo.jpg" alt=""><b>IAS Selection Point</b></div><p>A professional education portal for competitive examination preparation.</p></div><div><h4>Public Links</h4><a href="#home">Home</a><a href="#education-posts">Education Posts</a><a href="#motivation">Motivation Center</a><a href="#updates">Latest Updates</a><a href="#resources">Free Resources</a><a href="#about">About</a></div><div><h4>Member Portal</h4><a onclick="openAuth('login')">Knowledge Center</a><a onclick="openAuth('login')">Mock Tests</a><a onclick="openAuth('login')">My Progress</a><a onclick="openAuth('login')">Downloads</a></div><div><h4>Student Help Desk</h4><a href="tel:9883000089">📞 9883000089</a><a href="mailto:iasselection1@gmail.com">✉️ iasselection1@gmail.com</a><a href="mailto:kaitsatnam@gmail.com">✉️ kaitsatnam@gmail.com</a><button onclick="openAuth('login')">Member Login</button></div></div><div class="v50-copyright">© 2026 IAS Selection Point. All rights reserved.</div></footer>
+<footer class="v50-footer" id="contact"><div class="v50-container v50-footer-grid"><div><div class="v50-footer-brand"><img src="logo.jpg" alt=""><b>IAS Selection Point</b></div><p>A professional education portal for competitive examination preparation.</p></div><div><h4>Public Links</h4><a href="#home">Home</a><a href="#education-posts">Education Posts</a><a href="#motivation">Motivation Center</a><a href="#updates">Latest Updates</a><a href="#resources">Free Resources</a><a href="#about">About</a></div><div><h4>Member Portal</h4><a onclick="openAuth('login')">Knowledge Center</a><a onclick="openAuth('login')">Mock Tests</a><a onclick="openAuth('login')">My Progress</a><a onclick="openAuth('login')">Downloads</a></div><div><h4>Student Access</h4><button onclick="openAuth('signup')">Register Free</button><button onclick="openAuth('login')">Member Login</button></div></div><div class="v50-copyright">© 2026 IAS Selection Point. All rights reserved.</div></footer>
 
-<div id="v52Reader" class="v52-reader" aria-hidden="true"><div class="v52-reader-shell"><header class="v52-reader-header"><button type="button" onclick="closeV52Reader()">← Back</button><div><small id="v52ReaderSource">Digital Library</small><h2 id="v52ReaderTitle">Article</h2></div><div class="v52-reader-tools"><button onclick="v52Font(-1)">A−</button><button onclick="v52Font(1)">A+</button><button onclick="v52ToggleTheme()">🌙</button><button onclick="window.print()">🖨️</button></div></header><div class="v52-reader-progress"><span id="v52ReaderProgress"></span></div><main id="v52ReaderScroll" class="v52-reader-scroll"><article id="v52ReaderPaper" class="v52-reader-paper"><div class="v52-book-label">IAS Selection Point Digital Library</div><h1 id="v52BookTitle"></h1><div id="v52ReaderMeta" class="v52-reader-meta"></div><div id="v52ReaderContent" class="v52-reader-content"></div><footer class="v52-book-footer">📖 Read • Learn • Grow</footer></article></main></div></div>
 <div class="v50-auth-modal" id="authModal" aria-hidden="true"><div class="v50-auth-backdrop" onclick="closeAuth()"></div><section class="auth-card v50-auth-card"><button class="v50-modal-close" onclick="closeAuth()">×</button><div class="brand"><img src="logo.jpg" alt="IAS Selection Point Logo" class="logo"><h1>IAS Selection Point</h1><p>Secure Member Portal</p></div><div class="tabs"><button class="tab active" data-auth-tab="login" onclick="openAuth('login')">Login</button><button class="tab" data-auth-tab="signup" onclick="openAuth('signup')">Signup</button></div>
 <form id="loginForm" class="form active" onsubmit="loginUser(event)"><h2>Member Login</h2><input id="loginEmail" type="email" placeholder="Email address" required><input id="loginPassword" type="password" placeholder="Password" required><button type="submit">Login</button><a href="#" onclick="openAuth('forgot');return false">Forgot password?</a></form>
 <form id="signupForm" class="form" onsubmit="signupUser(event)"><h2>Create Account</h2><input id="signupName" type="text" placeholder="Full name" required><input id="signupEmail" type="email" placeholder="Email address" required><input id="signupMobile" type="tel" placeholder="Mobile number" required><div class="v34-registration-grid"><select id="signupQualification" required><option value="">Select qualification</option><option>10th</option><option>12th</option><option>Diploma</option><option>Graduate</option><option>Post Graduate</option><option>B.Ed.</option><option>M.Ed.</option><option>Ph.D.</option><option>Other</option></select><select id="signupTargetExam" required><option value="">Preparing for</option><option>UPSC</option><option>HPSC</option><option>HSSC</option><option>Haryana CET (Group C)</option><option>Haryana CET (Group D)</option><option>Haryana Police</option><option>UGC NET (Political Science)</option><option>SSC</option><option>Banking</option><option>Railway</option><option>Other</option></select><select id="signupState" required><option value="">Select state / union territory</option></select><select id="signupDistrict" required disabled><option value="">Select district</option></select><input id="signupSubject" placeholder="Preferred / optional subject"></div><input id="signupPassword" type="password" placeholder="Password" required><input id="signupConfirmPassword" type="password" placeholder="Repeat password" required><div id="signupPasswordMatch" class="v318-password-match"></div><button type="submit">Signup</button></form>
 <form id="forgotForm" class="form" onsubmit="sendResetOtp(event)"><h2>Forgot Password</h2><input id="forgotEmail" type="email" placeholder="Registered email" required><button type="submit">Send OTP</button><a href="#" onclick="openAuth('login');return false">Back to login</a></form>
 <form id="resetForm" class="form" onsubmit="resetPassword(event)"><h2>Reset Password</h2><input id="resetEmail" type="email" placeholder="Registered email" required><input id="resetOtp" type="text" placeholder="6 digit OTP" required><input id="resetPassword" type="password" placeholder="New password" required><button type="submit">Reset Password</button></form><p id="msg" class="msg"></p></section></div>
-<script src="config.js?v=20260719-5200"></script><script src="app.js?v=20260719-5200"></script>
+<script src="config.js?v=20260719-5010"></script><script src="app.js?v=20260719-5010"></script>
 <script>
 function openAuth(type){const m=document.getElementById('authModal');m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');showForm(type);document.querySelectorAll('[data-auth-tab]').forEach(x=>x.classList.toggle('active',x.dataset.authTab===type));}
 function closeAuth(){document.getElementById('authModal').classList.remove('open');document.body.classList.remove('modal-open');}
@@ -76,43 +73,63 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
 
 <script>
 (function(){
-  const STORE={ias:[],motivation:[],notes:[],pages:[]};
-  const FEEDS=[
-    {callback:'v52IASFeed',host:'https://iasselectionpoint.blogspot.com',kind:'ias',limit:30},
-    {callback:'v52MotivationFeed',host:'https://satnamkait.in',kind:'motivation',limit:30},
-    {callback:'v52NotesFeed',host:'https://iasselectionpoint.blogspot.com/feeds/posts/default/-/Notes',kind:'notes',limit:20,raw:true},
-    {callback:'v52IASPages',host:'https://iasselectionpoint.blogspot.com/feeds/pages/default',kind:'pages',limit:30,raw:true},
-    {callback:'v52MotivationPages',host:'https://satnamkait.in/feeds/pages/default',kind:'pages2',limit:30,raw:true}
+  const FEEDS = [
+    {callback:'renderIASPublicFeed', host:'https://iasselectionpoi.blogspot.com', target:'iasPublicFeed', status:'iasFeedStatus', limit:12},
+    {callback:'renderMotivationFeed', host:'https://satnamkait.in', target:'motivationFeed', status:'motivationFeedStatus', limit:12}
   ];
-  const clean=h=>{const d=document.createElement('div');d.innerHTML=h||'';return (d.textContent||'').replace(/\s+/g,' ').trim()};
-  const html=e=>(e.content&&e.content.$t)||(e.summary&&e.summary.$t)||'';
-  const title=e=>clean(e.title&&e.title.$t)||'Untitled';
-  const link=e=>((e.link||[]).find(x=>x.rel==='alternate')||{}).href||'#';
-  const img=e=>{const h=html(e),m=h.match(/<img[^>]+src=["']([^"']+)/i);return (e.media$thumbnail&&e.media$thumbnail.url||m&&m[1]||'logo.jpg').replace('/s72-c/','/s640/').replace('=s72-c','=s640')};
-  const pack=p=>encodeURIComponent(JSON.stringify(p)).replace(/'/g,'%27');
-  const date=e=>{try{return new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(new Date((e.published&&e.published.$t)||(e.updated&&e.updated.$t)))}catch(_){return''}};
-  function normalize(e,source){return{title:title(e),content:html(e),excerpt:clean(html(e)).slice(0,170),image:img(e),date:date(e),url:link(e),source};}
-  function card(p){const data=pack(p);return `<article class="v501-post-card"><button class="v501-post-image" onclick="openV52ReaderData('${data}')"><img src="${p.image}" alt="" loading="lazy" onerror="this.src='logo.jpg'"></button><div class="v501-post-body"><small>${p.date}</small><h3><button onclick="openV52ReaderData('${data}')">${p.title}</button></h3><p>${p.excerpt}…</p><button class="v501-read-more" onclick="openV52ReaderData('${data}')">Read in Book View →</button></div></article>`}
-  function renderGrid(kind,target,status){const list=STORE[kind],el=document.getElementById(target);if(!el)return;el.innerHTML=list.map(card).join('');const st=document.getElementById(status);if(st)st.hidden=!!list.length;buildTicker();}
-  function renderNotes(){let list=STORE.notes.length?STORE.notes:STORE.ias.slice(0,12);const el=document.getElementById('v52NotesBoard');if(!el)return;const rows=list.map(p=>`<button onclick="openV52ReaderData('${pack(p)}')"><span>NEW</span><div><b>${p.title}</b><small>${p.date}</small></div><em>Read →</em></button>`).join('');el.innerHTML=rows+rows;document.getElementById('notesFeedStatus').hidden=!!list.length;}
-  function buildTicker(){const list=[...STORE.ias.slice(0,8),...STORE.motivation.slice(0,6)];const t=document.getElementById('v52TickerTrack');if(!t||!list.length)return;const items=list.map(p=>`<button onclick="openV52ReaderData('${pack(p)}')">${p.source==='Motivation'?'🌿':'🎓'} ${p.title}</button>`).join('<span>•</span>');t.innerHTML=items+items;}
-  function renderPages(){const box=document.getElementById('v52PagesDropdown');if(!box)return;const all=[...STORE.pages,...STORE.pages2];box.innerHTML=all.length?all.map(p=>`<button onclick="openV52ReaderData('${pack(p)}')">${p.source==='Motivation Page'?'🌿':'🎓'} ${p.title}</button>`).join(''):'<span>No pages found</span>';}
-  window.v52IASFeed=d=>{STORE.ias=((d.feed&&d.feed.entry)||[]).map(e=>normalize(e,'Education'));renderGrid('ias','iasPublicFeed','iasFeedStatus');renderNotes();};
-  window.v52MotivationFeed=d=>{STORE.motivation=((d.feed&&d.feed.entry)||[]).map(e=>normalize(e,'Motivation'));renderGrid('motivation','motivationFeed','motivationFeedStatus');};
-  window.v52NotesFeed=d=>{STORE.notes=((d.feed&&d.feed.entry)||[]).map(e=>normalize(e,'Notes Board'));renderNotes();};
-  window.v52IASPages=d=>{STORE.pages=((d.feed&&d.feed.entry)||[]).map(e=>normalize(e,'Education Page'));renderPages();};
-  window.v52MotivationPages=d=>{STORE.pages2=((d.feed&&d.feed.entry)||[]).map(e=>normalize(e,'Motivation Page'));renderPages();};
-  function load(f){const s=document.createElement('script');s.async=true;s.src=(f.raw?f.host:`${f.host}/feeds/posts/default`)+`?alt=json-in-script&max-results=${f.limit}&callback=${f.callback}`;document.body.appendChild(s)}
-  (document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>FEEDS.forEach(load)):FEEDS.forEach(load));
+
+  function textOnly(html){
+    const box=document.createElement('div'); box.innerHTML=html||'';
+    return (box.textContent||box.innerText||'').replace(/\s+/g,' ').trim();
+  }
+  function imageFrom(entry){
+    if(entry.media$thumbnail && entry.media$thumbnail.url){
+      return entry.media$thumbnail.url.replace(/\/s72-c\//,'/s640/').replace(/=s72-c$/,'=s640');
+    }
+    const html=(entry.content&&entry.content.$t)||(entry.summary&&entry.summary.$t)||'';
+    const m=html.match(/<img[^>]+src=["']([^"']+)["']/i);
+    return m?m[1]: 'logo.jpg';
+  }
+  function postLink(entry){
+    const links=entry.link||[];
+    const alt=links.find(x=>x.rel==='alternate');
+    return alt?alt.href:'#';
+  }
+  function dateText(entry){
+    const raw=(entry.published&&entry.published.$t)||(entry.updated&&entry.updated.$t);
+    if(!raw) return '';
+    try{return new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(raw));}catch(e){return ''}
+  }
+  function renderFeed(data,targetId,statusId,emptyMessage){
+    const target=document.getElementById(targetId), status=document.getElementById(statusId);
+    if(!target) return;
+    const entries=(data&&data.feed&&data.feed.entry)||[];
+    if(!entries.length){ if(status) status.textContent=emptyMessage; return; }
+    target.innerHTML=entries.map(entry=>{
+      const title=textOnly(entry.title&&entry.title.$t)||'Untitled post';
+      const body=textOnly((entry.summary&&entry.summary.$t)||(entry.content&&entry.content.$t));
+      const excerpt=body.length>145?body.slice(0,145)+'…':body;
+      return `<article class="v501-post-card"><a class="v501-post-image" href="${postLink(entry)}" target="_blank" rel="noopener"><img src="${imageFrom(entry)}" alt="" loading="lazy" onerror="this.src='logo.jpg'"></a><div class="v501-post-body"><small>${dateText(entry)}</small><h3><a href="${postLink(entry)}" target="_blank" rel="noopener">${title}</a></h3><p>${excerpt}</p><a class="v501-read-more" href="${postLink(entry)}" target="_blank" rel="noopener">Read full post →</a></div></article>`;
+    }).join('');
+    if(status) status.hidden=true;
+  }
+  window.renderIASPublicFeed=data=>renderFeed(data,'iasPublicFeed','iasFeedStatus','No public education posts are available right now.');
+  window.renderMotivationFeed=data=>renderFeed(data,'motivationFeed','motivationFeedStatus','No motivation posts are available right now.');
+
+  function loadJSONP(item){
+    const script=document.createElement('script');
+    script.src=`${item.host}/feeds/posts/default?alt=json-in-script&max-results=${item.limit}&callback=${item.callback}`;
+    script.async=true;
+    script.onerror=function(){
+      const status=document.getElementById(item.status);
+      if(status) status.innerHTML=`Posts could not be loaded. <a href="${item.host}" target="_blank" rel="noopener">Open website</a>`;
+      script.remove();
+    };
+    document.body.appendChild(script);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>FEEDS.forEach(loadJSONP));
+  else FEEDS.forEach(loadJSONP);
 })();
-let v52ReaderFont=18;
-function openV52ReaderData(encoded){const p=JSON.parse(decodeURIComponent(encoded));const r=document.getElementById('v52Reader');document.getElementById('v52ReaderTitle').textContent=p.title;document.getElementById('v52BookTitle').textContent=p.title;document.getElementById('v52ReaderSource').textContent=p.source||'Digital Library';document.getElementById('v52ReaderMeta').textContent=[p.date,p.source].filter(Boolean).join(' • ');document.getElementById('v52ReaderContent').innerHTML=p.content||`<p>${p.excerpt||''}</p>`;r.classList.add('open');r.setAttribute('aria-hidden','false');document.body.classList.add('v52-reader-open');const sc=document.getElementById('v52ReaderScroll');sc.scrollTop=0;updateV52Progress();}
-function closeV52Reader(){document.getElementById('v52Reader').classList.remove('open');document.body.classList.remove('v52-reader-open');}
-function v52Font(n){v52ReaderFont=Math.max(14,Math.min(28,v52ReaderFont+n));document.getElementById('v52ReaderContent').style.fontSize=v52ReaderFont+'px';}
-function v52ToggleTheme(){document.getElementById('v52Reader').classList.toggle('night');}
-function updateV52Progress(){const sc=document.getElementById('v52ReaderScroll');if(!sc)return;const max=sc.scrollHeight-sc.clientHeight;document.getElementById('v52ReaderProgress').style.width=(max?sc.scrollTop/max*100:0)+'%';}
-document.getElementById('v52ReaderScroll').addEventListener('scroll',updateV52Progress,{passive:true});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('v52Reader').classList.contains('open'))closeV52Reader()});
 </script>
 
 </body></html>

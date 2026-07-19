@@ -1,13 +1,13 @@
 {
-  "version": "52.0.0",
-  "name": "Digital Library Notes Board",
-  "build": "20260719-5200",
-  "base": "v50.1 Core Public Feed Portal",
+  "version": "50.2.0",
+  "build": "v50.2",
+  "name": "Digital Book Reader Scroll Hotfix",
   "features": [
-    "Scrolling book reader",
-    "Notes Board auto-scroll",
-    "Education and Motivation full in-portal reader",
-    "Dynamic Blogger pages navigation",
-    "Student Help Desk"
-  ]
+    "Scrolling repair for public website",
+    "Automatic IAS Selection Point Blogger public posts",
+    "Motivation Center powered by satnamkait.in posts",
+    "Login protected Knowledge Center and exam categories",
+    "Responsive feed cards with Blogger JSONP support"
+  ],
+  "updated": "2026-07-19"
 }

@@ -1,14 +1,7 @@
-/*
- * v31.5 NEW BACKEND MIGRATION
- * Google Sheet ID: 1GfAvSSfCV2vAuTbe4_Yodjn8Y60SMTNhtog8PTpQvNs
- * Super Admin: iasselection1@gmail.com
- * Existing portal behavior preserved.
- */
-
 const CONFIG = {
   APP_NAME: 'IAS Selection Point',
-  ADMIN_EMAIL: "iasselection1@gmail.com",
-  SPREADSHEET_ID: "1GfAvSSfCV2vAuTbe4_Yodjn8Y60SMTNhtog8PTpQvNs",
+  ADMIN_EMAIL: 'iasselection1@gmail.com',
+  SPREADSHEET_ID: '1GfAvSSfCV2vAuTbe4_Yodjn8Y60SMTNhtog8PTpQvNs',
   ADMIN_DEFAULT_PASSWORD: 'Admin@123',
   LOGO_URL: 'https://officialkaitsatnam.github.io/IAS-Selection-Point-/logo.jpg',
   PORTAL_URL: 'https://officialkaitsatnam.github.io/IAS-Selection-Point-/',
@@ -39,7 +32,27 @@ const SHEETS = {
   TESTS: 'TESTS',
   QUESTIONS: 'QUESTIONS',
   TEST_ATTEMPTS: 'TEST_ATTEMPTS',
-  TEST_RESULTS: 'TEST_RESULTS'
+  TEST_RESULTS: 'TEST_RESULTS',
+  REWARD_ACHIEVEMENTS: 'REWARD_ACHIEVEMENTS',
+  SYSTEM_EMAILS: 'SYSTEM_EMAILS',
+  DAILY_QUIZ_RESULTS: 'DAILY_QUIZ_RESULTS',
+  USER_XP: 'USER_XP',
+  REGISTRATION_PROFILES: 'REGISTRATION_PROFILES',
+  VERSION_RELEASES: 'VERSION_RELEASES',
+  VERSION_EMAIL_LOGS: 'VERSION_EMAIL_LOGS',
+  STUDY_PLANNER: 'STUDY_PLANNER',
+  STUDY_SESSIONS: 'STUDY_SESSIONS',
+  PRODUCTIVITY_NOTES: 'PRODUCTIVITY_NOTES',
+  CBT_TESTS: 'CBT_TESTS',
+  CBT_PROGRESS: 'CBT_PROGRESS',
+  CBT_RESULTS: 'CBT_RESULTS',
+  USER_NOTIFICATIONS: 'USER_NOTIFICATIONS',
+  USER_ACHIEVEMENTS: 'USER_ACHIEVEMENTS',
+  USER_CERTIFICATES: 'USER_CERTIFICATES',
+  COMMUNICATION_LOGS: 'COMMUNICATION_LOGS',
+  EXAM_CATALOG: 'EXAM_CATALOG',
+  EXAM_RESOURCES: 'EXAM_RESOURCES',
+  EXAM_CALENDAR: 'EXAM_CALENDAR'
 };
 
 function doPost(e) {
@@ -82,6 +95,50 @@ function doPost(e) {
     if (action === 'adminCreateDemoTest') return json(adminCreateDemoTest(req));
     if (action === 'adminEditTest') return json(adminEditTest(req));
     if (action === 'adminDeleteTest') return json(adminDeleteTest(req));
+    if (action === 'unlockAchievement') return json(unlockAchievement(req));
+    if (action === 'getMyAchievements') return json(getMyAchievements(req));
+    if (action === 'adminAchievementReport') return json(adminAchievementReport(req));
+    if (action === 'adminEmailDeliveryReport') return json(adminEmailDeliveryReport(req));
+    if (action === 'emailSystemHealth') return json(emailSystemHealth(req));
+    if (action === 'systemHealth') return json(systemHealth(req));
+    if (action === 'getExternalJobAlerts') return json(getExternalJobAlerts(req));
+    if (action === 'publishVersionRelease') return json(publishVersionRelease(req));
+    if (action === 'getVersionHistory') return json(getVersionHistory(req));
+    if (action === 'getLatestVersion') return json(getLatestVersion(req));
+    if (action === 'createStudyTask') return json(createStudyTask(req));
+    if (action === 'listStudyTasks') return json(listStudyTasks(req));
+    if (action === 'updateStudyTaskStatus') return json(updateStudyTaskStatus(req));
+    if (action === 'deleteStudyTask') return json(deleteStudyTask(req));
+    if (action === 'logStudySession') return json(logStudySession(req));
+    if (action === 'listStudySessions') return json(listStudySessions(req));
+    if (action === 'saveProductivityNote') return json(saveProductivityNote(req));
+    if (action === 'listProductivityNotes') return json(listProductivityNotes(req));
+    if (action === 'deleteProductivityNote') return json(deleteProductivityNote(req));
+    if (action === 'getProductivityAnalytics') return json(getProductivityAnalytics(req));
+    if (action === 'getExamRoadmap') return json(getExamRoadmap(req));
+    if (action === 'listProfessionalTests') return json(listProfessionalTests(req));
+    if (action === 'getProfessionalTest') return json(getProfessionalTest(req));
+    if (action === 'saveProfessionalTestProgress') return json(saveProfessionalTestProgress(req));
+    if (action === 'submitProfessionalTest') return json(submitProfessionalTest(req));
+    if (action === 'listProfessionalTestResults') return json(listProfessionalTestResults(req));
+    if (action === 'getProfessionalTestReview') return json(getProfessionalTestReview(req));
+    if (action === 'getSmartLearningDashboard') return json(getSmartLearningDashboard(req));
+    if (action === 'getSmartRevisionPlan') return json(getSmartRevisionPlan(req));
+    if (action === 'getStudentPerformanceReport') return json(getStudentPerformanceReport(req));
+    if (action === 'listUserNotifications') return json(listUserNotifications(req));
+    if (action === 'markNotificationRead') return json(markNotificationRead(req));
+    if (action === 'markAllNotificationsRead') return json(markAllNotificationsRead(req));
+    if (action === 'listUserCertificates') return json(listUserCertificates(req));
+    if (action === 'getCommunicationDashboard') return json(getCommunicationDashboard(req));
+    if (action === 'sendCommunicationAnnouncement') return json(sendCommunicationAnnouncement(req));
+    if (action === 'previewCommunicationTemplate') return json(previewCommunicationTemplate(req));
+    if (action === 'sendV411TestEmail') return json(sendV411TestEmail(req));
+    if (action === 'sendSystemTestEmail') return json(sendSystemTestEmail(req));
+    if (action === 'syncRegistrationProfile') return json(syncRegistrationProfile(req));
+    if (action === 'getDailyQuiz') return json(getDailyQuiz(req));
+    if (action === 'submitDailyQuiz') return json(submitDailyQuiz(req));
+    if (action === 'getXpLeaderboard') return json(getXpLeaderboard(req));
+    if (action === 'getMyGamification') return json(getMyGamification(req));
     if (action === 'getProfile') return json(getProfile(req));
     if (action === 'saveProfile') return json(saveProfile(req));
     if (action === 'changePassword') return json(changePassword(req));
@@ -95,12 +152,18 @@ function doPost(e) {
 }
 
 function doGet() {
-  return ContentService.createTextOutput('IAS Selection Point API v31.5 New Backend Migration is running').setMimeType(ContentService.MimeType.TEXT);
+  return ContentService.createTextOutput('IAS Selection Point API v43.0.0 is running').setMimeType(ContentService.MimeType.TEXT);
 }
 
 function json(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
-function ss() {
-  return SpreadsheetApp.openById("1GfAvSSfCV2vAuTbe4_Yodjn8Y60SMTNhtog8PTpQvNs");
+function ss() { return SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID); }
+
+function sheet(name, headers) {
+  const book = ss();
+  let sh = book.getSheetByName(name);
+  if (!sh) sh = book.insertSheet(name);
+  if (sh.getLastRow() === 0 && headers) sh.appendRow(headers);
+  return sh;
 }
 
 function initializeSystem() {
@@ -110,7 +173,7 @@ function initializeSystem() {
   sheet(SHEETS.LOGIN_LOGS, ['Email','Status','Time','Note']);
   sheet(SHEETS.EMAIL_LOGS, ['Email','Subject','Time','Status']);
   sheet(SHEETS.SETTINGS, ['Key','Value']);
-  sheet(SHEETS.PROFILES, ['Email','Name','Mobile','City','Exam','UpdatedAt']);
+  sheet(SHEETS.PROFILES, ['Email','Name','Mobile','City','Exam','UpdatedAt','Subject','Bio']);
   sheet(SHEETS.NOTES, ['NoteID','Email','Title','Body','CreatedAt','Status']);
   sheet(SHEETS.ADMIN_LOGS, ['AdminEmail','Action','TargetEmail','Time','Note']);
   sheet(SHEETS.NOTIFICATIONS, ['NotificationID','TargetEmail','Title','Body','CreatedAt','CreatedBy','Status']);
@@ -126,6 +189,26 @@ function initializeSystem() {
   sheet(SHEETS.QUESTIONS, ['QuestionID','TestID','Question','OptionA','OptionB','OptionC','OptionD','CorrectOption','Explanation','CreatedAt']);
   sheet(SHEETS.TEST_ATTEMPTS, ['AttemptID','Email','TestID','StartedAt','SubmittedAt','TimeTaken','Status']);
   sheet(SHEETS.TEST_RESULTS, ['ResultID','Email','TestID','TestTitle','Score','MaxScore','Percentage','Correct','Wrong','Unanswered','Passed','SubmittedAt']);
+  sheet(SHEETS.REWARD_ACHIEVEMENTS, ['AchievementID','Email','Key','Title','Icon','Description','MetaJSON','UnlockedAt']);
+  sheet(SHEETS.SYSTEM_EMAILS, ['EmailLogID','To','Type','Subject','Status','SentAt','Error','ReferenceKey']);
+  sheet(SHEETS.DAILY_QUIZ_RESULTS, ['ResultID','Email','QuizDate','Correct','Wrong','Unanswered','Percentage','XPEarned','TimeTaken','SubmittedAt']);
+  sheet(SHEETS.USER_XP, ['Email','Name','XP','Level','Streak','LastQuizDate','UpdatedAt']);
+  sheet(SHEETS.REGISTRATION_PROFILES, ['Email','Name','Mobile','Qualification','TargetExam','State','District','Subject','CreatedAt','UpdatedAt']);
+  sheet(SHEETS.VERSION_RELEASES, ['ReleaseID','Version','Title','ReleaseDate','WhatsNewJSON','ImprovementsJSON','BugFixesJSON','Critical','PublishedAt','PublishedBy']);
+  sheet(SHEETS.VERSION_EMAIL_LOGS, ['LogID','ReleaseID','Email','Status','Error','SentAt']);
+  sheet(SHEETS.STUDY_PLANNER, ['TaskID','Email','Title','Category','DueDate','Priority','PlannedMinutes','Note','Status','CreatedAt','CompletedAt']);
+  sheet(SHEETS.STUDY_SESSIONS, ['SessionID','Email','Subject','DurationMinutes','SessionType','Completed','SessionDate','CreatedAt']);
+  sheet(SHEETS.PRODUCTIVITY_NOTES, ['NoteID','Email','Title','Category','Body','Pinned','CreatedAt','UpdatedAt']);
+  sheet(SHEETS.CBT_TESTS, ['TestID','Title','Subject','DurationMinutes','PositiveMarks','NegativeMarks','QuestionIDsJSON','Status','CreatedAt','UpdatedAt']);
+  sheet(SHEETS.CBT_PROGRESS, ['ProgressID','Email','TestID','AnswersJSON','StatusJSON','CurrentIndex','SecondsRemaining','UpdatedAt']);
+  sheet(SHEETS.CBT_RESULTS, ['ResultID','Email','TestID','TestTitle','Score','MaxScore','Percentage','Correct','Wrong','Unanswered','Rank','Percentile','TimeTakenSeconds','WeakTopicsJSON','AnswersJSON','SubmittedAt']);
+  sheet(SHEETS.USER_NOTIFICATIONS, ['NotificationID','Email','Type','Title','Message','Read','CreatedAt']);
+  sheet(SHEETS.USER_ACHIEVEMENTS, ['AchievementID','Email','Code','Title','UnlockedAt']);
+  sheet(SHEETS.USER_CERTIFICATES, ['CertificateID','Email','Code','Title','IssuedAt','Status']);
+  sheet(SHEETS.COMMUNICATION_LOGS, ['LogID','Email','Type','Subject','Status','Error','SentAt']);
+  sheet(SHEETS.EXAM_CATALOG, ['ExamID','ExamName','Category','Description','Icon','Status','SortOrder','CreatedAt','UpdatedAt']);
+  sheet(SHEETS.EXAM_RESOURCES, ['ResourceID','ExamID','Type','Title','Description','URL','BloggerLabel','Status','CreatedAt','UpdatedAt']);
+  sheet(SHEETS.EXAM_CALENDAR, ['EventID','ExamID','EventType','Title','EventDate','Description','URL','Status','CreatedAt','UpdatedAt']);
   forceAdminFix();
   const props=PropertiesService.getScriptProperties();
   if(props.getProperty('ISP_SHEET_DESIGN_V23')!=='DONE'){
@@ -155,14 +238,44 @@ function forceAdminFix() {
 }
 
 function signup(data) {
-  const name=clean(data.name), email=clean(data.email).toLowerCase(), mobile=clean(data.mobile), pass=String(data.password||'');
-  if(!name||!email||!pass) return fail('Please fill all required fields');
+  const name=clean(data.name);
+  const email=clean(data.email).toLowerCase();
+  const mobile=clean(data.mobile);
+  const qualification=clean(data.qualification);
+  const targetExam=clean(data.targetExam);
+  const state=clean(data.state);
+  const district=clean(data.district);
+  const subject=clean(data.subject);
+  const pass=String(data.password||'');
+  const confirmPass=String(data.confirmPassword||'');
+
+  if(!name||!email||!mobile||!qualification||!targetExam||!state||!district||!pass){
+    return fail('Please complete all required registration fields.');
+  }
+  if(confirmPass && pass!==confirmPass) return fail('Passwords do not match');
+  if(pass.length<6) return fail('Password must contain at least 6 characters');
   if(findUser(email)) return fail('Email already registered');
-  const role = email === CONFIG.ADMIN_EMAIL.toLowerCase() ? 'Admin' : 'Member';
-  sheet(SHEETS.USERS).appendRow([uid('USR'),name,email,mobile,hashPassword(pass),role,'Active',new Date(),'']);
-  sheet(SHEETS.PROFILES).appendRow([email,name,mobile,'','',new Date()]);
-  sendMail(email,'Welcome to IAS Selection Point',welcomeTemplate(name,email));
-  return ok('Signup successful. Please login now.');
+
+  const role=email===CONFIG.ADMIN_EMAIL.toLowerCase()?'Admin':'Member';
+  const userId=uid('USR');
+  const createdAt=new Date();
+
+  sheet(SHEETS.USERS).appendRow([userId,name,email,mobile,hashPassword(pass),role,'Active',createdAt,'']);
+  sheet(SHEETS.PROFILES).appendRow([email,name,mobile,district,targetExam,createdAt]);
+  sheet(SHEETS.REGISTRATION_PROFILES).appendRow([email,name,mobile,qualification,targetExam,state,district,subject,createdAt,createdAt]);
+
+  const welcomeResult=sendMail(email,'Welcome to IAS Selection Point',welcomeTemplate(name,email),{type:'Welcome',referenceKey:userId});
+  const adminResult=sendMail(CONFIG.ADMIN_EMAIL,'New Member Signup - '+name,adminNewSignupTemplate({
+    id:userId,name:name,email:email,mobile:mobile,role:role,qualification:qualification,
+    targetExam:targetExam,state:state,district:district,createdAt:createdAt.toLocaleString()
+  }),{type:'Admin Signup Alert',referenceKey:userId});
+
+  const warning=!welcomeResult.sent||!adminResult.sent;
+  return {
+    success:true,
+    message:warning?'Signup successful. Account created, but one or more emails could not be delivered.':'Signup successful. Welcome email sent. Please login now.',
+    emailWarning:warning,welcomeEmailSent:welcomeResult.sent,adminEmailSent:adminResult.sent
+  };
 }
 
 function login(data) {
@@ -234,21 +347,74 @@ function requireAdmin(token) {
 
 function getProfile(data) {
   const s=validateSession(data.token); if(!s.success) return s;
-  const user=findUser(s.email), p=findProfile(s.email);
-  return {success:true,profile:{name:p?p.name:user.name,mobile:p?p.mobile:user.mobile,city:p?p.city:'',exam:p?p.exam:''}};
+  const user=findUser(s.email);
+  const sh=sheet(SHEETS.PROFILES);
+  const rows=sh.getDataRange().getValues();
+
+  for(let i=1;i<rows.length;i++){
+    if(String(rows[i][0]).toLowerCase().trim()===s.email){
+      return {
+        success:true,
+        profile:{
+          name:rows[i][1]||user.name||'',
+          mobile:rows[i][2]||user.mobile||'',
+          city:rows[i][3]||'',
+          exam:rows[i][4]||'',
+          subject:rows[i][6]||'',
+          bio:rows[i][7]||''
+        }
+      };
+    }
+  }
+
+  return {
+    success:true,
+    profile:{
+      name:user.name||'',
+      mobile:user.mobile||'',
+      city:'',
+      exam:'',
+      subject:'',
+      bio:''
+    }
+  };
 }
 
 function saveProfile(data) {
   const s=validateSession(data.token); if(!s.success) return s;
-  const email=s.email, name=clean(data.name), mobile=clean(data.mobile), city=clean(data.city), exam=clean(data.exam);
-  const sh=sheet(SHEETS.PROFILES), rows=sh.getDataRange().getValues();
-  for(let i=1;i<rows.length;i++) {
-    if(String(rows[i][0]).toLowerCase().trim()===email) {
-      sh.getRange(i+1,2,1,5).setValues([[name,mobile,city,exam,new Date()]]);
-      updateUserBasic(email,name,mobile); return ok('Profile saved successfully');
+
+  const source=data.profile||data||{};
+  const email=s.email;
+  const name=clean(source.name);
+  const mobile=clean(source.mobile);
+  const city=clean(source.city);
+  const exam=clean(source.exam);
+  const subject=clean(source.subject);
+  const bio=clean(source.bio);
+
+  if(!name) return fail('Full name is required.');
+
+  const sh=sheet(SHEETS.PROFILES);
+  const rows=sh.getDataRange().getValues();
+
+  // Ensure Subject and Bio columns exist for older sheets.
+  if(sh.getLastColumn()<8){
+    sh.getRange(1,7,1,2).setValues([['Subject','Bio']]);
+  }
+
+  for(let i=1;i<rows.length;i++){
+    if(String(rows[i][0]).toLowerCase().trim()===email){
+      sh.getRange(i+1,2,1,7).setValues([[
+        name,mobile,city,exam,new Date(),subject,bio
+      ]]);
+      updateUserBasic(email,name,mobile);
+      return ok('Profile saved successfully');
     }
   }
-  sh.appendRow([email,name,mobile,city,exam,new Date()]);
+
+  sh.appendRow([
+    email,name,mobile,city,exam,new Date(),subject,bio
+  ]);
   updateUserBasic(email,name,mobile);
   return ok('Profile saved successfully');
 }
@@ -363,17 +529,232 @@ function updateLastLogin(email) {
 
 function logLogin(email,status,note) { sheet(SHEETS.LOGIN_LOGS).appendRow([email,status,new Date(),note]); }
 
-function sendMail(to,subject,body) {
+function logSystemEmail(to,type,subject,status,errorText,referenceKey) {
   try {
-    MailApp.sendEmail({to,subject,htmlBody:body,name:CONFIG.APP_NAME});
-    sheet(SHEETS.EMAIL_LOGS).appendRow([to,subject,new Date(),'Sent']);
+    sheet(SHEETS.SYSTEM_EMAILS).appendRow([
+      uid('EML'),to,type||'System',subject,status,new Date(),errorText||'',referenceKey||''
+    ]);
+  } catch(ignore) {}
+}
+
+
+/* ======================================================
+ * v41.1 EMAIL STABILITY & QUALITY HELPERS
+ * ====================================================== */
+function v411EscapeHtml(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function v411GetRecipientProfile(email) {
+  const normalized = String(email || '').toLowerCase().trim();
+  const fallback = {
+    name: normalized ? normalized.split('@')[0] : 'Member',
+    email: normalized,
+    userId: '',
+    registrationDate: '',
+    qualification: '',
+    targetExam: '',
+    state: '',
+    district: ''
+  };
+
+  try {
+    const user = findUser(normalized);
+    if (user) {
+      fallback.name = user.name || fallback.name;
+      fallback.userId = user.id || '';
+      fallback.registrationDate = user.createdAt
+        ? new Date(user.createdAt).toLocaleString()
+        : '';
+    }
+  } catch (ignore) {}
+
+  try {
+    const sh = sheet(SHEETS.REGISTRATION_PROFILES);
+    if (sh.getLastRow() >= 2) {
+      const rows = sh.getRange(2, 1, sh.getLastRow() - 1, 10).getValues();
+      for (let i = 0; i < rows.length; i++) {
+        if (String(rows[i][0] || '').toLowerCase().trim() === normalized) {
+          fallback.name = rows[i][1] || fallback.name;
+          fallback.qualification = rows[i][3] || '';
+          fallback.targetExam = rows[i][4] || '';
+          fallback.state = rows[i][5] || '';
+          fallback.district = rows[i][6] || '';
+          fallback.registrationDate = rows[i][8]
+            ? new Date(rows[i][8]).toLocaleString()
+            : fallback.registrationDate;
+          break;
+        }
+      }
+    }
+  } catch (ignore) {}
+
+  return fallback;
+}
+
+function v411EmailFooterHtml() {
+  const year = new Date().getFullYear();
+  const website = CONFIG.SITE_URL || 'https://iasselectionpoint.blogspot.com/';
+  const portal = CONFIG.PORTAL_URL || '';
+  const privacy = website.replace(/\/?$/, '/') + 'p/privacy-policy.html';
+  const terms = website.replace(/\/?$/, '/') + 'p/terms-conditions.html';
+  const contact = website.replace(/\/?$/, '/') + 'p/contact-us.html';
+
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+      style="margin-top:24px;border-top:1px solid #dbe7f4;">
+      <tr>
+        <td style="padding:20px 8px 4px;text-align:center;color:#5a6b82;font-family:Arial,Helvetica,sans-serif;">
+          <div style="margin-bottom:12px;">
+            <a href="${website}" style="display:inline-block;margin:4px;padding:9px 14px;border-radius:9px;background:#eef6ff;color:#0b5ed7;text-decoration:none;font-size:12px;font-weight:bold;">
+              🌐 Main Website
+            </a>
+            <a href="${portal}" style="display:inline-block;margin:4px;padding:9px 14px;border-radius:9px;background:#eef6ff;color:#0b5ed7;text-decoration:none;font-size:12px;font-weight:bold;">
+              👨‍🎓 Member Portal
+            </a>
+          </div>
+
+          <p style="margin:8px 0;font-size:11px;line-height:1.7;">
+            <a href="${privacy}" style="color:#475569;text-decoration:none;">Privacy Policy</a>
+            &nbsp;|&nbsp;
+            <a href="${terms}" style="color:#475569;text-decoration:none;">Terms &amp; Conditions</a>
+            &nbsp;|&nbsp;
+            <a href="${contact}" style="color:#475569;text-decoration:none;">Contact Us</a>
+          </p>
+
+          <p style="margin:8px 0 2px;font-size:12px;font-weight:bold;color:#334155;">
+            © ${year} IAS Selection Point. All Rights Reserved.
+          </p>
+          <p style="margin:2px 0;font-size:11px;">
+            Designed &amp; Developed by Satnam Kait
+          </p>
+          <p style="margin:10px 0 0;font-size:10px;line-height:1.6;color:#7b8798;">
+            This is an automated email from IAS Selection Point.
+            Please do not reply directly to this email.
+          </p>
+        </td>
+      </tr>
+    </table>`;
+}
+
+function v411PersonalizeEmail(to, htmlBody) {
+  const profile = v411GetRecipientProfile(to);
+  const safeName = v411EscapeHtml(profile.name || 'Member');
+  const safeEmail = v411EscapeHtml(profile.email || '');
+
+  let html = String(htmlBody || '');
+
+  html = html
+    .replace(/\{\{\s*UserName\s*\}\}/gi, safeName)
+    .replace(/\{\{\s*Name\s*\}\}/gi, safeName)
+    .replace(/\{\{\s*UserEmail\s*\}\}/gi, safeEmail)
+    .replace(/Dear\s+Student\s*,/gi, 'Dear <b>' + safeName + '</b>,')
+    .replace(/Dear\s+Member\s*,/gi, 'Dear <b>' + safeName + '</b>,')
+    .replace(/Dear\s+User\s*,/gi, 'Dear <b>' + safeName + '</b>,');
+
+  const alreadyHasGreeting =
+    /Dear\s+(?:<b>)?[^,<]+(?:<\/b>)?,/i.test(html);
+
+  if (!alreadyHasGreeting) {
+    const greeting = `<p style="margin:0 0 14px;">Dear <b>${safeName}</b>,</p>`;
+    const contentMarker = '<div style="font-size:15px;line-height:1.7;color:#24364f;">';
+    if (html.indexOf(contentMarker) !== -1) {
+      html = html.replace(contentMarker, contentMarker + greeting);
+    }
+  }
+
+  const hasFinalFooter =
+    html.indexOf('All Rights Reserved') !== -1 &&
+    html.indexOf('Designed &amp; Developed by Satnam Kait') !== -1;
+
+  if (!hasFinalFooter) {
+    const footer = v411EmailFooterHtml();
+    if (html.indexOf('</body>') !== -1) {
+      html = html.replace('</body>', footer + '</body>');
+    } else {
+      html += footer;
+    }
+  }
+
+  return html;
+}
+
+function sendMail(to,subject,body,options) {
+  const opts = options || {};
+  const recipient = String(to || '').toLowerCase().trim();
+  const personalizedBody = v411PersonalizeEmail(recipient, body);
+
+  try {
+    MailApp.sendEmail({
+      to: recipient,
+      subject: subject,
+      htmlBody: personalizedBody,
+      name: CONFIG.APP_NAME,
+      replyTo: CONFIG.ADMIN_EMAIL
+    });
+
+    try {
+      sheet(SHEETS.EMAIL_LOGS).appendRow([
+        recipient, subject, new Date(), 'Sent'
+      ]);
+    } catch (ignore) {}
+
+    try {
+      sheet(SHEETS.COMMUNICATION_LOGS).appendRow([
+        uid('CML'), recipient, opts.type || 'System',
+        subject, 'Sent', '', new Date()
+      ]);
+    } catch (ignore) {}
+
+    logSystemEmail(
+      recipient,
+      opts.type || 'System',
+      subject,
+      'Sent',
+      '',
+      opts.referenceKey || ''
+    );
+
+    return {sent:true,error:''};
+
   } catch(e) {
-    sheet(SHEETS.EMAIL_LOGS).appendRow([to,subject,new Date(),'Failed: '+e.message]);
+    const errorText = String(e && e.message || e);
+
+    try {
+      sheet(SHEETS.EMAIL_LOGS).appendRow([
+        recipient, subject, new Date(), 'Failed: ' + errorText
+      ]);
+    } catch (ignore) {}
+
+    try {
+      sheet(SHEETS.COMMUNICATION_LOGS).appendRow([
+        uid('CML'), recipient, opts.type || 'System',
+        subject, 'Failed', errorText, new Date()
+      ]);
+    } catch (ignore) {}
+
+    logSystemEmail(
+      recipient,
+      opts.type || 'System',
+      subject,
+      'Failed',
+      errorText,
+      opts.referenceKey || ''
+    );
+
+    return {sent:false,error:errorText};
   }
 }
 
 
 function baseEmailTemplate(params) {
+  params = params || {};
+
   const title = params.title || 'IAS Selection Point';
   const subtitle = params.subtitle || '';
   const body = params.body || '';
@@ -381,50 +762,110 @@ function baseEmailTemplate(params) {
   const badgeColor = params.badgeColor || '#0b5ed7';
   const buttonText = params.buttonText || 'Open Learning Portal';
   const buttonUrl = params.buttonUrl || CONFIG.PORTAL_URL;
-  return `
-  <div style="margin:0;padding:0;background:#eef4fb;font-family:Arial,Helvetica,sans-serif;color:#10233f;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef4fb;padding:24px 10px;">
-      <tr><td align="center">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:22px;overflow:hidden;box-shadow:0 14px 42px rgba(16,35,63,.12);">
-          <tr><td style="background:linear-gradient(135deg,#0b5ed7,#092a55);padding:28px;text-align:center;color:#ffffff;">
-            <img src="${CONFIG.LOGO_URL}" alt="IAS Selection Point" style="width:96px;height:96px;object-fit:contain;border-radius:20px;background:#ffffff;padding:6px;margin-bottom:12px;">
-            <h1 style="margin:0;font-size:26px;line-height:1.2;">IAS Selection Point</h1>
-            <p style="margin:6px 0 0;font-size:14px;opacity:.9;">Professional Learning Portal</p>
-          </td></tr>
-          <tr><td style="padding:28px;">
-            ${badge ? `<div style="display:inline-block;background:${badgeColor};color:#ffffff;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:bold;margin-bottom:16px;">${badge}</div>` : ''}
-            <h2 style="margin:0 0 8px;font-size:24px;color:#10233f;">${title}</h2>
-            ${subtitle ? `<p style="margin:0 0 18px;color:#5a6b82;font-size:15px;">${subtitle}</p>` : ''}
-            <div style="font-size:15px;line-height:1.7;color:#24364f;">${body}</div>
-            <div style="text-align:center;margin:28px 0 12px;">
-              <a href="${buttonUrl}" style="background:#0b5ed7;color:#ffffff;text-decoration:none;padding:13px 22px;border-radius:12px;font-weight:bold;display:inline-block;">${buttonText}</a>
-            </div>
-            <div style="background:#f8fbff;border:1px solid #e2eefc;border-radius:14px;padding:14px;margin-top:22px;color:#5a6b82;font-size:13px;">
-              This is an automated email from IAS Selection Point. If you did not request this action, please contact the administrator.
-            </div>
-          </td></tr>
-          <tr><td style="background:#f8fbff;padding:18px;text-align:center;color:#5a6b82;font-size:12px;">
-            <b>IAS Selection Point</b><br>Learning Portal · Study Resources · Current Affairs<br>
-            <a href="${CONFIG.SITE_URL}" style="color:#0b5ed7;text-decoration:none;">Main Website</a> ·
-            <a href="${CONFIG.PORTAL_URL}" style="color:#0b5ed7;text-decoration:none;">Member Portal</a>
-          </td></tr>
-        </table>
-      </td></tr>
+  const showButton = params.showButton !== false;
+
+  return `<!doctype html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body style="margin:0;padding:0;background:#eef4fb;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+      style="width:100%;background:#eef4fb;padding:24px 10px;font-family:Arial,Helvetica,sans-serif;color:#10233f;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+            style="width:100%;max-width:620px;background:#ffffff;border:1px solid #dbe7f4;border-radius:20px;overflow:hidden;">
+            <tr>
+              <td style="background:#0b5ed7;padding:26px 20px;text-align:center;color:#ffffff;">
+                <img src="${CONFIG.LOGO_URL}" alt="IAS Selection Point"
+                  style="display:block;width:86px;height:86px;object-fit:contain;border-radius:18px;background:#ffffff;padding:6px;margin:0 auto 12px;">
+                <h1 style="margin:0;font-size:25px;line-height:1.25;">IAS Selection Point</h1>
+                <p style="margin:6px 0 0;font-size:13px;color:#dbeafe;">Professional Learning Portal</p>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding:26px 22px;">
+                ${badge ? `<div style="display:inline-block;background:${badgeColor};color:#ffffff;padding:7px 11px;border-radius:999px;font-size:11px;font-weight:bold;margin-bottom:14px;">${badge}</div>` : ''}
+
+                <h2 style="margin:0 0 8px;font-size:23px;line-height:1.35;color:#10233f;">${title}</h2>
+                ${subtitle ? `<p style="margin:0 0 18px;color:#5a6b82;font-size:14px;line-height:1.55;">${subtitle}</p>` : ''}
+
+                <div style="font-size:14px;line-height:1.75;color:#24364f;">
+                  ${body}
+                </div>
+
+                ${showButton ? `
+                <div style="text-align:center;margin:26px 0 8px;">
+                  <a href="${buttonUrl}"
+                    style="display:inline-block;background:#0b5ed7;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:13px;">
+                    ${buttonText}
+                  </a>
+                </div>` : ''}
+
+                ${v411EmailFooterHtml()}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
     </table>
-  </div>`;
+  </body>
+  </html>`;
 }
 
 function welcomeTemplate(name,email) {
+  const profile = v411GetRecipientProfile(email);
+  const displayName = name || profile.name || 'Member';
+
   return baseEmailTemplate({
     badge:'WELCOME',
     badgeColor:'#159947',
     title:'Welcome to IAS Selection Point',
     subtitle:'Your member account has been created successfully.',
-    body:`<p>Dear <b>${name}</b>,</p>
-      <p>Welcome to IAS Selection Point Learning Portal. Your account is now ready.</p>
-      <p><b>Registered Email:</b> ${email || ''}</p>
-      <p>You can access study modules, categories, articles, bookmarks and notes from your member dashboard.</p>`,
-    buttonText:'Login to Portal'
+    body:`<p>Dear <b>${v411EscapeHtml(displayName)}</b>,</p>
+      <p>Welcome to IAS Selection Point Learning Portal. Your account is now active and ready to use.</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+        style="margin:16px 0;background:#f8fbff;border:1px solid #e2eefc;border-radius:12px;">
+        <tr><td style="padding:14px;">
+          <p style="margin:4px 0;"><b>Registered Email:</b> ${v411EscapeHtml(email || '')}</p>
+          ${profile.userId ? `<p style="margin:4px 0;"><b>User ID:</b> ${v411EscapeHtml(profile.userId)}</p>` : ''}
+          ${profile.targetExam ? `<p style="margin:4px 0;"><b>Target Exam:</b> ${v411EscapeHtml(profile.targetExam)}</p>` : ''}
+          ${profile.qualification ? `<p style="margin:4px 0;"><b>Qualification:</b> ${v411EscapeHtml(profile.qualification)}</p>` : ''}
+          ${profile.state ? `<p style="margin:4px 0;"><b>State:</b> ${v411EscapeHtml(profile.state)}</p>` : ''}
+          ${profile.district ? `<p style="margin:4px 0;"><b>District:</b> ${v411EscapeHtml(profile.district)}</p>` : ''}
+        </td></tr>
+      </table>
+
+      <p>You can now access study modules, current affairs, notes, mock tests, jobs, notifications and your personalized learning dashboard.</p>`,
+    buttonText:'Login to Member Portal',
+    buttonUrl:CONFIG.PORTAL_URL + 'index.html'
+  });
+}
+
+
+function adminNewSignupTemplate(user) {
+  return baseEmailTemplate({
+    badge:'NEW MEMBER SIGNUP',
+    badgeColor:'#7c3aed',
+    title:'A New Member Joined IAS Selection Point',
+    subtitle:'A new account has been created on the member portal.',
+    body:`<p>Dear Admin,</p>
+      <p>A new user has registered successfully.</p>
+      <div style="background:#f8fbff;border:1px solid #e2eefc;border-radius:14px;padding:16px;margin:16px 0;">
+        <p style="margin:4px 0;"><b>Member ID:</b> ${user.id||''}</p>
+        <p style="margin:4px 0;"><b>Name:</b> ${user.name||''}</p>
+        <p style="margin:4px 0;"><b>Email:</b> ${user.email||''}</p>
+        <p style="margin:4px 0;"><b>Mobile:</b> ${user.mobile||''}</p>
+        <p style="margin:4px 0;"><b>Role:</b> ${user.role||'Member'}</p>
+        <p style="margin:4px 0;"><b>Registration Time:</b> ${user.createdAt||''}</p>
+      </div>
+      <p>Please review the member from the Admin Panel if required.</p>`,
+    buttonText:'Open Admin Panel',
+    buttonUrl:CONFIG.PORTAL_URL+'admin.html'
   });
 }
 
@@ -836,7 +1277,11 @@ function applyProfessionalSheetDesign() {
     TESTS:{tab:'#7C3AED', header:'#5B21B6', widths:[20,36,24,48,14,16,16,16,14,20]},
     QUESTIONS:{tab:'#2563EB', header:'#1D4ED8', widths:[20,20,60,32,32,32,32,16,48,20]},
     TEST_ATTEMPTS:{tab:'#F59E0B', header:'#B66A00', widths:[20,30,20,20,20,16,14]},
-    TEST_RESULTS:{tab:'#159947', header:'#116B36', widths:[20,30,20,36,14,14,14,14,14,14,12,20]}
+    TEST_RESULTS:{tab:'#159947', header:'#116B36', widths:[20,30,20,36,14,14,14,14,14,14,12,20]},
+    ACHIEVEMENTS:{tab:'#F59E0B', header:'#B66A00', widths:[20,30,20,30,12,44,40,20]},
+    ACHIEVEMENT_EMAILS:{tab:'#EC4899', header:'#BE185D', widths:[20,30,22,48,14,20,50]},
+    DAILY_QUIZ_RESULTS:{tab:'#7C3AED', header:'#5B21B6', widths:[20,30,18,12,12,14,14,14,14,20]},
+    USER_XP:{tab:'#F59E0B', header:'#B66A00', widths:[30,26,14,18,14,18,20]}
   };
 
   book.getSheets().forEach(function(sh){
@@ -1442,6 +1887,1237 @@ function adminDeleteTest(data) {
 
   invalidateV313QuestionCache(testId);
   return deleted?ok('Test and its questions deleted.'):fail('Test not found.');
+}
+
+
+/* ======================================================
+ * v31.7 ACHIEVEMENT + EMAIL REWARD BACKEND
+ * ====================================================== */
+function achievementEmailTemplate(user, achievement, nextMilestone) {
+  const portalUrl='https://officialkaitsatnam.github.io/IAS-Selection-Point-/';
+  const title=achievement.title||'Achievement Unlocked';
+  const icon=achievement.icon||'🏆';
+  const description=achievement.description||'You completed an important learning milestone.';
+  const articlesRead=achievement.meta&&achievement.meta.articlesRead?Number(achievement.meta.articlesRead):0;
+  const nextText=nextMilestone
+    ? 'Only '+Math.max(0,nextMilestone-articlesRead)+' more articles to reach your next milestone.'
+    : 'You have completed the highest configured reading milestone.';
+
+  return `
+  <div style="margin:0;background:#eef4fb;padding:28px;font-family:Arial,sans-serif;color:#10233f">
+    <div style="max-width:620px;margin:auto;background:#ffffff;border-radius:22px;overflow:hidden;box-shadow:0 18px 55px rgba(15,35,65,.15)">
+      <div style="background:linear-gradient(135deg,#0B2A55,#0B5ED7);padding:24px;text-align:center;color:#fff">
+        <div style="font-size:14px;font-weight:700;letter-spacing:1px">IAS SELECTION POINT</div>
+        <h1 style="margin:10px 0 0;font-size:30px">Congratulations!</h1>
+      </div>
+      <div style="padding:30px;text-align:center">
+        <div style="font-size:72px">${icon}</div>
+        <h2 style="margin:10px 0 6px;color:#10233f">${title}</h2>
+        <p style="margin:0 0 20px;color:#5a6b82;font-size:16px;line-height:1.6">
+          Dear ${user.name||'Member'}, ${description}
+        </p>
+        ${articlesRead?`<div style="display:inline-block;padding:11px 18px;border-radius:999px;background:#eef6ff;color:#0B5ED7;font-weight:800">${articlesRead} Articles Read</div>`:''}
+        <p style="margin:22px 0;color:#475569;line-height:1.6">${nextText}</p>
+        <a href="${portalUrl}" style="display:inline-block;padding:13px 22px;border-radius:12px;background:#0B5ED7;color:#fff;text-decoration:none;font-weight:800">Continue Learning</a>
+      </div>
+      <div style="padding:18px;text-align:center;background:#f8fbff;color:#64748b;font-size:12px">
+        Keep learning, keep growing.<br>IAS Selection Point
+      </div>
+    </div>
+  </div>`;
+}
+
+function nextAchievementMilestone(key) {
+  const order=['READ_10','READ_20','READ_30','READ_50','READ_100'];
+  const counts=[10,20,30,50,100];
+  const index=order.indexOf(String(key||''));
+  return index>=0&&index<counts.length-1?counts[index+1]:null;
+}
+
+
+function unlockAchievement(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const achievement=data.achievement||{};
+  const key=clean(achievement.key);
+  if(!key) return fail('Achievement key is required.');
+
+  const sh=sheet(SHEETS.REWARD_ACHIEVEMENTS);
+  const lastRow=sh.getLastRow();
+
+  if(lastRow>=2){
+    const rows=sh.getRange(2,1,lastRow-1,8).getValues();
+    for(let i=0;i<rows.length;i++){
+      if(String(rows[i][1]).toLowerCase()===s.email && String(rows[i][2])===key){
+        return {success:true,message:'Achievement already unlocked.',duplicate:true,emailSent:false};
+      }
+    }
+  }
+
+  const id=uid('ACH');
+  sh.appendRow([
+    id,s.email,key,achievement.title||key,achievement.icon||'🏆',
+    achievement.description||'',JSON.stringify(achievement.meta||{}),new Date()
+  ]);
+
+  const user=findUser(s.email)||{name:s.email.split('@')[0],email:s.email};
+  const subject='Congratulations! '+(achievement.title||'Achievement Unlocked')+' - IAS Selection Point';
+
+  const emailResult=sendMail(
+    s.email,
+    subject,
+    achievementEmailTemplate(
+      {name:user.name||'Member'},
+      achievement,
+      nextAchievementMilestone(key)
+    ),
+    {type:'Achievement',referenceKey:key}
+  );
+
+  return {
+    success:true,
+    message:emailResult.sent
+      ?'Achievement unlocked and congratulations email sent.'
+      :'Achievement unlocked, but email delivery failed.',
+    emailSent:emailResult.sent,
+    emailError:emailResult.error||''
+  };
+}
+
+function getMyAchievements(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.REWARD_ACHIEVEMENTS);
+  const lastRow=sh.getLastRow();
+  if(lastRow<2) return {success:true,achievements:[]};
+
+  const rows=sh.getRange(2,1,lastRow-1,8).getValues();
+  const out=[];
+  for(let i=rows.length-1;i>=0;i--){
+    if(String(rows[i][1]).toLowerCase()===s.email){
+      let meta={};
+      try{meta=JSON.parse(rows[i][6]||'{}')}catch(e){}
+      out.push({
+        id:rows[i][0],key:rows[i][2],title:rows[i][3],icon:rows[i][4],
+        description:rows[i][5],meta:meta,
+        unlockedAt:new Date(rows[i][7]).toISOString()
+      });
+    }
+  }
+  return {success:true,achievements:out};
+}
+
+function adminAchievementReport(data) {
+  const a=requireAdmin(data.token); if(!a.success) return a;
+  const achievementSheet=sheet(SHEETS.REWARD_ACHIEVEMENTS);
+  const emailSheet=sheet(SHEETS.SYSTEM_EMAILS);
+
+  const aRows=achievementSheet.getLastRow()>=2
+    ?achievementSheet.getRange(2,1,achievementSheet.getLastRow()-1,8).getValues():[];
+  const eRows=emailSheet.getLastRow()>=2
+    ?emailSheet.getRange(2,1,emailSheet.getLastRow()-1,8).getValues():[];
+
+  const emailStatus={};
+  let sent=0;
+  eRows.forEach(r=>{
+    const type=String(r[2]||'');
+    const reference=String(r[7]||'');
+    if(type==='Achievement'){
+      emailStatus[String(r[1]).toLowerCase()+'|'+reference]=String(r[4]);
+      if(String(r[4])==='Sent')sent++;
+    }
+  });
+
+  const users={};
+  const rows=aRows.slice().reverse().slice(0,200).map(r=>{
+    users[String(r[1]).toLowerCase()]=true;
+    return {
+      email:r[1],key:r[2],title:r[3],icon:r[4],
+      unlockedAt:new Date(r[7]).toLocaleString(),
+      emailStatus:emailStatus[String(r[1]).toLowerCase()+'|'+String(r[2])]||'Unknown'
+    };
+  });
+
+  return {
+    success:true,total:aRows.length,emailsSent:sent,
+    users:Object.keys(users).length,rows:rows
+  };
+}
+
+function adminEmailDeliveryReport(data) {
+  const a=requireAdmin(data.token); if(!a.success) return a;
+  const sh=sheet(SHEETS.SYSTEM_EMAILS);
+  const lastRow=sh.getLastRow();
+  if(lastRow<2){
+    return {success:true,total:0,sent:0,failed:0,welcome:0,rows:[]};
+  }
+
+  const values=sh.getRange(2,1,lastRow-1,8).getValues();
+  let sent=0,failed=0,welcome=0;
+
+  values.forEach(r=>{
+    const status=String(r[4]||'');
+    const type=String(r[2]||'');
+    if(status==='Sent')sent++;
+    if(status==='Failed')failed++;
+    if(type==='Welcome')welcome++;
+  });
+
+  const rows=values.slice().reverse().slice(0,150).map(r=>({
+    to:String(r[1]||''),
+    type:String(r[2]||'System'),
+    subject:String(r[3]||''),
+    status:String(r[4]||'Unknown'),
+    sentAt:r[5]?new Date(r[5]).toLocaleString():'',
+    error:String(r[6]||'')
+  }));
+
+  return {
+    success:true,total:values.length,sent:sent,failed:failed,
+    welcome:welcome,rows:rows
+  };
+}
+
+
+
+function emailSystemHealth(data) {
+  const a=requireAdmin(data.token); if(!a.success) return a;
+  let remaining=0,ready=true,note='MailApp authorization and quota appear available.';
+  try { remaining=MailApp.getRemainingDailyQuota(); if(remaining<=0){ready=false;note='Daily email quota is exhausted.';} } catch(e){ready=false;note='MailApp permission missing: '+String(e&&e.message||e);}
+  let recentFailed=0; try{const sh=sheet(SHEETS.SYSTEM_EMAILS),last=sh.getLastRow();if(last>=2){const start=Math.max(2,last-49),rows=sh.getRange(start,1,last-start+1,8).getValues();recentFailed=rows.filter(r=>String(r[4])==='Failed').length;}}catch(e){}
+  return {success:true,ready:ready,remainingQuota:remaining,recentFailed:recentFailed,note:note};
+}
+
+
+/* ======================================================
+ * v33 DAILY QUIZ + XP + LEADERBOARD BACKEND
+ * ====================================================== */
+function v33TodayKey() {
+  return Utilities.formatDate(new Date(), Session.getScriptTimeZone()||'Asia/Kolkata', 'yyyy-MM-dd');
+}
+function v33Level(xp) {
+  xp=Number(xp||0);
+  if(xp>=2000) return 'Master';
+  if(xp>=1000) return 'Expert';
+  if(xp>=500) return 'Advanced';
+  if(xp>=200) return 'Learner';
+  return 'Beginner';
+}
+function v33UserXp(email) {
+  const sh=sheet(SHEETS.USER_XP);
+  const last=sh.getLastRow();
+  if(last>=2){
+    const rows=sh.getRange(2,1,last-1,7).getValues();
+    for(let i=0;i<rows.length;i++){
+      if(String(rows[i][0]).toLowerCase()===String(email).toLowerCase()){
+        return {row:i+2,email:rows[i][0],name:rows[i][1],xp:Number(rows[i][2]||0),level:rows[i][3]||'Beginner',streak:Number(rows[i][4]||0),lastQuizDate:String(rows[i][5]||'')};
+      }
+    }
+  }
+  return null;
+}
+function v33SaveUserXp(email,name,xp,streak,lastQuizDate) {
+  const sh=sheet(SHEETS.USER_XP);
+  const existing=v33UserXp(email);
+  const row=[email,name||email.split('@')[0],xp,v33Level(xp),streak,lastQuizDate,new Date()];
+  if(existing) sh.getRange(existing.row,1,1,7).setValues([row]);
+  else sh.appendRow(row);
+}
+function v33DeterministicShuffle(rows,seed) {
+  const copy=rows.slice();
+  let value=0;
+  for(let i=0;i<seed.length;i++) value=(value*31+seed.charCodeAt(i))>>>0;
+  for(let i=copy.length-1;i>0;i--){
+    value=(value*1664525+1013904223)>>>0;
+    const j=value%(i+1);
+    const temp=copy[i];copy[i]=copy[j];copy[j]=temp;
+  }
+  return copy;
+}
+function getDailyQuiz(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.QUESTIONS);
+  const last=sh.getLastRow();
+  if(last<2) return {success:true,quizDate:v33TodayKey(),questions:[]};
+
+  const rows=sh.getRange(2,1,last-1,9).getValues().filter(r=>String(r[2]||'').trim());
+  const selected=v33DeterministicShuffle(rows,v33TodayKey()).slice(0,10);
+  const questions=selected.map(r=>({
+    id:String(r[0]),question:String(r[2]),optionA:String(r[3]),optionB:String(r[4]),
+    optionC:String(r[5]),optionD:String(r[6])
+  }));
+  return {success:true,quizDate:v33TodayKey(),questions:questions};
+}
+function submitDailyQuiz(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const quizDate=String(data.quizDate||v33TodayKey());
+  const resultSheet=sheet(SHEETS.DAILY_QUIZ_RESULTS);
+
+  const last=resultSheet.getLastRow();
+  if(last>=2){
+    const rows=resultSheet.getRange(2,1,last-1,10).getValues();
+    for(let i=0;i<rows.length;i++){
+      if(String(rows[i][1]).toLowerCase()===s.email && String(rows[i][2])===quizDate){
+        return fail('Today’s Daily Quiz has already been submitted.');
+      }
+    }
+  }
+
+  const questionSheet=sheet(SHEETS.QUESTIONS);
+  const qLast=questionSheet.getLastRow();
+  const all=qLast>=2?questionSheet.getRange(2,1,qLast-1,9).getValues().filter(r=>String(r[2]||'').trim()):[];
+  const selected=v33DeterministicShuffle(all,quizDate).slice(0,10);
+  const answers=data.answers||{};
+  let correct=0,wrong=0,unanswered=0;
+
+  selected.forEach(r=>{
+    const id=String(r[0]);
+    const answer=String(answers[id]||'').toUpperCase();
+    const correctOption=String(r[7]||'A').toUpperCase();
+    if(!answer)unanswered++;
+    else if(answer===correctOption)correct++;
+    else wrong++;
+  });
+
+  const total=selected.length||1;
+  const percentage=Math.round(correct/total*100);
+  const xpEarned=20+(correct*10);
+  const user=findUser(s.email)||{name:s.email.split('@')[0]};
+  const current=v33UserXp(s.email)||{xp:0,streak:0,lastQuizDate:''};
+
+  let streak=1;
+  if(current.lastQuizDate){
+    const previous=new Date(current.lastQuizDate+'T00:00:00');
+    const today=new Date(quizDate+'T00:00:00');
+    const diff=Math.round((today-previous)/86400000);
+    if(diff===1)streak=Number(current.streak||0)+1;
+    else if(diff===0)streak=Number(current.streak||1);
+  }
+
+  const totalXp=Number(current.xp||0)+xpEarned;
+  v33SaveUserXp(s.email,user.name,totalXp,streak,quizDate);
+
+  resultSheet.appendRow([
+    uid('DQR'),s.email,quizDate,correct,wrong,unanswered,percentage,xpEarned,
+    Number(data.timeTaken||0),new Date()
+  ]);
+
+  return {
+    success:true,message:'Daily Quiz submitted successfully.',
+    correct:correct,wrong:wrong,unanswered:unanswered,percentage:percentage,
+    xpEarned:xpEarned,totalXp:totalXp,streak:streak,level:v33Level(totalXp)
+  };
+}
+function getMyGamification(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const current=v33UserXp(s.email)||{xp:0,streak:0};
+  return {success:true,xp:current.xp||0,streak:current.streak||0,level:v33Level(current.xp||0)};
+}
+function getXpLeaderboard(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.USER_XP);
+  const last=sh.getLastRow();
+  const rows=last>=2?sh.getRange(2,1,last-1,7).getValues():[];
+  const sorted=rows.map(r=>({
+    email:String(r[0]),name:String(r[1]),xp:Number(r[2]||0),
+    level:String(r[3]||v33Level(r[2])),streak:Number(r[4]||0)
+  })).sort((a,b)=>b.xp-a.xp||b.streak-a.streak);
+
+  const myIndex=sorted.findIndex(x=>x.email.toLowerCase()===s.email);
+  const mine=myIndex>=0?sorted[myIndex]:{xp:0,streak:0,level:'Beginner'};
+  return {
+    success:true,
+    leaderboard:sorted.slice(0,50),
+    myRank:myIndex>=0?myIndex+1:0,
+    myXp:mine.xp,myStreak:mine.streak,myLevel:mine.level
+  };
+}
+
+
+/* ======================================================
+ * v36 ENTERPRISE CORE STABILITY BACKEND
+ * ====================================================== */
+function systemHealth(data) {
+  const s=validateSession(data.token);
+  if(!s.success) return s;
+
+  let spreadsheetReady=false;
+  let profileReady=false;
+  let emailQuota=0;
+
+  try {
+    spreadsheetReady=Boolean(SpreadsheetApp.getActiveSpreadsheet());
+  } catch(e) {}
+
+  try {
+    profileReady=Boolean(findUser(s.email));
+  } catch(e) {}
+
+  try {
+    emailQuota=MailApp.getRemainingDailyQuota();
+  } catch(e) {}
+
+  return {
+    success:true,
+    status:'Operational',
+    version:'v36',
+    spreadsheetReady:spreadsheetReady,
+    profileReady:profileReady,
+    emailQuota:emailQuota,
+    checkedAt:new Date().toISOString()
+  };
+}
+
+function sendSystemTestEmail(data) {
+  const a=requireAdmin(data.token); if(!a.success) return a;
+
+  const subject='IAS Selection Point — Email System Test';
+  const body=baseEmailTemplate({
+    badge:'SYSTEM TEST',
+    badgeColor:'#0B5ED7',
+    title:'Email Delivery Is Working',
+    subtitle:'The IAS Selection Point enterprise email system completed a successful test.',
+    body:`<p>Dear Administrator,</p>
+      <p>This message confirms that the portal can send professional system emails successfully.</p>
+      <p><b>Test Time:</b> ${new Date().toLocaleString()}</p>`,
+    buttonText:'Open Admin Panel',
+    buttonUrl:CONFIG.PORTAL_URL+'admin.html'
+  });
+
+  const result=sendMail(
+    CONFIG.ADMIN_EMAIL,
+    subject,
+    body,
+    {type:'System Test',referenceKey:uid('TEST')}
+  );
+
+  if(!result.sent){
+    return fail('Test email failed: '+(result.error||'Unknown error'));
+  }
+
+  return ok('Test email sent successfully.');
+}
+
+function syncRegistrationProfile(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+
+  const registrationSheet=sheet(SHEETS.REGISTRATION_PROFILES);
+  const profileSheet=sheet(SHEETS.PROFILES);
+  const registrationRows=registrationSheet.getDataRange().getValues();
+  const profileRows=profileSheet.getDataRange().getValues();
+
+  let registration=null;
+  for(let i=1;i<registrationRows.length;i++){
+    if(String(registrationRows[i][0]).toLowerCase().trim()===s.email){
+      registration=registrationRows[i];
+      break;
+    }
+  }
+  if(!registration) return {success:true,message:'No registration profile found.',synced:false};
+
+  let profileRow=0;
+  for(let i=1;i<profileRows.length;i++){
+    if(String(profileRows[i][0]).toLowerCase().trim()===s.email){
+      profileRow=i+1;
+      break;
+    }
+  }
+
+  const regName=registration[1]||'';
+  const regMobile=registration[2]||'';
+  const regExam=registration[4]||'';
+  const regDistrict=registration[6]||'';
+  const regSubject=registration[7]||'';
+
+  if(profileSheet.getLastColumn()<8){
+    profileSheet.getRange(1,7,1,2).setValues([['Subject','Bio']]);
+  }
+
+  if(profileRow){
+    const current=profileSheet.getRange(profileRow,1,1,8).getValues()[0];
+    const merged=[
+      s.email,
+      current[1]||regName,
+      current[2]||regMobile,
+      current[3]||regDistrict,
+      current[4]||regExam,
+      new Date(),
+      current[6]||regSubject,
+      current[7]||''
+    ];
+    profileSheet.getRange(profileRow,1,1,8).setValues([merged]);
+  }else{
+    profileSheet.appendRow([
+      s.email,regName,regMobile,regDistrict,regExam,new Date(),regSubject,''
+    ]);
+  }
+
+  return {success:true,message:'Registration profile synchronized.',synced:true};
+}
+
+
+/* ======================================================
+ * v37 EXTERNAL JOB ALERT AGGREGATOR
+ * ====================================================== */
+function v37CleanHtmlText(value) {
+  return String(value||'')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;/gi,' ')
+    .replace(/&amp;/gi,'&')
+    .replace(/&#8211;|&ndash;/gi,'-')
+    .replace(/&#8217;|&rsquo;/gi,"'")
+    .replace(/&quot;/gi,'"')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function v37AbsoluteUrl(url,base) {
+  const value=String(url||'').trim();
+  if(/^https?:\/\//i.test(value)) return value;
+  if(value.indexOf('//')===0) return 'https:'+value;
+  if(value.indexOf('/')===0) return base.replace(/\/$/,'')+value;
+  return base.replace(/\/$/,'')+'/'+value.replace(/^\//,'');
+}
+
+function v37ClassifyJob(title,url) {
+  const text=(String(title||'')+' '+String(url||'')).toLowerCase();
+  if(/answer key|response sheet/.test(text)) return 'answer-key';
+  if(/result|merit list|cut.?off|written marks/.test(text)) return 'result';
+  if(/admit card|hall ticket|call letter|application status/.test(text)) return 'admit-card';
+  if(/haryana|hssc|hpsc|gurugram|hisar|rohtak|panipat|karnal|ambala/.test(text)) return 'haryana';
+  return 'latest';
+}
+
+function v37ExtractOrganization(title) {
+  const clean=v37CleanHtmlText(title);
+  const match=clean.match(/^([A-Z][A-Z0-9\-\.]{1,18}|[A-Za-z]+(?:\s+[A-Za-z]+){0,2})\s+/);
+  return match?match[1]:'Government Recruitment';
+}
+
+function v37FetchFreeJobAlertRows() {
+  const sourceUrl='https://www.freejobalert.com/';
+  const response=UrlFetchApp.fetch(sourceUrl,{
+    muteHttpExceptions:true,
+    followRedirects:true,
+    headers:{
+      'User-Agent':'Mozilla/5.0 (compatible; IASSelectionPoint/1.0; +https://officialkaitsatnam.github.io/IAS-Selection-Point-/)'
+    }
+  });
+
+  const status=response.getResponseCode();
+  if(status<200||status>=400){
+    throw new Error('Source returned HTTP '+status);
+  }
+
+  const html=response.getContentText();
+  const anchorRegex=/<a\b[^>]*href=["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const rows=[];
+  const seen={};
+  let match;
+
+  while((match=anchorRegex.exec(html))!==null && rows.length<120){
+    const url=v37AbsoluteUrl(match[1],sourceUrl);
+    const title=v37CleanHtmlText(match[2]);
+
+    if(!title||title.length<12||title.length>180) continue;
+    if(!/^https:\/\/(www\.)?freejobalert\.com\//i.test(url)) continue;
+    if(/^(home|view all|education|games|search jobs|contact us|policy)$/i.test(title)) continue;
+    if(!/(online form|offline form|recruitment|vacan|admit card|result|answer key|application status|merit list|notification|walkin|exam date|syllabus)/i.test(title)) continue;
+
+    const key=url.toLowerCase();
+    if(seen[key]) continue;
+    seen[key]=true;
+
+    rows.push({
+      title:title,
+      url:url,
+      category:v37ClassifyJob(title,url),
+      organization:v37ExtractOrganization(title),
+      source:'FreeJobAlert',
+      date:'Latest update'
+    });
+  }
+
+  return rows.slice(0,60);
+}
+
+
+/* ======================================================
+ * v37.1 EXTERNAL JOB FETCH AUTHORIZATION FIX
+ * Run authorizeExternalJobFetch() once from Apps Script.
+ * ====================================================== */
+function authorizeExternalJobFetch() {
+  try {
+    const response = UrlFetchApp.fetch('https://www.freejobalert.com/', {
+      muteHttpExceptions: true,
+      followRedirects: true,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; IASSelectionPoint/1.0; +https://officialkaitsatnam.github.io/IAS-Selection-Point-/)'
+      }
+    });
+
+    const statusCode = response.getResponseCode();
+    Logger.log('HTTP Status: ' + statusCode);
+    Logger.log('External request permission granted successfully.');
+
+    return {
+      success: statusCode >= 200 && statusCode < 400,
+      statusCode: statusCode,
+      message: statusCode >= 200 && statusCode < 400
+        ? 'External request permission granted successfully.'
+        : 'The source returned HTTP ' + statusCode + '.'
+    };
+  } catch (error) {
+    Logger.log('Authorization error: ' + String(error && error.message || error));
+    throw error;
+  }
+}
+
+function getExternalJobAlerts(data) {
+  data = data || {};
+
+  /*
+   * When this function is run directly from the Apps Script editor,
+   * there is no portal token. In that situation, perform only the
+   * external-request authorization test instead of reading data.token.
+   */
+  if (!data.token) {
+    try {
+      const test = authorizeExternalJobFetch();
+
+      return {
+        success: Boolean(test.success),
+        authorizationTest: true,
+        message: test.message,
+        statusCode: test.statusCode,
+        rows: []
+      };
+    } catch (error) {
+      return fail(
+        'External request authorization failed: ' +
+        String(error && error.message ? error.message : error)
+      );
+    }
+  }
+
+  // Normal portal request: validate the logged-in session.
+  const session = validateSession(data.token);
+  if (!session.success) return session;
+
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'v37_freejobalert_rows';
+  const forceRefresh = Boolean(data.forceRefresh);
+
+  if (!forceRefresh) {
+    const cached = cache.get(cacheKey);
+
+    if (cached) {
+      try {
+        return {
+          success: true,
+          rows: JSON.parse(cached),
+          cached: true,
+          source: 'FreeJobAlert',
+          fetchedAt: new Date().toISOString()
+        };
+      } catch (ignore) {}
+    }
+  }
+
+  try {
+    const rows = v37FetchFreeJobAlertRows();
+
+    if (!rows || !rows.length) {
+      return fail(
+        'The source website is available, but no compatible job listings were found.'
+      );
+    }
+
+    cache.put(cacheKey, JSON.stringify(rows), 900);
+
+    return {
+      success: true,
+      rows: rows,
+      cached: false,
+      source: 'FreeJobAlert',
+      fetchedAt: new Date().toISOString()
+    };
+
+  } catch (error) {
+    const cached = cache.get(cacheKey);
+
+    if (cached) {
+      try {
+        return {
+          success: true,
+          rows: JSON.parse(cached),
+          cached: true,
+          stale: true,
+          source: 'FreeJobAlert',
+          message: 'Live refresh failed. Showing previously cached listings.'
+        };
+      } catch (ignore) {}
+    }
+
+    return fail(
+      'External job source is temporarily unavailable: ' +
+      String(error && error.message ? error.message : error)
+    );
+  }
+}
+
+
+/* ======================================================
+ * v38 VERSION MANAGEMENT BACKEND
+ * ====================================================== */
+function v38Json(value, fallback) {
+  try { return JSON.parse(value||''); } catch(e) { return fallback||[]; }
+}
+function v38ReleaseEmailTemplate(release) {
+  const sections=[];
+  function list(title,items){
+    if(!items||!items.length)return '';
+    return `<div style="margin:14px 0;padding:14px;border:1px solid #e2eefc;border-radius:14px;background:#f8fbff;">
+      <h3 style="margin:0 0 8px;color:#10233f;font-size:16px;">${title}</h3>
+      <ul style="margin:0;padding-left:20px;color:#475569;">${items.map(x=>`<li style="margin:5px 0;">${x}</li>`).join('')}</ul>
+    </div>`;
+  }
+  return baseEmailTemplate({
+    badge:'NEW VERSION',
+    badgeColor:'#7c3aed',
+    title:release.version+' Is Now Available',
+    subtitle:release.title,
+    body:`<p>Dear Member,</p>
+      <p>A new version of IAS Selection Point has been released.</p>
+      <p><b>Release Date:</b> ${release.releaseDate||''}</p>
+      ${list("What's New",release.whatsNew)}
+      ${list("Improvements",release.improvements)}
+      ${list("Bug Fixes",release.bugFixes)}
+      <p>Please open the portal and refresh the application to use the latest version.</p>`,
+    buttonText:'Open IAS Selection Point',
+    buttonUrl:CONFIG.PORTAL_URL+'index.html'
+  });
+}
+function publishVersionRelease(data) {
+  const a=requireAdmin(data.token); if(!a.success) return a;
+
+  const version=clean(data.version);
+  const title=clean(data.title);
+  if(!version||!title) return fail('Version number and release title are required.');
+
+  const releaseId=uid('REL');
+  const release={
+    id:releaseId,
+    version:version,
+    title:title,
+    releaseDate:clean(data.releaseDate)||Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyy-MM-dd'),
+    whatsNew:Array.isArray(data.whatsNew)?data.whatsNew:[],
+    improvements:Array.isArray(data.improvements)?data.improvements:[],
+    bugFixes:Array.isArray(data.bugFixes)?data.bugFixes:[],
+    critical:Boolean(data.critical),
+    publishedAt:new Date(),
+    publishedBy:a.email
+  };
+
+  sheet(SHEETS.VERSION_RELEASES).appendRow([
+    releaseId,release.version,release.title,release.releaseDate,
+    JSON.stringify(release.whatsNew),JSON.stringify(release.improvements),
+    JSON.stringify(release.bugFixes),release.critical?'Yes':'No',
+    release.publishedAt,release.publishedBy
+  ]);
+
+  let sent=0,failed=0;
+  if(Boolean(data.sendEmails)){
+    const usersSheet=sheet(SHEETS.USERS);
+    const rows=usersSheet.getLastRow()>=2
+      ?usersSheet.getRange(2,1,usersSheet.getLastRow()-1,9).getValues():[];
+    const unique={};
+    rows.forEach(r=>{
+      const email=String(r[2]||'').toLowerCase().trim();
+      const status=String(r[6]||'Active');
+      if(email&&status!=='Blocked')unique[email]=true;
+    });
+
+    const subject='IAS Selection Point '+release.version+' Is Now Available';
+    const html=v38ReleaseEmailTemplate(release);
+
+    Object.keys(unique).forEach(email=>{
+      const result=sendMail(email,subject,html,{type:'Version Release',referenceKey:releaseId});
+      sheet(SHEETS.VERSION_EMAIL_LOGS).appendRow([
+        uid('VEL'),releaseId,email,result.sent?'Sent':'Failed',result.error||'',new Date()
+      ]);
+      if(result.sent)sent++; else failed++;
+    });
+
+    const adminHtml=baseEmailTemplate({
+      badge:'RELEASE REPORT',
+      badgeColor:'#0B5ED7',
+      title:'Version Publication Completed',
+      subtitle:release.version+' — '+release.title,
+      body:`<p><b>Total Sent:</b> ${sent}</p><p><b>Failed:</b> ${failed}</p><p><b>Published At:</b> ${new Date().toLocaleString()}</p>`,
+      buttonText:'Open Admin Panel',
+      buttonUrl:CONFIG.PORTAL_URL+'admin.html'
+    });
+    sendMail(CONFIG.ADMIN_EMAIL,'Release Report — '+release.version,adminHtml,{type:'Version Admin Report',referenceKey:releaseId});
+  }
+
+  return {
+    success:true,
+    message:'Version published successfully. Emails sent: '+sent+', failed: '+failed+'.',
+    releaseId:releaseId,
+    sent:sent,
+    failed:failed
+  };
+}
+function getVersionHistory(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.VERSION_RELEASES);
+  const last=sh.getLastRow();
+  if(last<2)return {success:true,rows:[]};
+  const rows=sh.getRange(2,1,last-1,10).getValues().slice().reverse().map(r=>({
+    id:r[0],version:r[1],title:r[2],releaseDate:r[3],
+    whatsNew:v38Json(r[4],[]),improvements:v38Json(r[5],[]),bugFixes:v38Json(r[6],[]),
+    critical:String(r[7])==='Yes',publishedAt:r[8],publishedBy:r[9]
+  }));
+  return {success:true,rows:rows};
+}
+function getLatestVersion(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const history=getVersionHistory(data);
+  if(!history.success||!history.rows.length)return {success:true,updateAvailable:false};
+  const latest=history.rows[0];
+  const current=String(data.currentVersion||'');
+  return {
+    success:true,
+    updateAvailable:latest.version!==current,
+    release:latest
+  };
+}
+
+
+/* ======================================================
+ * v39 STUDENT PRODUCTIVITY SUITE BACKEND
+ * ====================================================== */
+function v39DateKey(value) {
+  if(!value) return '';
+  if(value instanceof Date) return Utilities.formatDate(value,Session.getScriptTimeZone()||'Asia/Kolkata','yyyy-MM-dd');
+  return String(value).slice(0,10);
+}
+function createStudyTask(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const title=clean(data.title);
+  if(!title) return fail('Task title is required.');
+  sheet(SHEETS.STUDY_PLANNER).appendRow([
+    uid('TSK'),s.email,title,clean(data.category)||'General Study',
+    clean(data.dueDate)||Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyy-MM-dd'),
+    clean(data.priority)||'Medium',Number(data.plannedMinutes||30),
+    clean(data.note),'Pending',new Date(),''
+  ]);
+  return ok('Study task added successfully.');
+}
+function listStudyTasks(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.STUDY_PLANNER);
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,11).getValues():[];
+  const out=rows.filter(r=>String(r[1]).toLowerCase()===s.email).map(r=>({
+    id:r[0],title:r[2],category:r[3],dueDate:v39DateKey(r[4]),priority:r[5],
+    plannedMinutes:Number(r[6]||0),note:r[7],status:r[8],
+    createdAt:r[9]?new Date(r[9]).toLocaleString():''
+  })).sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+  return {success:true,rows:out};
+}
+function updateStudyTaskStatus(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.STUDY_PLANNER);
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,11).getValues():[];
+  for(let i=0;i<rows.length;i++){
+    if(String(rows[i][0])===String(data.id)&&String(rows[i][1]).toLowerCase()===s.email){
+      const status=clean(data.status)==='Completed'?'Completed':'Pending';
+      sh.getRange(i+2,9).setValue(status);
+      sh.getRange(i+2,11).setValue(status==='Completed'?new Date():'');
+      return ok('Task status updated.');
+    }
+  }
+  return fail('Study task not found.');
+}
+function deleteStudyTask(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.STUDY_PLANNER);
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,11).getValues():[];
+  for(let i=rows.length-1;i>=0;i--){
+    if(String(rows[i][0])===String(data.id)&&String(rows[i][1]).toLowerCase()===s.email){
+      sh.deleteRow(i+2);
+      return ok('Study task deleted.');
+    }
+  }
+  return fail('Study task not found.');
+}
+function logStudySession(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  sheet(SHEETS.STUDY_SESSIONS).appendRow([
+    uid('SES'),s.email,clean(data.subject)||'Focused Study',
+    Number(data.durationMinutes||0),clean(data.sessionType)||'Focus',
+    Boolean(data.completed)?'Yes':'No',
+    Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyy-MM-dd'),
+    new Date()
+  ]);
+  return ok('Study session recorded.');
+}
+function listStudySessions(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.STUDY_SESSIONS);
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,8).getValues():[];
+  const out=rows.filter(r=>String(r[1]).toLowerCase()===s.email).map(r=>({
+    id:r[0],subject:r[2],durationMinutes:Number(r[3]||0),sessionType:r[4],
+    completed:String(r[5])==='Yes',sessionDate:v39DateKey(r[6]),
+    createdAt:r[7]?new Date(r[7]).toLocaleString():''
+  })).reverse();
+  return {success:true,rows:out};
+}
+function saveProductivityNote(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const title=clean(data.title), body=clean(data.body);
+  if(!title||!body) return fail('Note title and content are required.');
+  sheet(SHEETS.PRODUCTIVITY_NOTES).appendRow([
+    uid('PNT'),s.email,title,clean(data.category)||'General',body,
+    Boolean(data.pinned)?'Yes':'No',new Date(),new Date()
+  ]);
+  return ok('Note saved successfully.');
+}
+function listProductivityNotes(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.PRODUCTIVITY_NOTES);
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,8).getValues():[];
+  const out=rows.filter(r=>String(r[1]).toLowerCase()===s.email).map(r=>({
+    id:r[0],title:r[2],category:r[3],body:r[4],pinned:String(r[5])==='Yes',
+    createdAt:r[6]?new Date(r[6]).toLocaleString():'',
+    updatedAt:r[7]?new Date(r[7]).toLocaleString():''
+  })).sort((a,b)=>Number(b.pinned)-Number(a.pinned));
+  return {success:true,rows:out};
+}
+function deleteProductivityNote(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const sh=sheet(SHEETS.PRODUCTIVITY_NOTES);
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,8).getValues():[];
+  for(let i=rows.length-1;i>=0;i--){
+    if(String(rows[i][0])===String(data.id)&&String(rows[i][1]).toLowerCase()===s.email){
+      sh.deleteRow(i+2);
+      return ok('Note deleted.');
+    }
+  }
+  return fail('Note not found.');
+}
+function getProductivityAnalytics(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const tasks=listStudyTasks(data).rows||[];
+  const sessions=listStudySessions(data).rows||[];
+  const notes=listProductivityNotes(data).rows||[];
+
+  const completedTasks=tasks.filter(x=>x.status==='Completed').length;
+  const studyMinutes=sessions.reduce((sum,x)=>sum+Number(x.durationMinutes||0),0);
+  const today=new Date();
+  const weekly=[];
+  const active={};
+
+  for(let offset=6;offset>=0;offset--){
+    const d=new Date(today);
+    d.setDate(today.getDate()-offset);
+    const key=Utilities.formatDate(d,Session.getScriptTimeZone(),'yyyy-MM-dd');
+    const minutes=sessions.filter(x=>x.sessionDate===key).reduce((sum,x)=>sum+Number(x.durationMinutes||0),0);
+    weekly.push({label:Utilities.formatDate(d,Session.getScriptTimeZone(),'EEE'),date:key,minutes:minutes});
+    if(minutes>0)active[key]=true;
+  }
+
+  tasks.filter(x=>x.status==='Completed').forEach(x=>{ if(x.dueDate)active[x.dueDate]=true; });
+  const completionRate=tasks.length?Math.round(completedTasks/tasks.length*100):0;
+  const consistency=Math.min(100,Object.keys(active).length*14);
+  const productivityScore=Math.round((completionRate+Math.min(100,studyMinutes/3)+consistency)/3);
+
+  const insights=[];
+  if(!tasks.length)insights.push('Create your first study task to begin structured preparation.');
+  else if(completionRate<50)insights.push('Complete more planned tasks to improve your task completion rate.');
+  else insights.push('Your task completion rate is strong. Continue maintaining this routine.');
+  if(studyMinutes<120)insights.push('Aim for at least 120 focused study minutes this week.');
+  else insights.push('You have completed a meaningful amount of focused study time.');
+  if(!notes.length)insights.push('Create revision notes after each important topic.');
+  else insights.push('Review your saved notes regularly to improve retention.');
+
+  return {
+    success:true,completedTasks:completedTasks,studyMinutes:studyMinutes,
+    notesCount:notes.length,activeDays:Object.keys(active).length,
+    productivityScore:productivityScore,weekly:weekly,insights:insights
+  };
+}
+function getExamRoadmap(data) {
+  const s=validateSession(data.token); if(!s.success) return s;
+  const profile=getRegistrationProfile(data);
+  const exam=(profile.success&&profile.profile&&profile.profile.targetExam)||'General Competitive Exams';
+  const lower=String(exam).toLowerCase();
+
+  let steps=[
+    {icon:'📘',title:'Build Foundation',description:'Complete the official syllabus and strengthen core concepts subject by subject.'},
+    {icon:'📰',title:'Current Affairs',description:'Review daily current affairs and connect important events with the examination syllabus.'},
+    {icon:'📝',title:'Practice Questions',description:'Solve topic-wise questions and maintain an error notebook for weak areas.'},
+    {icon:'⏱',title:'Mock Tests',description:'Attempt timed mock tests and review every incorrect or skipped question.'},
+    {icon:'🔁',title:'Scheduled Revision',description:'Revise completed topics through short notes and spaced repetition.'},
+    {icon:'📊',title:'Performance Review',description:'Track accuracy, speed, study time and task completion every week.'}
+  ];
+  let summary='A balanced plan covering concepts, current affairs, practice, mock tests and revision.';
+
+  if(lower.includes('haryana')||lower.includes('hssc')||lower.includes('hpsc')){
+    steps[0]={icon:'🟢',title:'Haryana General Knowledge',description:'Prioritize Haryana history, geography, polity, culture, economy and current affairs.'};
+    steps[1]={icon:'📋',title:'CET Syllabus Coverage',description:'Complete the relevant Group C or Group D syllabus with topic-wise practice.'};
+    summary='A Haryana-focused roadmap combining state knowledge, CET practice, current affairs and mock tests.';
+  }else if(lower.includes('upsc')){
+    steps[0]={icon:'🏛️',title:'NCERT and GS Foundation',description:'Build conceptual clarity through NCERTs and the complete General Studies syllabus.'};
+    steps[1]={icon:'📰',title:'News and Editorial Analysis',description:'Connect current developments with Prelims and Mains syllabus topics.'};
+    summary='A UPSC-focused roadmap covering foundation, current affairs, answer writing and test practice.';
+  }else if(lower.includes('ugc')){
+    steps[0]={icon:'🎓',title:'Subject Syllabus Mastery',description:'Cover every unit of the UGC NET subject syllabus with structured notes.'};
+    steps[1]={icon:'📚',title:'Paper 1 Preparation',description:'Practice teaching aptitude, research aptitude, reasoning and communication.'};
+    summary='A UGC NET roadmap combining subject mastery, Paper 1 practice and previous-year questions.';
+  }
+
+  return {success:true,exam:exam,summary:summary,steps:steps};
+}
+
+
+function v40Parse(value,fallback){try{return JSON.parse(value||'')}catch(e){return fallback||{}}}
+function v40QuestionMap(){
+  const sh=sheet(SHEETS.QUESTIONS),cols=Math.max(13,sh.getLastColumn());
+  const rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,cols).getValues():[],map={};
+  rows.forEach(r=>{map[String(r[0])]={id:String(r[0]),testId:String(r[1]),question:String(r[2]),optionA:String(r[3]),optionB:String(r[4]),optionC:String(r[5]),optionD:String(r[6]),correctAnswer:String(r[7]||'A').toUpperCase(),explanation:String(r[8]||''),topic:String(r[9]||r[1]||'General'),difficulty:String(r[10]||'Medium'),positiveMarks:Number(r[11]||1),negativeMarks:Number(r[12]||0.25)}});return map;
+}
+function listProfessionalTests(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.CBT_TESTS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,10).getValues():[];
+  return{success:true,rows:rows.filter(r=>String(r[7])==='Published').map(r=>({id:r[0],title:r[1],subject:r[2],durationMinutes:Number(r[3]||30),positiveMarks:Number(r[4]||1),negativeMarks:Number(r[5]||0.25),questionCount:v40Parse(r[6],[]).length}))};
+}
+function getProfessionalTest(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.CBT_TESTS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,10).getValues():[];
+  const row=rows.find(r=>String(r[0])===String(data.testId)&&String(r[7])==='Published');if(!row)return fail('CBT test not found.');
+  const ids=v40Parse(row[6],[]),map=v40QuestionMap(),questions=ids.map(id=>map[String(id)]).filter(Boolean).map(q=>({id:q.id,question:q.question,optionA:q.optionA,optionB:q.optionB,optionC:q.optionC,optionD:q.optionD,topic:q.topic,difficulty:q.difficulty,positiveMarks:q.positiveMarks,negativeMarks:q.negativeMarks}));
+  let savedProgress=null;const psh=sheet(SHEETS.CBT_PROGRESS),prows=psh.getLastRow()>=2?psh.getRange(2,1,psh.getLastRow()-1,8).getValues():[];const p=prows.find(r=>String(r[1]).toLowerCase()===s.email&&String(r[2])===String(data.testId));if(p)savedProgress={answers:v40Parse(p[3],{}),status:v40Parse(p[4],{}),currentIndex:Number(p[5]||0),secondsRemaining:Number(p[6]||0)};
+  return{success:true,test:{id:row[0],title:row[1],subject:row[2],durationMinutes:Number(row[3]||30),positiveMarks:Number(row[4]||1),negativeMarks:Number(row[5]||0.25)},questions,savedProgress};
+}
+function saveProfessionalTestProgress(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.CBT_PROGRESS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,8).getValues():[];
+  for(let i=0;i<rows.length;i++)if(String(rows[i][1]).toLowerCase()===s.email&&String(rows[i][2])===String(data.testId)){sh.getRange(i+2,4,1,5).setValues([[JSON.stringify(data.answers||{}),JSON.stringify(data.status||{}),Number(data.currentIndex||0),Number(data.secondsRemaining||0),new Date()]]);return ok('Progress saved.')}
+  sh.appendRow([uid('CBTP'),s.email,data.testId,JSON.stringify(data.answers||{}),JSON.stringify(data.status||{}),Number(data.currentIndex||0),Number(data.secondsRemaining||0),new Date()]);return ok('Progress saved.');
+}
+function submitProfessionalTest(data){
+  const s=validateSession(data.token);if(!s.success)return s;const test=getProfessionalTest({token:data.token,testId:data.testId});if(!test.success)return test;const map=v40QuestionMap(),answers=data.answers||{};let score=0,maxScore=0,correct=0,wrong=0,unanswered=0;const topicStats={};
+  test.questions.forEach(q=>{const full=map[q.id];maxScore+=Number(full.positiveMarks||1);if(!topicStats[full.topic])topicStats[full.topic]={correct:0,total:0};topicStats[full.topic].total++;const user=String(answers[q.id]||'').toUpperCase();if(!user)unanswered++;else if(user===full.correctAnswer){correct++;score+=Number(full.positiveMarks||1);topicStats[full.topic].correct++}else{wrong++;score-=Number(full.negativeMarks||0)}});
+  score=Math.round(score*100)/100;const percentage=maxScore?Math.max(0,Math.round(score/maxScore*10000)/100):0,weakTopics=Object.keys(topicStats).filter(k=>topicStats[k].correct/topicStats[k].total<0.5),resultId=uid('CBTR'),rsh=sheet(SHEETS.CBT_RESULTS);
+  rsh.appendRow([resultId,s.email,test.test.id,test.test.title,score,maxScore,percentage,correct,wrong,unanswered,'','',Number(data.timeTaken||0),JSON.stringify(weakTopics),JSON.stringify(answers),new Date()]);
+  const rows=rsh.getLastRow()>=2?rsh.getRange(2,1,rsh.getLastRow()-1,16).getValues().filter(r=>String(r[2])===String(test.test.id)):[];rows.sort((a,b)=>Number(b[4])-Number(a[4]));const rank=rows.findIndex(r=>String(r[0])===resultId)+1,percentile=rows.length?Math.round((rows.length-rank)/rows.length*10000)/100:100;rsh.getRange(rsh.getLastRow(),11,1,2).setValues([[rank,percentile]]);
+  return{success:true,resultId,score,maxScore,percentage,correct,wrong,unanswered,rank,percentile,weakTopics};
+}
+function listProfessionalTestResults(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.CBT_RESULTS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,16).getValues():[];
+  return{success:true,rows:rows.filter(r=>String(r[1]).toLowerCase()===s.email).reverse().map(r=>({resultId:r[0],testId:r[2],testTitle:r[3],score:r[4],maxScore:r[5],percentage:r[6],correct:r[7],wrong:r[8],unanswered:r[9],rank:r[10],percentile:r[11],timeTakenMinutes:Math.round(Number(r[12]||0)/60),weakTopics:v40Parse(r[13],[]),submittedAt:r[15]}))};
+}
+function getProfessionalTestReview(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.CBT_RESULTS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,16).getValues():[],row=rows.find(r=>String(r[0])===String(data.resultId)&&String(r[1]).toLowerCase()===s.email);if(!row)return fail('Result not found.');
+  const test=getProfessionalTest({token:data.token,testId:row[2]}),map=v40QuestionMap(),answers=v40Parse(row[14],{});return{success:true,rows:test.questions.map(q=>({question:q.question,userAnswer:answers[q.id]||'',correctAnswer:map[q.id].correctAnswer,explanation:map[q.id].explanation,topic:map[q.id].topic}))};
+}
+
+
+/* ======================================================
+ * v41 SMART LEARNING & PROFESSIONAL COMMUNICATION
+ * ====================================================== */
+function v41AddNotification(email,type,title,message){
+  sheet(SHEETS.USER_NOTIFICATIONS).appendRow([uid('NTF'),String(email||'').toLowerCase(),type,title,message,'No',new Date()]);
+}
+function v41EmailFooter(){
+  return `
+    <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;color:#64748b;font-size:12px;line-height:1.7;">
+      <p style="margin:0 0 8px;">
+        <a href="https://iasselectionpoint.blogspot.com" style="color:#0B5ED7;text-decoration:none;font-weight:600;">Main Website</a>
+        &nbsp;•&nbsp;
+        <a href="${CONFIG.PORTAL_URL}index.html" style="color:#0B5ED7;text-decoration:none;font-weight:600;">Member Portal</a>
+      </p>
+      <p style="margin:0 0 8px;">
+        <a href="https://iasselectionpoint.blogspot.com/p/privacy-policy.html" style="color:#475569;text-decoration:none;">Privacy Policy</a>
+        &nbsp;|&nbsp;
+        <a href="https://iasselectionpoint.blogspot.com/p/terms-conditions.html" style="color:#475569;text-decoration:none;">Terms & Conditions</a>
+        &nbsp;|&nbsp;
+        <a href="https://iasselectionpoint.blogspot.com/p/contact-us.html" style="color:#475569;text-decoration:none;">Contact Us</a>
+      </p>
+      <p style="margin:0;">© ${new Date().getFullYear()} IAS Selection Point. All Rights Reserved.</p>
+      <p style="margin:2px 0 0;">Designed & Developed by Satnam Kait</p>
+      <p style="margin:8px 0 0;font-size:10px;">This is an automated email from IAS Selection Point. Please do not reply directly to this email.</p>
+    </div>`;
+}
+function v41ProfessionalEmailTemplate(options){
+  options=options||{};
+  return `<!doctype html><html><body style="margin:0;background:#f4f7fb;font-family:Arial,sans-serif;">
+    <div style="max-width:640px;margin:0 auto;padding:24px 14px;">
+      <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;overflow:hidden;">
+        <div style="padding:24px;background:linear-gradient(135deg,#0f172a,#0B5ED7);color:#fff;text-align:center;">
+          <div style="font-size:12px;letter-spacing:1px;color:#bfdbfe;">IAS SELECTION POINT</div>
+          <h1 style="margin:8px 0 0;font-size:26px;">${options.title||'IAS Selection Point'}</h1>
+          <p style="margin:8px 0 0;color:#dbeafe;">${options.subtitle||''}</p>
+        </div>
+        <div style="padding:24px;color:#334155;font-size:14px;line-height:1.65;">
+          ${options.body||''}
+          ${options.buttonUrl?`<p style="text-align:center;margin:24px 0;"><a href="${options.buttonUrl}" style="display:inline-block;padding:12px 20px;border-radius:10px;background:#0B5ED7;color:#fff;text-decoration:none;font-weight:700;">${options.buttonText||'Open Portal'}</a></p>`:''}
+          ${v41EmailFooter()}
+        </div>
+      </div>
+    </div></body></html>`;
+}
+function getSmartLearningDashboard(data){
+  const s=validateSession(data.token);if(!s.success)return s;
+  const tasks=listStudyTasks(data).rows||[],sessions=listStudySessions(data).rows||[],notes=listProductivityNotes(data).rows||[];
+  const results=listProfessionalTestResults(data).rows||[];
+  const completed=tasks.filter(x=>x.status==='Completed').length;
+  const studyMinutes=sessions.reduce((a,x)=>a+Number(x.durationMinutes||0),0);
+  const accuracy=results.length?Math.round(results.reduce((a,x)=>a+Number(x.percentage||0),0)/results.length):0;
+  const weak={};results.forEach(r=>(r.weakTopics||[]).forEach(t=>weak[t]=(weak[t]||0)+1));
+  const weakTopics=Object.keys(weak).sort((a,b)=>weak[b]-weak[a]).slice(0,5).map(t=>({topic:t,recommendation:'Revise this topic and attempt a focused practice test.'}));
+  const streak=Math.min(30,new Set(sessions.map(x=>x.sessionDate).filter(Boolean)).size);
+  const achievements=[
+    {icon:'🌱',title:'Beginner',description:'Create your first study task.',unlocked:tasks.length>0},
+    {icon:'🔥',title:'Daily Warrior',description:'Complete 5 focused study sessions.',unlocked:sessions.length>=5},
+    {icon:'📝',title:'Mock Test Master',description:'Complete 10 mock tests.',unlocked:results.length>=10},
+    {icon:'📚',title:'Revision Champion',description:'Save 20 revision notes.',unlocked:notes.length>=20},
+    {icon:'🏆',title:'Top Performer',description:'Maintain 80% or higher test accuracy.',unlocked:accuracy>=80},
+    {icon:'⭐',title:'Consistent Learner',description:'Complete 25 planned tasks.',unlocked:completed>=25}
+  ];
+  const todayPlan=[
+    {icon:'📘',title:'Complete one planned topic',description:'Use Study Planner to finish your highest-priority task.'},
+    {icon:'⏱',title:'Start a focus session',description:'Complete at least one 25-minute focused study session.'},
+    {icon:'📝',title:'Attempt practice questions',description:weakTopics.length?'Practice '+weakTopics[0].topic+'.':'Attempt one CBT mock test.'},
+    {icon:'🔁',title:'Revision',description:'Review one saved note before ending today’s study.'}
+  ];
+  return{success:true,title:'Your personalized preparation dashboard',subtitle:'Smart recommendations based on your activity and target examination.',streak,articlesRead:0,mockTests:results.length,accuracy,studyMinutes,todayPlan,weakTopics,achievements};
+}
+function getSmartRevisionPlan(data){
+  const s=validateSession(data.token);if(!s.success)return s;
+  const notes=listProductivityNotes(data).rows||[];
+  const topics=notes.slice(0,4).map(x=>x.title);
+  const defaults=['Core Concepts','Current Affairs','Weak Mock-Test Topic','Previous-Year Questions'];
+  const t=[...topics,...defaults].slice(0,4);
+  return{success:true,rows:[
+    {window:'Today',topic:t[0],action:'Quick 15-minute revision'},
+    {window:'Tomorrow',topic:t[1],action:'Active recall and 10 practice questions'},
+    {window:'After 7 Days',topic:t[2],action:'Full revision with short notes'},
+    {window:'After 30 Days',topic:t[3],action:'Mixed test and performance review'}
+  ]};
+}
+function getStudentPerformanceReport(data){
+  const s=validateSession(data.token);if(!s.success)return s;
+  const tasks=listStudyTasks(data).rows||[],sessions=listStudySessions(data).rows||[],results=listProfessionalTestResults(data).rows||[];
+  const completedTasks=tasks.filter(x=>x.status==='Completed').length;
+  const weekly=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const key=Utilities.formatDate(d,Session.getScriptTimeZone(),'yyyy-MM-dd');
+    const minutes=sessions.filter(x=>x.sessionDate===key).reduce((a,x)=>a+Number(x.durationMinutes||0),0);
+    weekly.push({label:Utilities.formatDate(d,Session.getScriptTimeZone(),'EEE'),value:Math.round(minutes/10)});
+  }
+  return{success:true,totalLearningActions:tasks.length+sessions.length+results.length,weeklyGrowth:Math.min(100,Math.round((completedTasks+sessions.length)*4)),completedTasks,badgesEarned:[tasks.length>0,sessions.length>=5,results.length>=10,completedTasks>=25].filter(Boolean).length,weekly};
+}
+function listUserNotifications(data){
+  const s=validateSession(data.token);if(!s.success)return s;
+  const sh=sheet(SHEETS.USER_NOTIFICATIONS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,7).getValues():[];
+  const out=rows.filter(r=>String(r[1]).toLowerCase()===s.email).reverse().map(r=>({id:r[0],type:r[2],title:r[3],message:r[4],read:String(r[5])==='Yes',createdAt:r[6]?new Date(r[6]).toLocaleString():''}));
+  return{success:true,rows:out,unread:out.filter(x=>!x.read).length};
+}
+function markNotificationRead(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.USER_NOTIFICATIONS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,7).getValues():[];
+  for(let i=0;i<rows.length;i++)if(String(rows[i][0])===String(data.id)&&String(rows[i][1]).toLowerCase()===s.email){sh.getRange(i+2,6).setValue('Yes');return ok('Notification marked as read.')}
+  return fail('Notification not found.');
+}
+function markAllNotificationsRead(data){
+  const s=validateSession(data.token);if(!s.success)return s;const sh=sheet(SHEETS.USER_NOTIFICATIONS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,7).getValues():[];
+  rows.forEach((r,i)=>{if(String(r[1]).toLowerCase()===s.email)sh.getRange(i+2,6).setValue('Yes')});return ok('All notifications marked as read.');
+}
+function listUserCertificates(data){
+  const s=validateSession(data.token);if(!s.success)return s;
+  const tasks=listStudyTasks(data).rows||[],sessions=listStudySessions(data).rows||[],results=listProfessionalTestResults(data).rows||[];
+  return{success:true,rows:[
+    {icon:'📘',title:'Focused Learner',description:'Complete 10 focused study sessions.',unlocked:sessions.length>=10},
+    {icon:'📝',title:'Mock Test Achiever',description:'Complete 10 CBT mock tests.',unlocked:results.length>=10},
+    {icon:'✅',title:'Planning Champion',description:'Complete 25 study tasks.',unlocked:tasks.filter(x=>x.status==='Completed').length>=25},
+    {icon:'🏆',title:'High Accuracy Performer',description:'Achieve 80% or higher average test accuracy.',unlocked:results.length&&results.reduce((a,x)=>a+Number(x.percentage||0),0)/results.length>=80}
+  ]};
+}
+function getCommunicationDashboard(data){
+  const a=requireAdmin(data.token);if(!a.success)return a;const sh=sheet(SHEETS.COMMUNICATION_LOGS),rows=sh.getLastRow()>=2?sh.getRange(2,1,sh.getLastRow()-1,7).getValues():[];
+  const today=Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'yyyy-MM-dd');
+  return{success:true,total:rows.length,sent:rows.filter(r=>String(r[4])==='Sent').length,failed:rows.filter(r=>String(r[4])==='Failed').length,today:rows.filter(r=>v39DateKey(r[6])===today).length,logs:rows.slice().reverse().slice(0,100).map(r=>({email:r[1],type:r[2],subject:r[3],status:r[4],error:r[5],sentAt:r[6]?new Date(r[6]).toLocaleString():''}))};
+}
+function sendCommunicationAnnouncement(data){
+  const a=requireAdmin(data.token);if(!a.success)return a;const title=clean(data.title),message=clean(data.message);if(!title||!message)return fail('Title and message are required.');
+  const users=sheet(SHEETS.USERS),rows=users.getLastRow()>=2?users.getRange(2,1,users.getLastRow()-1,9).getValues():[],emails={};
+  rows.forEach(r=>{const e=String(r[2]||'').toLowerCase().trim();if(e&&String(r[6]||'Active')!=='Blocked')emails[e]=true});
+  let sent=0,failed=0;
+  Object.keys(emails).forEach(email=>{
+    v41AddNotification(email,'Announcement',title,message);
+    if(Boolean(data.sendEmail)){
+      const html=v41ProfessionalEmailTemplate({title:title,subtitle:'Important announcement from IAS Selection Point',body:`<p>Dear Member,</p><p>${message}</p>`,buttonText:'Open Member Portal',buttonUrl:CONFIG.PORTAL_URL+'index.html'});
+      const result=sendMail(email,title,html,{type:'Announcement'});
+      sheet(SHEETS.COMMUNICATION_LOGS).appendRow([uid('CML'),email,'Announcement',title,result.sent?'Sent':'Failed',result.error||'',new Date()]);
+      result.sent?sent++:failed++;
+    }
+  });
+  return{success:true,message:'Announcement sent. Emails sent: '+sent+', failed: '+failed+'.'};
+}
+function previewCommunicationTemplate(data){
+  const a=requireAdmin(data.token);if(!a.success)return a;const type=clean(data.type)||'welcome';
+  const samples={
+    welcome:['Welcome to IAS Selection Point','Your learning journey starts here.','<p>Dear {{UserName}},</p><p>Your IAS Selection Point account has been created successfully.</p>'],
+    badge:['Congratulations! Badge Earned','A new achievement has been unlocked.','<p>Excellent work! You have earned the <b>Daily Warrior</b> badge.</p>'],
+    mock:['Mock Test Completed','Your performance report is ready.','<p>Your mock test has been submitted successfully.</p><p><b>Score:</b> 82% &nbsp; <b>Rank:</b> #12</p>'],
+    weekly:['Your Weekly Progress Report','Review your learning growth.','<p>You completed 6 study tasks, 4 focus sessions and 2 mock tests this week.</p>'],
+    version:['IAS Selection Point v41 Is Available','Smart Learning & Professional Communication Suite','<p>A new portal version has been released with smart learning, notifications, reports and professional email templates.</p>'],
+    certificate:['Certificate Earned','Your achievement certificate is available.','<p>Congratulations! You have unlocked the Focused Learner certificate.</p>']
+  };
+  const s=samples[type]||samples.welcome;
+  return{success:true,html:v41ProfessionalEmailTemplate({title:s[0],subtitle:s[1],body:s[2],buttonText:'Open Member Portal',buttonUrl:CONFIG.PORTAL_URL+'index.html'})};
+}
+
+
+function sendV411TestEmail(data) {
+  const a = requireAdmin(data.token);
+  if (!a.success) return a;
+
+  const recipient = clean(data.email || a.email).toLowerCase();
+  if (!recipient) return fail('Recipient email is required.');
+
+  const profile = v411GetRecipientProfile(recipient);
+  const html = baseEmailTemplate({
+    badge:'EMAIL SYSTEM TEST',
+    badgeColor:'#7c3aed',
+    title:'IAS Selection Point Email System Is Working',
+    subtitle:'v41.1 personalized email and footer verification.',
+    body:`<p>Dear <b>${v411EscapeHtml(profile.name || 'Member')}</b>,</p>
+      <p>This test email confirms that the following items are working:</p>
+      <ul>
+        <li>Dynamic user name</li>
+        <li>Main Website link</li>
+        <li>Member Portal link</li>
+        <li>Privacy, Terms and Contact links</li>
+        <li>Copyright and developer credit</li>
+        <li>Central email logging</li>
+      </ul>`,
+    buttonText:'Open Member Portal',
+    buttonUrl:CONFIG.PORTAL_URL + 'index.html'
+  });
+
+  const result = sendMail(
+    recipient,
+    'IAS Selection Point v41.1 Email System Test',
+    html,
+    {type:'Email System Test',referenceKey:'V43.0.0'}
+  );
+
+  return {
+    success: result.sent,
+    message: result.sent
+      ? 'Test email sent successfully to ' + recipient + '.'
+      : 'Test email failed: ' + result.error,
+    error: result.error || ''
+  };
 }
 
 function hashPassword(password) { const raw=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,String(password)); return raw.map(function(b){return ('0'+(b&0xFF).toString(16)).slice(-2);}).join(''); }

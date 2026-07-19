@@ -7169,3 +7169,77 @@ function buildV43Answer(q){
 }
 function escapeV43(v){return String(v).replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));}
 document.addEventListener('DOMContentLoaded',()=>{if(document.getElementById('v43SmartLearningModule'))updateV43Stats();});
+
+/* ===== v50.2 Digital Book Reader scroll controller ===== */
+(function(){
+  'use strict';
+  let readerScrollBound = false;
+  let lastPageScrollY = 0;
+
+  function modal(){ return document.getElementById('readerModal'); }
+
+  function updateBookProgress(){
+    const m = modal();
+    if(!m || !m.classList.contains('active')) return;
+    const max = Math.max(1, m.scrollHeight - m.clientHeight);
+    const pct = Math.max(0, Math.min(100, Math.round((m.scrollTop / max) * 100)));
+    const top = document.getElementById('v27TopProgress');
+    const text = document.getElementById('v27CircleText');
+    const circle = document.getElementById('v27ProgressCircle');
+    if(top) top.style.width = pct + '%';
+    if(text) text.textContent = pct + '%';
+    if(circle) circle.style.setProperty('--v27-angle', (pct * 3.6) + 'deg');
+  }
+
+  function activateReaderScroll(){
+    const m = modal();
+    if(!m) return;
+    lastPageScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add('v502-reader-open');
+    document.body.classList.add('v502-reader-open');
+    m.scrollTop = 0;
+    if(!readerScrollBound){
+      m.addEventListener('scroll', updateBookProgress, {passive:true});
+      readerScrollBound = true;
+    }
+    requestAnimationFrame(updateBookProgress);
+  }
+
+  function deactivateReaderScroll(){
+    document.documentElement.classList.remove('v502-reader-open');
+    document.body.classList.remove('v502-reader-open');
+    requestAnimationFrame(function(){ window.scrollTo(0, lastPageScrollY); });
+  }
+
+  const originalOpen = window.openPostReader;
+  if(typeof originalOpen === 'function'){
+    window.openPostReader = function(index){
+      const result = originalOpen.apply(this, arguments);
+      setTimeout(activateReaderScroll, 120);
+      return result;
+    };
+  }
+
+  const originalClose = window.closePostReader;
+  window.closePostReader = function(){
+    let result;
+    if(typeof originalClose === 'function') result = originalClose.apply(this, arguments);
+    else {
+      const m = modal();
+      if(m) m.classList.remove('active');
+    }
+    deactivateReaderScroll();
+    return result;
+  };
+
+  document.addEventListener('click', function(e){
+    const back = e.target.closest('[data-v27-action="back"]');
+    if(back) setTimeout(deactivateReaderScroll, 0);
+  }, true);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal()?.classList.contains('active')){
+      window.closePostReader();
+    }
+  });
+})();
